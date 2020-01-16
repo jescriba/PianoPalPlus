@@ -9,19 +9,13 @@
 import UIKit
 
 class ViewController: UIViewController {
-    let pianoView = PianoView()
+    var pianoView: PianoView!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        pianoView.translatesAutoresizingMaskIntoConstraints = false
+        self.pianoView = PianoView(frame: view.bounds)
         view.addSubview(pianoView)
-        NSLayoutConstraint.activate([
-            pianoView.leftAnchor.constraint(equalTo: view.leftAnchor),
-            pianoView.rightAnchor.constraint(equalTo: view.rightAnchor),
-            pianoView.topAnchor.constraint(equalTo: view.topAnchor),
-            pianoView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
     }
     
     func noteSelectedForIdentification(_ sender: NoteButton) {

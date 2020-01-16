@@ -94,10 +94,10 @@ class NoteButton: UIButton {
         layer.borderWidth = 1
     }
     
-    func label(_ label: String?) {
+    func label(_ label: String? = nil) {
         var description = label
         if (description == nil) {
-            description = note.simpleDescription()
+            description = "\(note.simpleDescription())\(octave)"
         }
         self.setTitle(description, for: .normal)
         if note.isWhiteKey() {

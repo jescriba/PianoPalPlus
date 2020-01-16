@@ -34,9 +34,9 @@ enum ScrollDirection : Int {
 
 class PianoView: UIView, UIScrollViewDelegate {
     var scrollView = UIScrollView()
+    var contentView = UIView()
     var noteButtons = [NoteButton]()
     var highlightedNoteButtons = [NoteButton]()
-    var lastContentOffset: CGFloat?
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -45,75 +45,76 @@ class PianoView: UIView, UIScrollViewDelegate {
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = UIColor.white
-        addScrollView()
+        setup()
     }
     
-    private func addScrollView() {
-        scrollView.frame = UIScreen.main.bounds
+    private func setup() {
+        scrollView.frame = self.frame
         scrollView.maximumZoomScale = 1
         scrollView.minimumZoomScale = 1
-        scrollView.contentSize.width = scrollView.frame.width * 3
+        scrollView.contentSize.width = scrollView.frame.width * CGFloat(Octave.max)
         scrollView.contentSize.height = scrollView.frame.height
+        contentView.frame = CGRect(x: 0,
+                                   y: 0,
+                                   width: scrollView.contentSize.width,
+                                   height: scrollView.contentSize.height)
         scrollView.contentOffset = CGPoint(x: scrollView.frame.width, y: 0)
         scrollView.showsVerticalScrollIndicator = false
         scrollView.showsHorizontalScrollIndicator = false
-        scrollView.decelerationRate = UIScrollView.DecelerationRate(rawValue: 0.98)
+        scrollView.decelerationRate = .init(rawValue: 1)
         scrollView.bounces = false
         scrollView.delegate = self
-        
-        scrollView.addSubview(setUpOctaveView(2))
-        scrollView.addSubview(setUpOctaveView(1))
-        scrollView.addSubview(setUpOctaveView(0))
+        for i in Octave.min...(Octave.max + 1) {
+            contentView.addSubview(setUpOctaveView(i))
+        }
         addSubview(scrollView)
+        scrollView.addSubview(contentView)
+        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(didPan))
+        panGesture.delegate = self
+        contentView.addGestureRecognizer(panGesture)
     }
     
     private func setUpOctaveView(_ position: Int) -> UIView {
         let height = scrollView.frame.height
         let width = scrollView.frame.width
-        let offset = CGFloat(position) * scrollView.frame.width
+        let offset = CGFloat(position - Octave.min) * scrollView.frame.width
         let octaveView = UIView(frame: CGRect(x: offset, y: 0, width: width, height: height))
         for note in Constants.orderedNotes {
             let buttonFrame = CGRect(x: width * KeyProperties.x(note),
                                      y: 0,
                                      width: width * KeyProperties.width(note),
                                      height: height * KeyProperties.height(note))
-            let button = NoteButton(frame: buttonFrame, note: note, octave: position + 2)
+            let button = NoteButton(frame: buttonFrame, note: note, octave: position)
+            button.addTarget(self, action: #selector(touchDown(button:)), for: .touchDown)
+            button.label()
             noteButtons.append(button)
             octaveView.addSubview(button)
         }
         return octaveView
     }
     
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        var scrollDirection: ScrollDirection?
-        if (lastContentOffset != nil) {
-            if scrollView.contentOffset.x > lastContentOffset {
-                scrollDirection = ScrollDirection.rightToLeft
-            } else {
-                scrollDirection = ScrollDirection.leftToRight
-            }
-        }
-        lastContentOffset = scrollView.contentOffset.x
-        if scrollView.contentOffset.x > scrollView.frame.width * 2 || scrollView.contentOffset.x < 0 {
-            scrollView.setContentOffset(CGPoint(x: scrollView.frame.width, y: 0), animated: false)
-            updateOctave(scrollDirection)
-        }
+    @objc func touchDown(button: NoteButton) {
+        // TODO
+        print("touch down")
     }
     
-    private func updateOctave(_ scrollDirection: ScrollDirection?) {
-        if scrollDirection == nil {
-            return
-        }
-        for noteButton in noteButtons {
-            if scrollDirection == ScrollDirection.leftToRight {
-                if (noteButton.octave > 1) {
-                    noteButton.noteOctave.octave -= 1
-                }
-            } else if scrollDirection == ScrollDirection.rightToLeft {
-                if (noteButton.octave < 4) {
-                    noteButton.noteOctave.octave += 1
-                }
-            }
-        }
+    @objc func didPan() {
+        
+//        for (UIView *row in self.rows) {
+//            for (UITouch *touch in touches) {
+//                if ([row pointInside:[touch locationInView:self] withEvent:event]) {
+//                    // Do something here!
+//                }
+//            }
+//        }
+        
+        print("didMove")
+    }
+    
+}
+
+extension PianoView: UIGestureRecognizerDelegate {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
     }
 }

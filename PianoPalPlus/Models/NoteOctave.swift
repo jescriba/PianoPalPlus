@@ -8,6 +8,12 @@
 
 import Foundation
 
+typealias Octave = Int
+extension Octave {
+    static let max = 6
+    static let min = 1
+}
+
 class NoteOctave: Equatable {
     var note: Note
     var octave: Int
