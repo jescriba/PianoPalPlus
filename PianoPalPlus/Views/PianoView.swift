@@ -32,11 +32,25 @@ enum ScrollDirection : Int {
     case rightToLeft, leftToRight
 }
 
+extension UIScrollView {
+    override open func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.next?.touchesBegan(touches, with: event)
+    }
+    
+    override open func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.next?.touchesMoved(touches, with: event)
+    }
+    
+    override open func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.next?.touchesEnded(touches, with: event)
+    }
+}
+
 class PianoView: UIView, UIScrollViewDelegate {
     var scrollView = UIScrollView()
     var contentView = UIView()
-    var noteButtons = [NoteButton]()
-    var highlightedNoteButtons = [NoteButton]()
+    var noteViews = [NoteView]()
+    var notesState = NotesState()
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -69,9 +83,9 @@ class PianoView: UIView, UIScrollViewDelegate {
         }
         addSubview(scrollView)
         scrollView.addSubview(contentView)
-        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(didPan))
-        panGesture.delegate = self
-        contentView.addGestureRecognizer(panGesture)
+        scrollView.isScrollEnabled = false
+        scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: false)
+        contentView.isMultipleTouchEnabled = true
     }
     
     private func setUpOctaveView(_ position: Int) -> UIView {
@@ -79,38 +93,73 @@ class PianoView: UIView, UIScrollViewDelegate {
         let width = scrollView.frame.width
         let offset = CGFloat(position - Octave.min) * scrollView.frame.width
         let octaveView = UIView(frame: CGRect(x: offset, y: 0, width: width, height: height))
+        var notes = [NoteOctave]()
         for note in Constants.orderedNotes {
             let buttonFrame = CGRect(x: width * KeyProperties.x(note),
                                      y: 0,
                                      width: width * KeyProperties.width(note),
                                      height: height * KeyProperties.height(note))
-            let button = NoteButton(frame: buttonFrame, note: note, octave: position)
-            button.addTarget(self, action: #selector(touchDown(button:)), for: .touchDown)
-            button.label()
-            noteButtons.append(button)
-            octaveView.addSubview(button)
+            notes.append(NoteOctave(note: note, octave: position))
+            let noteView = NoteView(frame: buttonFrame, note: note, octave: position)
+            noteView.isUserInteractionEnabled = true
+            noteView.isMultipleTouchEnabled = true
+            noteView.label()
+            noteViews.append(noteView)
+            octaveView.addSubview(noteView)
         }
+        notesState.add(notes: notes)
+        octaveView.isMultipleTouchEnabled = true
         return octaveView
     }
     
-    @objc func touchDown(button: NoteButton) {
-        // TODO
-        print("touch down")
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        touches.forEach { touch in
+            guard let noteView = touch.view as? NoteView else { return }
+            noteView.touches.update(with: touch)
+        }
     }
     
-    @objc func didPan() {
-        
-//        for (UIView *row in self.rows) {
-//            for (UITouch *touch in touches) {
-//                if ([row pointInside:[touch locationInView:self] withEvent:event]) {
-//                    // Do something here!
-//                }
-//            }
-//        }
-        
-        print("didMove")
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        touches.forEach { touch in
+            guard (touch.view as? NoteView) != nil else { return }
+            let location = touch.location(in: nil)
+            
+            guard let newNoteView = noteViews.filter({ possibleNewNoteView in
+                return self.convert(possibleNewNoteView.frame, to: nil).contains(location)
+            }).sorted(by: { a,b in
+                if a.note.isBlackKey() && b.note.isWhiteKey() {
+                    return true
+                }
+                return false
+            }).first else { return }
+            
+            noteViews.forEach({ $0.touches.remove(touch)})
+            newNoteView.touches.update(with: touch)
+        }
+
     }
     
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        // optimize
+        touches.forEach { touch in
+            noteViews.forEach { noteView in
+                noteView.touches.remove(touch)
+            }
+        }
+    }
+    
+}
+
+class NotesState {
+    var current = [NoteOctave: Bool]()
+    
+    init(notes: [NoteOctave] = [NoteOctave]()) {
+        notes.forEach { current[$0] = false }
+    }
+    
+    func add(notes: [NoteOctave]) {
+        
+    }
 }
 
 extension PianoView: UIGestureRecognizerDelegate {

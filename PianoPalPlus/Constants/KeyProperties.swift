@@ -36,17 +36,17 @@ class KeyProperties {
         case .c:
             return CGFloat(0)
         case .dFlat:
-            return CGFloat(0.085)
+            return CGFloat(0.098)
         case .d:
             return CGFloat(0.138)
         case .eFlat:
-            return CGFloat(0.254)
+            return CGFloat(0.238)
         case .e:
             return CGFloat(0.276)
         case .f:
             return CGFloat(0.414)
         case .fSharp:
-            return CGFloat(0.5)
+            return CGFloat(0.52)
         case .g:
             return CGFloat(0.562)
         case .aFlat:
@@ -54,7 +54,7 @@ class KeyProperties {
         case .a:
             return CGFloat(0.708)
         case .bFlat:
-            return CGFloat(0.838)
+            return CGFloat(0.813)
         default:
             return CGFloat(0.854)
         }

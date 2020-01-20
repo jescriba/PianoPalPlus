@@ -8,7 +8,25 @@
 
 import UIKit
 
-class NoteButton: UIButton {
+extension UIView {
+    func addFullBoundsSubview(_ view: UIView) {
+        view.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(view)
+        NSLayoutConstraint.activate([
+            view.leftAnchor.constraint(equalTo: self.leftAnchor),
+            view.rightAnchor.constraint(equalTo: self.rightAnchor),
+            view.topAnchor.constraint(equalTo: self.topAnchor),
+            view.bottomAnchor.constraint(equalTo: self.bottomAnchor)
+        ])
+    }
+}
+
+class NoteView: UIView {
+    var touches: Set<UITouch> = Set<UITouch>() {
+        didSet {
+            touches.count > 0 ? illuminate() : deIlluminate()
+        }
+    }
     var noteOctave: NoteOctave
     var note: Note {
         return noteOctave.note
@@ -18,6 +36,17 @@ class NoteButton: UIButton {
     }
     var gradient: CAGradientLayer = CAGradientLayer()
     var illuminated = false
+    var title: String? = "" {
+        didSet {
+            titleLabel.text = title
+        }
+    }
+    var titleColor: UIColor = .black {
+        didSet {
+            titleLabel.textColor = titleColor
+        }
+    }
+    private var titleLabel = UILabel()
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -29,6 +58,8 @@ class NoteButton: UIButton {
         self.backgroundColor = determineNoteColor(note)
         self.layer.borderWidth = 1
         self.layer.borderColor = Colors.keyBorder
+        titleLabel.textAlignment = .center
+        self.addFullBoundsSubview(titleLabel)
     }
     
     func determineNoteColor(_ note: Note) -> UIColor {
@@ -38,7 +69,8 @@ class NoteButton: UIButton {
         return UIColor.black
     }
     
-    func illuminate(_ colorPairs: [KeyColorPair]) {
+    func illuminate(_ colorPairs: [KeyColorPair] = [KeyColorPair(whiteKeyColor: Colors.highlightedWhiteKey,
+                                                                 blackKeyColor: Colors.highlightedBlackKey)]) {
         gradient.removeFromSuperlayer()
         if colorPairs.count == 1 {
             let whiteKeyColor = colorPairs[0].whiteKeyColor!
@@ -99,9 +131,11 @@ class NoteButton: UIButton {
         if (description == nil) {
             description = "\(note.simpleDescription())\(octave)"
         }
-        self.setTitle(description, for: .normal)
+        self.title = description
         if note.isWhiteKey() {
-            self.setTitleColor(UIColor.black, for: .normal)
+            self.titleColor = .black
+        } else {
+            self.titleColor = .white
         }
     }
 }

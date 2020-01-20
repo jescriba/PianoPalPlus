@@ -14,7 +14,7 @@
 		4260126423BD54B0007BEC7F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4260126223BD54B0007BEC7F /* LaunchScreen.storyboard */; };
 		4260126F23BD54B0007BEC7F /* PianoPalPlusTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4260126E23BD54B0007BEC7F /* PianoPalPlusTests.swift */; };
 		4260127A23BD54B0007BEC7F /* PianoPalPlusUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4260127923BD54B0007BEC7F /* PianoPalPlusUITests.swift */; };
-		4260128B23BD557E007BEC7F /* NoteButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4260128A23BD557E007BEC7F /* NoteButton.swift */; };
+		4260128B23BD557E007BEC7F /* NoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4260128A23BD557E007BEC7F /* NoteView.swift */; };
 		4260128D23BD558E007BEC7F /* PianoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4260128C23BD558E007BEC7F /* PianoView.swift */; };
 		4260129023BD55B8007BEC7F /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4260128F23BD55B8007BEC7F /* Note.swift */; };
 		4260129223BD55C0007BEC7F /* NoteOctave.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4260129123BD55C0007BEC7F /* NoteOctave.swift */; };
@@ -56,7 +56,7 @@
 		4260127523BD54B0007BEC7F /* PianoPalPlusUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PianoPalPlusUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		4260127923BD54B0007BEC7F /* PianoPalPlusUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PianoPalPlusUITests.swift; sourceTree = "<group>"; };
 		4260127B23BD54B0007BEC7F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		4260128A23BD557E007BEC7F /* NoteButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoteButton.swift; sourceTree = "<group>"; };
+		4260128A23BD557E007BEC7F /* NoteView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoteView.swift; sourceTree = "<group>"; };
 		4260128C23BD558E007BEC7F /* PianoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PianoView.swift; sourceTree = "<group>"; };
 		4260128F23BD55B8007BEC7F /* Note.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
 		4260129123BD55C0007BEC7F /* NoteOctave.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoteOctave.swift; sourceTree = "<group>"; };
@@ -151,7 +151,7 @@
 		4260128923BD5520007BEC7F /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				4260128A23BD557E007BEC7F /* NoteButton.swift */,
+				4260128A23BD557E007BEC7F /* NoteView.swift */,
 				4260128C23BD558E007BEC7F /* PianoView.swift */,
 			);
 			path = Views;
@@ -318,7 +318,7 @@
 				4260129223BD55C0007BEC7F /* NoteOctave.swift in Sources */,
 				4260129D23BD8ECD007BEC7F /* Colors.swift in Sources */,
 				4260125C23BD54AC007BEC7F /* ViewController.swift in Sources */,
-				4260128B23BD557E007BEC7F /* NoteButton.swift in Sources */,
+				4260128B23BD557E007BEC7F /* NoteView.swift in Sources */,
 				4260125823BD54AC007BEC7F /* AppDelegate.swift in Sources */,
 				4260129F23BD8ECD007BEC7F /* Constants.swift in Sources */,
 				4260128D23BD558E007BEC7F /* PianoView.swift in Sources */,
@@ -499,6 +499,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = GFSP92A3FB;
 				INFOPLIST_FILE = PianoPalPlus/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -517,6 +518,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = GFSP92A3FB;
 				INFOPLIST_FILE = PianoPalPlus/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (

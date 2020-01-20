@@ -18,7 +18,7 @@ class ViewController: UIViewController {
         view.addSubview(pianoView)
     }
     
-    func noteSelectedForIdentification(_ sender: NoteButton) {
+  //  func noteSelectedForIdentification(_ sender: NoteButton) {
 //        if sender.illuminated {
 //            sender.deIlluminate()
 //            pianoView.highlightedNoteButtons.remove(at: pianoView.highlightedNoteButtons.index(of: sender)!)
@@ -41,7 +41,7 @@ class ViewController: UIViewController {
 //                navController.customNavigationItem.title = chordDescription
 //            })
 //        })
-    }
+  //  }
     
 
 

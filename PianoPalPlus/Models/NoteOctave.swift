@@ -14,7 +14,7 @@ extension Octave {
     static let min = 1
 }
 
-class NoteOctave: Equatable {
+class NoteOctave: Equatable, Hashable {
     var note: Note
     var octave: Int
     
@@ -34,5 +34,10 @@ class NoteOctave: Equatable {
     
     static func ==(item1: NoteOctave, item2: NoteOctave) -> Bool {
         return item1.note == item2.note && item1.octave == item2.octave
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(note)
+        hasher.combine(octave)
     }
 }
