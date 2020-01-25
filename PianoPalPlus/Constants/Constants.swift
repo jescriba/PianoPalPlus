@@ -10,15 +10,15 @@ import Foundation
 
 struct Constants {
     static let orderedNotes = [Note.c,
+                               Note.dFlat,
                                Note.d,
+                               Note.eFlat,
                                Note.e,
                                Note.f,
-                               Note.g,
-                               Note.a,
-                               Note.b,
-                               Note.dFlat,
-                               Note.eFlat,
                                Note.fSharp,
+                               Note.g,
                                Note.aFlat,
-                               Note.bFlat]
+                               Note.a,
+                               Note.bFlat,
+                               Note.b]
 }

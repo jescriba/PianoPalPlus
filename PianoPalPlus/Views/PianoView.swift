@@ -104,7 +104,12 @@ class PianoView: UIView, UIScrollViewDelegate {
         let offset = CGFloat(position - Octave.min) * scrollView.frame.width
         let octaveView = UIView(frame: CGRect(x: offset, y: 0, width: width, height: height))
         var notes = [NoteOctave]()
-        for note in Constants.orderedNotes {
+        for note in Constants.orderedNotes.sorted(by: { a,b in
+            if a.isWhiteKey() && b.isBlackKey() {
+                return true
+            }
+            return false
+        }) {
             let buttonFrame = CGRect(x: width * KeyProperties.x(note),
                                      y: 0,
                                      width: width * KeyProperties.width(note),
@@ -122,16 +127,18 @@ class PianoView: UIView, UIScrollViewDelegate {
         return octaveView
     }
     
+    var touchedViews = [UITouch:NoteView]()
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         touches.forEach { touch in
             guard let noteView = touch.view as? NoteView else { return }
+            touchedViews[touch] = noteView
             noteView.touches.update(with: touch)
         }
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard isScrollLocked else { return }
-        
+
         touches.forEach { touch in
             guard (touch.view as? NoteView) != nil else { return }
             let location = touch.location(in: nil)
@@ -145,13 +152,15 @@ class PianoView: UIView, UIScrollViewDelegate {
                 return false
             }).first else { return }
 
-            noteViews.filter({ $0 != newNoteView }).forEach({ $0.touches.remove(touch) })
-            newNoteView.touches.update(with: touch)
+            if touchedViews[touch] != newNoteView {
+                touchedViews[touch]?.touches.remove(touch)
+                touchedViews[touch] = newNoteView
+                newNoteView.touches.update(with: touch)
+            }
         }
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        // optimize
         removeTouches(touches)
     }
     
@@ -161,9 +170,8 @@ class PianoView: UIView, UIScrollViewDelegate {
     
     private func removeTouches(_ touches: Set<UITouch>) {
         touches.forEach { touch in
-            noteViews.forEach { noteView in
-                noteView.touches.remove(touch)
-            }
+            touchedViews[touch]?.touches.remove(touch)
+            touchedViews[touch] = nil
         }
     }
     

@@ -52,4 +52,8 @@ enum Note : Int {
             return "B"
         }
     }
+    
+    func baseInt() -> Int {
+        return Constants.orderedNotes.firstIndex(of: self)!
+    }
 }

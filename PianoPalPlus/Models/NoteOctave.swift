@@ -17,6 +17,9 @@ extension Octave {
 class NoteOctave: Equatable, Hashable {
     var note: Note
     var octave: Int
+    var midiNote: UInt8 {
+        return UInt8(note.baseInt() + (octave + 1) * 12) // c0 starts at midiNote 12
+    }
     
     init(note: Note, octave: Int) {
         self.note = note

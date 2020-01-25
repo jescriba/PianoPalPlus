@@ -13,12 +13,12 @@ class AudioEngine {
     static let shared = AudioEngine()
     let format = AVAudioFormat(standardFormatWithSampleRate: 44100.0, channels: 2)
     private var _engine: AVAudioEngine
-    private var notePlayers = [NoteOctave: AVAudioPlayerNode]()
+    private var pianoSampler = AVAudioUnitSampler()
     
     init() {
         _engine = AVAudioEngine()
         
-        setupNotePlayers()
+        setup()
         do {
             _ = try _engine.start()
             let audioSession = AVAudioSession.sharedInstance()
@@ -29,31 +29,24 @@ class AudioEngine {
         }
     }
     
-    private func setupNotePlayers() {
-        for octave in Octave.min...(Octave.max + 1) {
-            Constants.orderedNotes.forEach({ note in
-                let notePlayer = AVAudioPlayerNode()
-                _engine.attach(notePlayer)
-                _engine.connect(notePlayer, to: _engine.mainMixerNode, format: format)
-                let noteOctave = NoteOctave(note: note, octave: octave)
-                notePlayers[noteOctave] = notePlayer
-            })
-            _engine.prepare()
+    private func setup() {
+        var urls = [URL]()
+        for octave in Octave.min...Octave.max {
+            Constants.orderedNotes.forEach { note in
+                urls.append(NoteOctave(note: note, octave: octave).url())
+            }
         }
+        try? pianoSampler.loadAudioFiles(at: urls)
+        _engine.attach(pianoSampler)
+        _engine.connect(pianoSampler, to: _engine.mainMixerNode, format: format)
+        _engine.prepare()
     }
     
     func play(_ notes: [NoteOctave], isScale: Bool = false) {
-        let notePlayer = notePlayers[notes.first!]!
-        let file = try? AVAudioFile(forReading: notes.first!.url() as URL)
-        let buffer = AVAudioPCMBuffer(pcmFormat: file!.processingFormat, frameCapacity: AVAudioFrameCount(file!.length))
-        _ = try? file?.read(into: buffer!)
-        notePlayer.scheduleBuffer(buffer!,
-                                  completionHandler: nil)
-        notePlayer.play(at: nil)
+        notes.forEach { pianoSampler.startNote($0.midiNote, withVelocity: 60, onChannel: 0) }
     }
     
     func stop(_ notes: [NoteOctave]) {
-        let notePlayer = notePlayers[notes.first!]!
-        notePlayer.stop()
+        notes.forEach { pianoSampler.stopNote($0.midiNote, onChannel: 0) }
     }
 }
