@@ -93,6 +93,7 @@ class PianoView: UIView, UIScrollViewDelegate {
         }
         addSubview(scrollView)
         scrollView.addSubview(contentView)
+        scrollView.delaysContentTouches = false
         isScrollLocked = true
         scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: false)
         contentView.isMultipleTouchEnabled = true
