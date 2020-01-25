@@ -44,6 +44,10 @@ extension UIScrollView {
     override open func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.next?.touchesEnded(touches, with: event)
     }
+    
+    override open func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.next?.touchesCancelled(touches, with: event)
+    }
 }
 
 class PianoView: UIView, UIScrollViewDelegate {
@@ -51,6 +55,14 @@ class PianoView: UIView, UIScrollViewDelegate {
     var contentView = UIView()
     var noteViews = [NoteView]()
     var notesState = NotesState()
+    var isScrollLocked: Bool = true {
+        didSet {
+            scrollView.isScrollEnabled = !isScrollLocked
+            if isScrollLocked {
+                scrollView.setContentOffset(scrollView.contentOffset, animated: true)
+            }
+        }
+    }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -64,9 +76,7 @@ class PianoView: UIView, UIScrollViewDelegate {
     
     private func setup() {
         scrollView.frame = self.frame
-        scrollView.maximumZoomScale = 1
-        scrollView.minimumZoomScale = 1
-        scrollView.contentSize.width = scrollView.frame.width * CGFloat(Octave.max)
+        scrollView.contentSize.width = scrollView.frame.width * CGFloat(Octave.max + 1)
         scrollView.contentSize.height = scrollView.frame.height
         contentView.frame = CGRect(x: 0,
                                    y: 0,
@@ -83,7 +93,7 @@ class PianoView: UIView, UIScrollViewDelegate {
         }
         addSubview(scrollView)
         scrollView.addSubview(contentView)
-        scrollView.isScrollEnabled = false
+        isScrollLocked = true
         scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: false)
         contentView.isMultipleTouchEnabled = true
     }
@@ -120,27 +130,36 @@ class PianoView: UIView, UIScrollViewDelegate {
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        guard isScrollLocked else { return }
+        
         touches.forEach { touch in
             guard (touch.view as? NoteView) != nil else { return }
             let location = touch.location(in: nil)
-            
+
             guard let newNoteView = noteViews.filter({ possibleNewNoteView in
-                return self.convert(possibleNewNoteView.frame, to: nil).contains(location)
+                return possibleNewNoteView.superview?.convert(possibleNewNoteView.frame, to: nil).contains(location) ?? false
             }).sorted(by: { a,b in
                 if a.note.isBlackKey() && b.note.isWhiteKey() {
                     return true
                 }
                 return false
             }).first else { return }
-            
-            noteViews.forEach({ $0.touches.remove(touch)})
+
+            noteViews.filter({ $0 != newNoteView }).forEach({ $0.touches.remove(touch) })
             newNoteView.touches.update(with: touch)
         }
-
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         // optimize
+        removeTouches(touches)
+    }
+    
+    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        removeTouches(touches)
+    }
+    
+    private func removeTouches(_ touches: Set<UITouch>) {
         touches.forEach { touch in
             noteViews.forEach { noteView in
                 noteView.touches.remove(touch)

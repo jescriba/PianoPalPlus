@@ -24,7 +24,15 @@ extension UIView {
 class NoteView: UIView {
     var touches: Set<UITouch> = Set<UITouch>() {
         didSet {
-            touches.count > 0 ? illuminate() : deIlluminate()
+            if touches.count > 0 {
+                illuminate()
+                if oldValue.isEmpty {
+                  AudioEngine.shared.play([self.noteOctave])
+                }
+            } else {
+                deIlluminate()
+                AudioEngine.shared.stop([self.noteOctave])
+            }
         }
     }
     var noteOctave: NoteOctave

@@ -39,7 +39,7 @@ enum Note : Int {
         case .f:
             return "F"
         case .fSharp:
-            return "F#"
+            return "Gb"
         case .g:
             return "G"
         case .aFlat:

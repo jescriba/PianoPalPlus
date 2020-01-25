@@ -11,7 +11,7 @@ import Foundation
 typealias Octave = Int
 extension Octave {
     static let max = 6
-    static let min = 1
+    static let min = 0
 }
 
 class NoteOctave: Equatable, Hashable {
