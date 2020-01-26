@@ -85,14 +85,14 @@ class PianoView: UIView, UIScrollViewDelegate, NoteViewTouchDelegate {
     }
     
     private func setup() {
-        scrollView.frame = self.frame
-        scrollView.contentSize.width = scrollView.frame.width * CGFloat(Octave.max + 1)
-        scrollView.contentSize.height = scrollView.frame.height
+        scrollView.frame = self.bounds
+        scrollView.contentSize.width = scrollView.bounds.width * CGFloat(Octave.max + 1)
+        scrollView.contentSize.height = scrollView.bounds.height
         contentView.frame = CGRect(x: 0,
                                    y: 0,
                                    width: scrollView.contentSize.width,
                                    height: scrollView.contentSize.height)
-        scrollView.contentOffset = CGPoint(x: scrollView.frame.width, y: 0)
+        scrollView.contentOffset = CGPoint(x: scrollView.bounds.width, y: 0)
         scrollView.showsVerticalScrollIndicator = false
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.decelerationRate = .init(rawValue: 1)
@@ -110,9 +110,9 @@ class PianoView: UIView, UIScrollViewDelegate, NoteViewTouchDelegate {
     }
     
     private func setUpOctaveView(_ position: Int) -> UIView {
-        let height = scrollView.frame.height
-        let width = scrollView.frame.width
-        let offset = CGFloat(position - Octave.min) * scrollView.frame.width
+        let height = scrollView.bounds.height
+        let width = scrollView.bounds.width
+        let offset = CGFloat(position - Octave.min) * scrollView.bounds.width
         let octaveView = UIView(frame: CGRect(x: offset, y: 0, width: width, height: height))
         var notes = [NoteOctave]()
         for note in Constants.orderedNotes.sorted(by: { a,b in
