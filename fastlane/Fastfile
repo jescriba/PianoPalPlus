@@ -35,8 +35,9 @@ platform :ios do
   end
 
   lane :screenshots do
-    capture_screenshots
-    upload_to_app_store
+    snapshot
+    frameit
+    deliver
   end
 
 end
