@@ -31,6 +31,17 @@ class PianoPalPlusUITests: XCTestCase {
         let app = XCUIApplication()
         app.launch()
         snapshot("01")
+        app.buttons["lock"].tap()
+        
+        let elementsQuery = app.scrollViews.otherElements
+        elementsQuery.staticTexts["D3"].tap()
+        elementsQuery.staticTexts["F3"].tap()
+        elementsQuery.staticTexts["Bb3"].tap()
+        
+        let squareStack3dDownDottedlineButton = app.buttons["square.stack.3d.down.dottedline"]
+        squareStack3dDownDottedlineButton.tap()
+        snapshot("02")
+
         // Use recording to get started writing UI tests.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
