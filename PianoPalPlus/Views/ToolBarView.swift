@@ -11,6 +11,10 @@ import UIKit
 
 protocol ToolBarDelegate: NSObject {
     func scrollLockDidChange()
+    func noteLockDidChange()
+    func playDidChange()
+    func sequenceDidChange()
+    func settingsDidChange()
 }
 
 class ToolBarView: UIView {
@@ -30,7 +34,7 @@ class ToolBarView: UIView {
     }
     var isPlaying: Bool = false {
         didSet {
-            let lockImage = isPlaying ? playImage : stopImage
+            let lockImage = isPlaying ? stopImage : playImage
             playButton.setImage(lockImage, for: .normal)
         }
     }
@@ -39,7 +43,7 @@ class ToolBarView: UIView {
             sequenceButton.imageView?.tintColor = isSequencing ? Colors.scrollLockSelected : Colors.scrollLockUnselected
         }
     }
-    var title: String = "best piano pal" {
+    var title: String = "piano pal plus" {
         didSet {
             titleLabel.text = title
         }
@@ -112,8 +116,9 @@ class ToolBarView: UIView {
         playButton.addTarget(self, action: #selector(playTapped), for: .touchUpInside)
         playButton.imageView?.tintColor = .white
         settingsButton.setImage(settingsImage, for: .normal)
+        settingsButton.addTarget(self, action: #selector(settingsTapped), for: .touchUpInside)
         settingsButton.imageView?.tintColor = .white
-        [settingsButton, playButton].forEach { btn in
+        [playButton].forEach { btn in // TODO leaving out settings button for now while working on nav
             btn.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
                 btn.widthAnchor.constraint(equalToConstant: 50),
@@ -134,21 +139,32 @@ class ToolBarView: UIView {
             titleLabel.heightAnchor.constraint(equalToConstant: 50)
         ])
         title = { self.title }()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 6, execute: {
+            self.title = ""
+        })
     }
     
     @objc func scrollLockTapped() {
+        self.isScrollLocked = !isScrollLocked
         delegate?.scrollLockDidChange()
     }
     
     @objc func noteLockTapped() {
         self.isNoteLocked = !isNoteLocked
+        delegate?.noteLockDidChange()
     }
     
     @objc func playTapped() {
         self.isPlaying = !isPlaying
+        delegate?.playDidChange()
     }
     
     @objc func sequenceTapped() {
         self.isSequencing = !isSequencing
+        delegate?.sequenceDidChange()
+    }
+    
+    @objc func settingsTapped() {
+        delegate?.settingsDidChange()
     }
 }

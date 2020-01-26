@@ -50,17 +50,26 @@ extension UIScrollView {
     }
 }
 
-class PianoView: UIView, UIScrollViewDelegate {
+class PianoView: UIView, UIScrollViewDelegate, NoteViewTouchDelegate {
     var scrollView = UIScrollView()
     var contentView = UIView()
     var lockedNotes: [NoteOctave]?
     var noteViews = [NoteView]()
-    var notesState = NotesState()
     var isScrollLocked: Bool = true {
         didSet {
             scrollView.isScrollEnabled = !isScrollLocked
             if isScrollLocked {
                 scrollView.setContentOffset(scrollView.contentOffset, animated: true)
+            }
+        }
+    }
+    var isNoteLocked: Bool = false {
+        didSet {
+            if isNoteLocked {
+                lockedNotes = [NoteOctave]()
+            } else {
+                lockedNotes = nil
+                noteViews.forEach({ $0.deIlluminate() })
             }
         }
     }
@@ -96,7 +105,7 @@ class PianoView: UIView, UIScrollViewDelegate {
         scrollView.addSubview(contentView)
         scrollView.delaysContentTouches = false
         isScrollLocked = true
-        scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: false)
+        scrollView.setContentOffset(CGPoint(x: 3 * scrollView.frame.width, y: 0), animated: false)
         contentView.isMultipleTouchEnabled = true
     }
     
@@ -121,10 +130,10 @@ class PianoView: UIView, UIScrollViewDelegate {
             noteView.isUserInteractionEnabled = true
             noteView.isMultipleTouchEnabled = true
             noteView.label()
+            noteView.touchDelegate = self
             noteViews.append(noteView)
             octaveView.addSubview(noteView)
         }
-        notesState.add(notes: notes)
         octaveView.isMultipleTouchEnabled = true
         return octaveView
     }
@@ -177,18 +186,27 @@ class PianoView: UIView, UIScrollViewDelegate {
         }
     }
     
-}
-
-class NotesState {
-    var current = [NoteOctave: Bool]()
-    
-    init(notes: [NoteOctave] = [NoteOctave]()) {
-        notes.forEach { current[$0] = false }
+    func hasTouch(_ hasTouch: Bool, noteView: NoteView) {
+        let noteOctave = noteView.noteOctave
+        if isNoteLocked {
+            if !(lockedNotes?.contains(noteOctave) ?? false) && hasTouch {
+                lockedNotes?.append(noteOctave)
+                noteView.illuminate()
+            } else if hasTouch {
+                lockedNotes?.removeAll(where: { $0 == noteOctave })
+                noteView.deIlluminate()
+            }
+        } else {
+            if hasTouch {
+                noteView.illuminate()
+                AudioEngine.shared.play([noteOctave])
+            } else {
+                noteView.deIlluminate()
+                AudioEngine.shared.stop([noteOctave])
+            }
+        }
     }
     
-    func add(notes: [NoteOctave]) {
-        
-    }
 }
 
 extension PianoView: UIGestureRecognizerDelegate {

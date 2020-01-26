@@ -25,11 +25,34 @@ class ViewController: UIViewController, ToolBarDelegate {
         view.addSubview(toolBar)
         toolBar.delegate = self
         toolBar.isScrollLocked = pianoView.isScrollLocked
+        toolBar.isNoteLocked = pianoView.isNoteLocked
     }
     
     func scrollLockDidChange() {
-        toolBar.isScrollLocked = !toolBar.isScrollLocked
         pianoView.isScrollLocked = !pianoView.isScrollLocked
+    }
+    
+    func noteLockDidChange() {
+        pianoView.isNoteLocked = !pianoView.isNoteLocked
+    }
+    
+    func playDidChange() {
+        if toolBar.isPlaying &&
+            pianoView.isNoteLocked,
+            let lockedNotes = pianoView.lockedNotes {
+            AudioEngine.shared.play(lockedNotes, isSequencing: toolBar.isSequencing)
+        } else if let lockedNotes = pianoView.lockedNotes {
+            AudioEngine.shared.stop(lockedNotes)
+        }
+    }
+    
+    func sequenceDidChange() {
+        
+        //
+    }
+    
+    func settingsDidChange() {
+        //
     }
 
 }

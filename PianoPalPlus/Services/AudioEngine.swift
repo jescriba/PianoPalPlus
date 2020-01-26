@@ -42,8 +42,20 @@ class AudioEngine {
         _engine.prepare()
     }
     
-    func play(_ notes: [NoteOctave], isScale: Bool = false) {
-        notes.forEach { pianoSampler.startNote($0.midiNote, withVelocity: 60, onChannel: 0) }
+    func play(_ notes: [NoteOctave], isSequencing: Bool = false) {
+        if !isSequencing {
+            notes.enumerated().forEach { (arg) in
+                let (index, note) = arg
+                // hack sequencing for now...
+                DispatchQueue.global().asyncAfter(deadline: .now() + Double(index) * 0.5, execute: {
+                    self.pianoSampler.startNote(note.midiNote, withVelocity: 60, onChannel: 0)
+                })
+            }
+        } else {
+            notes.forEach {
+                pianoSampler.startNote($0.midiNote, withVelocity: 60, onChannel: 0)
+            }
+        }
     }
     
     func stop(_ notes: [NoteOctave]) {

@@ -21,17 +21,20 @@ extension UIView {
     }
 }
 
+protocol NoteViewTouchDelegate: NSObject {
+    func hasTouch(_ hasTouch: Bool, noteView: NoteView)
+}
+
 class NoteView: UIView {
+    weak var touchDelegate: NoteViewTouchDelegate?
     var touches: Set<UITouch> = Set<UITouch>() {
         didSet {
             if touches.count > 0 {
-                illuminate()
                 if oldValue.isEmpty {
-                  AudioEngine.shared.play([self.noteOctave])
+                    touchDelegate?.hasTouch(true, noteView: self)
                 }
             } else {
-                deIlluminate()
-                AudioEngine.shared.stop([self.noteOctave])
+                touchDelegate?.hasTouch(false, noteView: self)
             }
         }
     }
