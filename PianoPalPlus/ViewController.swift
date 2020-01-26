@@ -18,6 +18,15 @@ class ViewController: UIViewController, ToolBarDelegate {
         setupViews()
     }
     
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        // sigh... ipad likes to change it's orientation after loading...
+        if previousTraitCollection?.verticalSizeClass == .regular && traitCollection.verticalSizeClass == .compact {
+            view.subviews.forEach({ $0.removeFromSuperview() })
+            setupViews()
+        }
+    }
+    
     private func setupViews() {
         self.pianoView = PianoView(frame: view.bounds)
         view.addSubview(pianoView)

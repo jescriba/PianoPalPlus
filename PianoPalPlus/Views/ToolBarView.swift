@@ -83,6 +83,7 @@ class ToolBarView: UIView {
             leftHStack.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 10),
             leftHStack.widthAnchor.constraint(equalToConstant: 150),
             leftHStack.heightAnchor.constraint(equalToConstant: 50),
+            leftHStack.centerYAnchor.constraint(equalTo: self.centerYAnchor)
         ])
         
         // setup scroll lock button
@@ -112,6 +113,7 @@ class ToolBarView: UIView {
             rightHStack.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -10),
             rightHStack.widthAnchor.constraint(equalToConstant: 100),
             rightHStack.heightAnchor.constraint(equalToConstant: 50),
+            rightHStack.centerYAnchor.constraint(equalTo: self.centerYAnchor)
         ])
         playButton.setImage(playImage, for: .normal)
         playButton.addTarget(self, action: #selector(playTapped), for: .touchUpInside)
