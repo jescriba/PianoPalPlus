@@ -1,0 +1,23 @@
+{
+ "default": {
+    "title": {
+      "color": "#545454"
+    },
+    "background": "./background.jpg",
+    "padding": 25
+  },
+  "data": [
+    {
+      "filter": "01",
+      "keyword": {
+        "color": "#205CCD"
+      }
+    },
+    {
+      "filter": "02",
+      "keyword": {
+        "color": "#205CCD"
+      }
+    }
+  ]
+}
