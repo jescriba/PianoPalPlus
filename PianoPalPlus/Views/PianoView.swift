@@ -53,6 +53,7 @@ extension UIScrollView {
 class PianoView: UIView, UIScrollViewDelegate {
     var scrollView = UIScrollView()
     var contentView = UIView()
+    var lockedNotes: [NoteOctave]?
     var noteViews = [NoteView]()
     var notesState = NotesState()
     var isScrollLocked: Bool = true {

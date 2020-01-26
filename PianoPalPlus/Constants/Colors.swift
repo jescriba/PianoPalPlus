@@ -22,5 +22,5 @@ class Colors {
                               KeyColorPair(whiteKeyColor: UIColor(red: 0.74, green: 0.6, blue: 0.91, alpha: 1), blackKeyColor: UIColor(red: 0.74, green: 0.5, blue: 0.86, alpha: 1)),
                               KeyColorPair(whiteKeyColor: UIColor(red:0.51, green:0.88, blue:0.90, alpha:1.0), blackKeyColor: UIColor(red:0.51, green:0.78, blue:0.85, alpha:1.0))]
     static let scrollLockSelected = UIColor.white
-    static let scrollLockUnselected = UIColor.black
+    static let scrollLockUnselected = UIColor.gray
 }
