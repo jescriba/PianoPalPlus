@@ -103,6 +103,7 @@ class ToolBarView: UIView {
         }
         isScrollLocked = { self.isScrollLocked }()
         isNoteLocked = { self.isNoteLocked }()
+        isSequencing = { self.isSequencing }()
         
         // Setup right horiztonal stack
         rightHStack.translatesAutoresizingMaskIntoConstraints = false
