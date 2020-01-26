@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController, ToolBarDelegate {
+class PianoViewController: UIViewController, ToolBarDelegate {
     var pianoView: PianoView!
     var toolBar: ToolBarView!
 
@@ -55,13 +55,14 @@ class ViewController: UIViewController, ToolBarDelegate {
         }
     }
     
-    func sequenceDidChange() {
-        
-        //
-    }
+    func sequenceDidChange() { }
     
     func settingsDidChange() {
-        //
+        let navigationVC = NavigationViewController()
+        navigationVC.providesPresentationContextTransitionStyle = true
+        navigationVC.definesPresentationContext = true
+        navigationVC.modalPresentationStyle = .overCurrentContext
+        self.present(navigationVC, animated: false)
     }
 
 }

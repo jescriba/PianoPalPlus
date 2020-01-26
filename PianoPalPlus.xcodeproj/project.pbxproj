@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4260125823BD54AC007BEC7F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4260125723BD54AC007BEC7F /* AppDelegate.swift */; };
-		4260125C23BD54AC007BEC7F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4260125B23BD54AC007BEC7F /* ViewController.swift */; };
+		4260125C23BD54AC007BEC7F /* PianoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4260125B23BD54AC007BEC7F /* PianoViewController.swift */; };
 		4260125F23BD54AC007BEC7F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4260125D23BD54AC007BEC7F /* Main.storyboard */; };
 		4260126123BD54B0007BEC7F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4260126023BD54B0007BEC7F /* Assets.xcassets */; };
 		4260126423BD54B0007BEC7F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4260126223BD54B0007BEC7F /* LaunchScreen.storyboard */; };
@@ -23,6 +23,9 @@
 		4260129F23BD8ECD007BEC7F /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4260129A23BD8ECD007BEC7F /* Constants.swift */; };
 		426012A123BD8ECD007BEC7F /* KeyProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4260129C23BD8ECD007BEC7F /* KeyProperties.swift */; };
 		426012A323BD9277007BEC7F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426012A223BD9277007BEC7F /* SceneDelegate.swift */; };
+		429CD1DE23DE52AA00E86DFE /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429CD1DD23DE52AA00E86DFE /* SettingsViewController.swift */; };
+		429CD1E023DE52BC00E86DFE /* EarTrainingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429CD1DF23DE52BC00E86DFE /* EarTrainingViewController.swift */; };
+		429CD1E223DE532600E86DFE /* MusicTheoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429CD1E123DE532600E86DFE /* MusicTheoryViewController.swift */; };
 		42C9747E23D6AF3D00841216 /* C3.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 42C9742A23D6AF3400841216 /* C3.mp3 */; };
 		42C9747F23D6AF3D00841216 /* D3.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 42C9742B23D6AF3400841216 /* D3.mp3 */; };
 		42C9748023D6AF3D00841216 /* D0.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 42C9742C23D6AF3400841216 /* D0.mp3 */; };
@@ -109,6 +112,7 @@
 		42C974D123D6AF3D00841216 /* B4.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 42C9747D23D6AF3D00841216 /* B4.mp3 */; };
 		42C974D323D6BF4D00841216 /* ToolBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C974D223D6BF4D00841216 /* ToolBarView.swift */; };
 		42C974D523DD0FA100841216 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C974D423DD0FA100841216 /* SnapshotHelper.swift */; };
+		42D1AADF23DE3E60003A3DEA /* NavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D1AADE23DE3E60003A3DEA /* NavigationViewController.swift */; };
 		42DF135A23D622A400CC9D68 /* AudioEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF135923D622A400CC9D68 /* AudioEngine.swift */; };
 /* End PBXBuildFile section */
 
@@ -132,7 +136,7 @@
 /* Begin PBXFileReference section */
 		4260125423BD54AC007BEC7F /* PianoPalPlus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PianoPalPlus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4260125723BD54AC007BEC7F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		4260125B23BD54AC007BEC7F /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		4260125B23BD54AC007BEC7F /* PianoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PianoViewController.swift; sourceTree = "<group>"; };
 		4260125E23BD54AC007BEC7F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		4260126023BD54B0007BEC7F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		4260126323BD54B0007BEC7F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -152,6 +156,9 @@
 		4260129A23BD8ECD007BEC7F /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		4260129C23BD8ECD007BEC7F /* KeyProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyProperties.swift; sourceTree = "<group>"; };
 		426012A223BD9277007BEC7F /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		429CD1DD23DE52AA00E86DFE /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
+		429CD1DF23DE52BC00E86DFE /* EarTrainingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarTrainingViewController.swift; sourceTree = "<group>"; };
+		429CD1E123DE532600E86DFE /* MusicTheoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicTheoryViewController.swift; sourceTree = "<group>"; };
 		42C9742A23D6AF3400841216 /* C3.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = C3.mp3; sourceTree = "<group>"; };
 		42C9742B23D6AF3400841216 /* D3.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = D3.mp3; sourceTree = "<group>"; };
 		42C9742C23D6AF3400841216 /* D0.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = D0.mp3; sourceTree = "<group>"; };
@@ -238,6 +245,7 @@
 		42C9747D23D6AF3D00841216 /* B4.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = B4.mp3; sourceTree = "<group>"; };
 		42C974D223D6BF4D00841216 /* ToolBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolBarView.swift; sourceTree = "<group>"; };
 		42C974D423DD0FA100841216 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SnapshotHelper.swift; path = fastlane/SnapshotHelper.swift; sourceTree = SOURCE_ROOT; };
+		42D1AADE23DE3E60003A3DEA /* NavigationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationViewController.swift; sourceTree = "<group>"; };
 		42DF135923D622A400CC9D68 /* AudioEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEngine.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -297,7 +305,6 @@
 				4260128923BD5520007BEC7F /* Views */,
 				4260125723BD54AC007BEC7F /* AppDelegate.swift */,
 				426012A223BD9277007BEC7F /* SceneDelegate.swift */,
-				4260125B23BD54AC007BEC7F /* ViewController.swift */,
 				4260125D23BD54AC007BEC7F /* Main.storyboard */,
 				4260126023BD54B0007BEC7F /* Assets.xcassets */,
 				4260126223BD54B0007BEC7F /* LaunchScreen.storyboard */,
@@ -358,6 +365,11 @@
 		426012A423BD957B007BEC7F /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				4260125B23BD54AC007BEC7F /* PianoViewController.swift */,
+				42D1AADE23DE3E60003A3DEA /* NavigationViewController.swift */,
+				429CD1DD23DE52AA00E86DFE /* SettingsViewController.swift */,
+				429CD1DF23DE52BC00E86DFE /* EarTrainingViewController.swift */,
+				429CD1E123DE532600E86DFE /* MusicTheoryViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -679,15 +691,19 @@
 				42DF135A23D622A400CC9D68 /* AudioEngine.swift in Sources */,
 				4260129223BD55C0007BEC7F /* NoteOctave.swift in Sources */,
 				4260129D23BD8ECD007BEC7F /* Colors.swift in Sources */,
-				4260125C23BD54AC007BEC7F /* ViewController.swift in Sources */,
+				4260125C23BD54AC007BEC7F /* PianoViewController.swift in Sources */,
 				4260128B23BD557E007BEC7F /* NoteView.swift in Sources */,
 				4260125823BD54AC007BEC7F /* AppDelegate.swift in Sources */,
 				4260129F23BD8ECD007BEC7F /* Constants.swift in Sources */,
 				42C974D323D6BF4D00841216 /* ToolBarView.swift in Sources */,
+				429CD1DE23DE52AA00E86DFE /* SettingsViewController.swift in Sources */,
+				429CD1E223DE532600E86DFE /* MusicTheoryViewController.swift in Sources */,
 				4260128D23BD558E007BEC7F /* PianoView.swift in Sources */,
 				4260129023BD55B8007BEC7F /* Note.swift in Sources */,
 				426012A323BD9277007BEC7F /* SceneDelegate.swift in Sources */,
 				426012A123BD8ECD007BEC7F /* KeyProperties.swift in Sources */,
+				429CD1E023DE52BC00E86DFE /* EarTrainingViewController.swift in Sources */,
+				42D1AADF23DE3E60003A3DEA /* NavigationViewController.swift in Sources */,
 				4260129423BD8E76007BEC7F /* KeyColorPair.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -863,7 +879,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = GFSP92A3FB;
 				INFOPLIST_FILE = PianoPalPlus/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -871,7 +887,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.2;
+				MARKETING_VERSION = 0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = joshuae.PianoPalPlus;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -884,7 +900,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = GFSP92A3FB;
 				INFOPLIST_FILE = PianoPalPlus/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -892,7 +908,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.2;
+				MARKETING_VERSION = 0.3;
 				PRODUCT_BUNDLE_IDENTIFIER = joshuae.PianoPalPlus;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;

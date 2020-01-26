@@ -121,10 +121,10 @@ class ToolBarView: UIView {
         settingsButton.setImage(settingsImage, for: .normal)
         settingsButton.addTarget(self, action: #selector(settingsTapped), for: .touchUpInside)
         settingsButton.imageView?.tintColor = .white
-        [playButton].forEach { btn in // TODO leaving out settings button for now while working on nav
+        [settingsButton, playButton].forEach { btn in
             btn.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
-                btn.widthAnchor.constraint(equalToConstant: 50),
+                btn.widthAnchor.constraint(equalToConstant: 100),
                 btn.heightAnchor.constraint(equalToConstant: 50)
             ])
             rightHStack.addArrangedSubview(btn)

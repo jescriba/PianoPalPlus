@@ -18,9 +18,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if let windowScene = scene as? UIWindowScene {
             
             let window = UIWindow(windowScene: windowScene)
-            let vc = ViewController()
-                        
-            window.rootViewController = vc
+            window.rootViewController = PianoViewController()
             
             self.window = window
             window.makeKeyAndVisible()

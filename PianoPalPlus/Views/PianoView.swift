@@ -55,6 +55,13 @@ class PianoView: UIView, UIScrollViewDelegate, NoteViewTouchDelegate {
     var contentView = UIView()
     var lockedNotes: [NoteOctave]?
     var noteViews = [NoteView]()
+    var showNoteLabels: Bool = false {
+        didSet {
+            noteViews.forEach({
+                showNoteLabels ? $0.label() : $0.label("")
+            })
+        }
+    }
     var isScrollLocked: Bool = true {
         didSet {
             scrollView.isScrollEnabled = !isScrollLocked
@@ -129,7 +136,6 @@ class PianoView: UIView, UIScrollViewDelegate, NoteViewTouchDelegate {
             let noteView = NoteView(frame: buttonFrame, note: note, octave: position)
             noteView.isUserInteractionEnabled = true
             noteView.isMultipleTouchEnabled = true
-            noteView.label()
             noteView.touchDelegate = self
             noteViews.append(noteView)
             octaveView.addSubview(noteView)
