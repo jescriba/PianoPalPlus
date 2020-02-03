@@ -10,8 +10,8 @@ import Foundation
 import UIKit
 
 class Colors {
-    static let keyBorder = UIColor(red: 0.90, green: 0.90, blue: 1.0, alpha: 1).cgColor
-    static let highlightedKeyBorder = UIColor(red:1.00, green:0.88, blue:0.45, alpha:1.0).cgColor
+    static let keyBorder = UIColor(red: 0.90, green: 0.90, blue: 1.0, alpha: 1)
+    static let highlightedKeyBorder = UIColor(red:1.00, green:0.88, blue:0.45, alpha:1.0)
     static let highlightedWhiteKey = UIColor(red:0.49, green:0.42, blue:0.68, alpha:1.0)
     static let highlightedBlackKey = UIColor(red:0.49, green:0.42, blue:0.78, alpha:1.0)
     static let triads = [KeyColorPair(whiteKeyColor: UIColor(red: 0.7, green: 0.41, blue: 0.44, alpha: 1), blackKeyColor: UIColor(red: 0.7, green: 0.3, blue: 0.40, alpha: 1)),

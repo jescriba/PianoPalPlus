@@ -26,7 +26,7 @@ class KeyProperties {
     
     static func height(_ note: Note) -> CGFloat {
         if note.isBlackKey() {
-            return CGFloat(0.64)
+            return CGFloat(0.54)
         }
         return CGFloat(1)
     }

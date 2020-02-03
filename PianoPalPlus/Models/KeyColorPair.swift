@@ -9,9 +9,17 @@
 import Foundation
 import UIKit
 
+struct NoteColor: Hashable {
+    var noteOctave: NoteOctave
+    var color: UIColor
+}
+
 struct KeyColorPair {
-    var whiteKeyColor: UIColor?
-    var blackKeyColor: UIColor?
+    static let basic = KeyColorPair(whiteKeyColor: .white, blackKeyColor: .black)
+    static let selected = KeyColorPair(whiteKeyColor: Colors.highlightedWhiteKey, blackKeyColor: Colors.highlightedBlackKey)
+    
+    var whiteKeyColor: UIColor
+    var blackKeyColor: UIColor
     
     init(whiteKeyColor: UIColor, blackKeyColor: UIColor) {
         self.whiteKeyColor = whiteKeyColor

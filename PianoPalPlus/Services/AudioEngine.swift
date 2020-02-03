@@ -8,10 +8,12 @@
 
 import Foundation
 import AVFoundation
+import Combine
 
 class AudioEngine {
     static let shared = AudioEngine()
     let format = AVAudioFormat(standardFormatWithSampleRate: 44100.0, channels: 2)
+    private let noteVelocity: UInt8 = 127
     private var _engine: AVAudioEngine
     private var pianoSampler = AVAudioUnitSampler()
     
@@ -42,23 +44,26 @@ class AudioEngine {
         _engine.prepare()
     }
     
-    func play(_ notes: [NoteOctave], isSequencing: Bool = false) {
-        if !isSequencing {
+    func play<T: Sequence>(_ notes: T, isSequencing: Bool = false) where T.Iterator.Element == NoteOctave {
+        if isSequencing {
+            //let seq = AVAudioSequencer(audioEngine: _engine)
+            // TODO Use AVAudioSequencer to schedule events so timing is consistent
+            
             notes.enumerated().forEach { (arg) in
                 let (index, note) = arg
                 // hack sequencing for now...
                 DispatchQueue.global().asyncAfter(deadline: .now() + Double(index) * 0.5, execute: {
-                    self.pianoSampler.startNote(note.midiNote, withVelocity: 60, onChannel: 0)
-                })
+                    self.pianoSampler.startNote(note.midiNote, withVelocity: self.noteVelocity, onChannel: 0)
+                    })
             }
         } else {
             notes.forEach {
-                pianoSampler.startNote($0.midiNote, withVelocity: 60, onChannel: 0)
+                pianoSampler.startNote($0.midiNote, withVelocity: self.noteVelocity, onChannel: 0)
             }
         }
     }
     
-    func stop(_ notes: [NoteOctave]) {
+    func stop<T: Sequence>(_ notes: T) where T.Iterator.Element == NoteOctave {
         notes.forEach { pianoSampler.stopNote($0.midiNote, onChannel: 0) }
     }
 }

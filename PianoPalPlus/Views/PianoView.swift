@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import Combine
+
 fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
   switch (lhs, rhs) {
   case let (l?, r?):
@@ -50,19 +52,11 @@ extension UIScrollView {
     }
 }
 
-class PianoView: UIView, UIScrollViewDelegate, NoteViewTouchDelegate {
-    var scrollView = UIScrollView()
-    var contentView = UIView()
-    var lockedNotes: [NoteOctave]?
-    var noteViews = [NoteView]()
-    var showNoteLabels: Bool = false {
-        didSet {
-            noteViews.forEach({
-                showNoteLabels ? $0.label() : $0.label("")
-            })
-        }
-    }
-    var isScrollLocked: Bool = true {
+class PianoView: UIView, UIScrollViewDelegate {
+    private var scrollView = UIScrollView()
+    private var contentView = UIView()
+    private var noteViews = [NoteView]()
+    private var isScrollLocked: Bool = true {
         didSet {
             scrollView.isScrollEnabled = !isScrollLocked
             if isScrollLocked {
@@ -70,14 +64,25 @@ class PianoView: UIView, UIScrollViewDelegate, NoteViewTouchDelegate {
             }
         }
     }
-    var isNoteLocked: Bool = false {
+//    private var activeNotes: [NoteOctave] = [NoteOctave]() {
+//        didSet {
+//            noteViews.filter({ activeNotes.contains($0.noteOctave) })
+//        }
+//    }
+    private var isNoteLocked: Bool = false {
         didSet {
-            if isNoteLocked {
-                lockedNotes = [NoteOctave]()
-            } else {
-                lockedNotes = nil
-                noteViews.forEach({ $0.deIlluminate() })
-            }
+//            if isNoteLocked {
+//                lockedNotes = [NoteOctave]()
+//            } else {
+//                lockedNotes = nil
+//                noteViews.forEach({ $0.deIlluminate() })
+//            }
+        }
+    }
+    weak var viewModel: PianoViewModel? {
+        didSet {
+            bindViewModel()
+            bindNoteViewModels()
         }
     }
     
@@ -88,10 +93,13 @@ class PianoView: UIView, UIScrollViewDelegate, NoteViewTouchDelegate {
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = UIColor.white
-        setup()
+        setupView()
+        setupSubscriptions()
     }
     
-    private func setup() {
+    var cancellables = Set<AnyCancellable>()
+    
+    private func setupView() {
         scrollView.frame = self.bounds
         scrollView.contentSize.width = scrollView.bounds.width * CGFloat(Octave.max + 1)
         scrollView.contentSize.height = scrollView.bounds.height
@@ -116,6 +124,44 @@ class PianoView: UIView, UIScrollViewDelegate, NoteViewTouchDelegate {
         contentView.isMultipleTouchEnabled = true
     }
     
+    private func setupSubscriptions() {
+        for noteView in noteViews {
+            noteView.$hasTouch
+                .sink(receiveValue: { [weak self] hasTouch in
+                    self?.hasTouch(hasTouch, noteView: noteView)
+                }).store(in: &cancellables)
+        }
+    }
+    
+    private func bindViewModel() {
+        viewModel?.$scrollLocked
+            .subscribe(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] scrollLocked in
+                self?.isScrollLocked = scrollLocked
+            }).store(in: &cancellables)
+//        viewModel?.$modifiedNoteColors
+//            .subscribe(on: DispatchQueue.main)
+//            .sink(receiveValue: { [weak self] noteColors in
+//                self?.noteViews.filter { noteView in
+//                    noteColors.map
+//                }
+//            }).store(in: &cancellables)
+//        viewModel?.$selectedNotes
+//            .subscribe(on: DispatchQueue.main)
+//        .sink()
+        //viewModel?.$acti
+        //viewModel?.noteColors
+    }
+    
+    private func bindNoteViewModels() {
+        guard noteViews.count == viewModel?.noteViewModels.count else { return }
+        
+        noteViews.enumerated().forEach({ [weak self] index, noteView in
+            guard let vm = self?.viewModel?.noteViewModels[index] else { return }
+            noteView.viewModel = vm
+        })
+    }
+    
     private func setUpOctaveView(_ position: Int) -> UIView {
         let height = scrollView.bounds.height
         let width = scrollView.bounds.width
@@ -133,10 +179,9 @@ class PianoView: UIView, UIScrollViewDelegate, NoteViewTouchDelegate {
                                      width: width * KeyProperties.width(note),
                                      height: height * KeyProperties.height(note))
             notes.append(NoteOctave(note: note, octave: position))
-            let noteView = NoteView(frame: buttonFrame, note: note, octave: position)
+            let noteView = NoteView(frame: buttonFrame)
             noteView.isUserInteractionEnabled = true
             noteView.isMultipleTouchEnabled = true
-            noteView.touchDelegate = self
             noteViews.append(noteView)
             octaveView.addSubview(noteView)
         }
@@ -163,7 +208,8 @@ class PianoView: UIView, UIScrollViewDelegate, NoteViewTouchDelegate {
             guard let newNoteView = noteViews.filter({ possibleNewNoteView in
                 return possibleNewNoteView.superview?.convert(possibleNewNoteView.frame, to: nil).contains(location) ?? false
             }).sorted(by: { a,b in
-                if a.note.isBlackKey() && b.note.isWhiteKey() {
+                // DRY
+                if (a.viewModel?.isBlackKey ?? false) && (b.viewModel?.isWhiteKey ?? false) {
                     return true
                 }
                 return false
@@ -193,24 +239,26 @@ class PianoView: UIView, UIScrollViewDelegate, NoteViewTouchDelegate {
     }
     
     func hasTouch(_ hasTouch: Bool, noteView: NoteView) {
-        let noteOctave = noteView.noteOctave
-        if isNoteLocked {
-            if !(lockedNotes?.contains(noteOctave) ?? false) && hasTouch {
-                lockedNotes?.append(noteOctave)
-                noteView.illuminate()
-            } else if hasTouch {
-                lockedNotes?.removeAll(where: { $0 == noteOctave })
-                noteView.deIlluminate()
-            }
-        } else {
-            if hasTouch {
-                noteView.illuminate()
-                AudioEngine.shared.play([noteOctave])
-            } else {
-                noteView.deIlluminate()
-                AudioEngine.shared.stop([noteOctave])
-            }
-        }
+        guard let noteOctave = noteView.viewModel?.noteOctave else { return }
+        viewModel?.hasTouch(hasTouch, noteOctave: noteOctave)
+        //pianoViewModel.hasTouch(hasTouch, noteView: noteView)
+//        if isNoteLocked {
+//            if !(lockedNotes?.contains(noteOctave) ?? false) && hasTouch {
+//                lockedNotes?.append(noteOctave)
+//                noteView.illuminate()
+//            } else if hasTouch {
+//                lockedNotes?.removeAll(where: { $0 == noteOctave })
+//                noteView.deIlluminate()
+//            }
+//        } else {
+//            if hasTouch {
+//                noteView.illuminate()
+//                AudioEngine.shared.play([noteOctave])
+//            } else {
+//                noteView.deIlluminate()
+//                AudioEngine.shared.stop([noteOctave])
+//            }
+//        }
     }
     
 }

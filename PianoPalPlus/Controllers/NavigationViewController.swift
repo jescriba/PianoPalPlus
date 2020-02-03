@@ -10,12 +10,14 @@ import Foundation
 import UIKit
 
 enum NavigationItem: String {
-    case settings, earTraining, theory, identification
+    case settings, freeplay, earTraining, theory, identification
     
-    func asTitle() -> String {
+    func title() -> String {
         switch self {
         case .settings:
             return rawValue
+        case .freeplay:
+            return "free play"
         case .earTraining:
             return "practice ear training"
         case .theory:
@@ -26,9 +28,35 @@ enum NavigationItem: String {
     }
 }
 
+extension UIView {
+    func addTableView() -> UITableView {
+        let tableView = UITableView()
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.showsVerticalScrollIndicator = false
+        self.addSubview(tableView)
+        NSLayoutConstraint.activate([
+            tableView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            tableView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+            tableView.widthAnchor.constraint(equalTo: self.widthAnchor),
+            tableView.heightAnchor.constraint(equalTo: self.heightAnchor)
+        ])
+        return tableView
+    }
+}
+
 class NavigationTableViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
-    private let tableView = UITableView()
-    private let items: [NavigationItem] = [.settings, .earTraining, .theory]
+    private var tableView: UITableView!
+    private let items: [NavigationItem] = [.freeplay, .earTraining, .theory]
+    private let contentModeService: ContentModeService
+    
+    init(contentModeService: ContentModeService = ContentModeService.shared) {
+        self.contentModeService = contentModeService
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,17 +70,9 @@ class NavigationTableViewController: UIViewController, UITableViewDataSource, UI
     
     private func setup() {
         navigationController?.navigationBar.topItem?.title = "Configure"
-
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.showsVerticalScrollIndicator = false
-        self.view.addSubview(tableView)
-        NSLayoutConstraint.activate([
-            tableView.centerXAnchor.constraint(equalTo: self.view.centerXAnchor),
-            tableView.centerYAnchor.constraint(equalTo: self.view.centerYAnchor),
-            tableView.widthAnchor.constraint(equalTo: self.view.widthAnchor),
-            tableView.heightAnchor.constraint(equalTo: self.view.heightAnchor)
-        ])
+        navigationController?.navigationBar.tintColor = .label
         
+        tableView = self.view.addTableView()
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "NavigationItem")
         tableView.tableFooterView = UIView()
         tableView.dataSource = self
@@ -65,7 +85,7 @@ class NavigationTableViewController: UIViewController, UITableViewDataSource, UI
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "NavigationItem", for: indexPath)
-        cell.textLabel?.text = items[indexPath.row].asTitle()
+        cell.textLabel?.text = items[indexPath.row].title()
         cell.textLabel?.font = UIFont(name: "Arial", size: 40)
         cell.textLabel?.textAlignment = .center
         let bgView = UIView()
@@ -79,9 +99,12 @@ class NavigationTableViewController: UIViewController, UITableViewDataSource, UI
         case .settings:
             navigationController?.pushViewController(SettingsViewController(), animated: true)
         case .earTraining:
-            navigationController?.pushViewController(EarTrainingViewController(), animated: true)
+            navigationController?.pushViewController(EarTrainingSelectorViewController(contentModeService: contentModeService), animated: true)
         case .theory:
-            navigationController?.pushViewController(MusicTheoryViewController(), animated: true)
+            navigationController?.pushViewController(MusicTheorySelectorViewController(), animated: true)
+        case .freeplay:
+            contentModeService.contentMode = .freePlay
+            dismiss(animated: false, completion: nil)
         default:
             break
         }

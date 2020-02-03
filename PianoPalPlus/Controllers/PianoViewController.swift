@@ -1,17 +1,30 @@
 //
-//  ViewController.swift
+//  PianoViewController.swift
 //  PianoPalPlus
 //
-//  Created by joshua on 1/1/20.
+//  Created by joshua on 1/30/20.
 //  Copyright © 2020 joshua. All rights reserved.
 //
 
+import Foundation
 import UIKit
+import Combine
 
-class PianoViewController: UIViewController, ToolBarDelegate {
-    var pianoView: PianoView!
-    var toolBar: ToolBarView!
-
+class PianoViewController: UIViewController {
+    private var pianoView: PianoView!
+    private let pianoViewModel: PianoViewModel
+    private let contentModeService: ContentModeService
+    
+    init(pianoViewModel: PianoViewModel, contentModeService: ContentModeService = ContentModeService.shared) {
+        self.pianoViewModel = pianoViewModel
+        self.contentModeService = contentModeService
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -24,46 +37,35 @@ class PianoViewController: UIViewController, ToolBarDelegate {
         if previousTraitCollection?.verticalSizeClass == .regular && traitCollection.verticalSizeClass == .compact {
             view.subviews.forEach({ $0.removeFromSuperview() })
             setupViews()
+            setupSubscriptions()
         }
     }
     
     private func setupViews() {
         self.pianoView = PianoView(frame: view.bounds)
+        self.pianoView.viewModel = pianoViewModel
         view.addSubview(pianoView)
-        self.toolBar = ToolBarView(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: 50))
-        view.addSubview(toolBar)
-        toolBar.delegate = self
-        toolBar.isScrollLocked = pianoView.isScrollLocked
-        toolBar.isNoteLocked = pianoView.isNoteLocked
     }
     
-    func scrollLockDidChange() {
-        pianoView.isScrollLocked = !pianoView.isScrollLocked
-    }
-    
-    func noteLockDidChange() {
-        pianoView.isNoteLocked = !pianoView.isNoteLocked
-    }
-    
-    func playDidChange() {
-        if toolBar.isPlaying &&
-            pianoView.isNoteLocked,
-            let lockedNotes = pianoView.lockedNotes {
-            AudioEngine.shared.play(lockedNotes, isSequencing: toolBar.isSequencing)
-        } else if let lockedNotes = pianoView.lockedNotes {
-            AudioEngine.shared.stop(lockedNotes)
-        }
-    }
-    
-    func sequenceDidChange() { }
-    
-    func settingsDidChange() {
-        let navigationVC = NavigationViewController()
-        navigationVC.providesPresentationContextTransitionStyle = true
-        navigationVC.definesPresentationContext = true
-        navigationVC.modalPresentationStyle = .overCurrentContext
-        self.present(navigationVC, animated: false)
+    private var cancellables = Set<AnyCancellable>()
+    private func setupSubscriptions() {
+        cancellables.forEach { $0.cancel() }
+        contentModeService.$contentMode
+            .subscribe(on: DispatchQueue.main)
+            .sink(receiveValue: { _ in
+                
+            }).store(in: &cancellables)
     }
 
+    
+//    func playDidChange() {
+//        if toolBar.isPlaying &&
+//            pianoView.isNoteLocked,
+//            let lockedNotes = pianoView.lockedNotes {
+//            AudioEngine.shared.play(lockedNotes, isSequencing: toolBar.isSequencing)
+//        } else if let lockedNotes = pianoView.lockedNotes {
+//            AudioEngine.shared.stop(lockedNotes)
+//        }
+//    }
+    
 }
-
