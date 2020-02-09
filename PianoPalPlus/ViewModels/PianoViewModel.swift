@@ -67,10 +67,7 @@ class PianoViewModel {
                     selfV.noteViewModels.forEach({ $0.keyColorPair =  noteOctaves.contains($0.noteOctave) ? .selected : .basic })
                 } else {
                     selfV.noteViewModels.forEach({ $0.keyColorPair =  noteOctaves.contains($0.noteOctave) ? .selected : .basic })
-                    selfV.piano.playingNotes = noteOctaves
-                    //selfV.pian
-                    //selfV.modifiedNoteColors
-                    //selfV.noteColors.insert(noteOctave, color)
+                    selfV.piano.playingNotes = noteOctaves.subtracting(selfV.piano.playingNotes)
                 }
             }).store(in: &cancellables)
         piano.$playingNotes
@@ -93,7 +90,7 @@ class PianoViewModel {
     }
     
     private func setupAudioBinding() {
-        
+        // TODO
     }
     
     func hasTouch(_ hasTouch: Bool, noteOctave: NoteOctave) {

@@ -9,27 +9,6 @@
 import UIKit
 import Combine
 
-fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l < r
-  case (nil, _?):
-    return true
-  default:
-    return false
-  }
-}
-
-fileprivate func > <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l > r
-  default:
-    return rhs < lhs
-  }
-}
-
-
 enum ScrollDirection : Int {
     case rightToLeft, leftToRight
 }
@@ -139,18 +118,6 @@ class PianoView: UIView, UIScrollViewDelegate {
             .sink(receiveValue: { [weak self] scrollLocked in
                 self?.isScrollLocked = scrollLocked
             }).store(in: &cancellables)
-//        viewModel?.$modifiedNoteColors
-//            .subscribe(on: DispatchQueue.main)
-//            .sink(receiveValue: { [weak self] noteColors in
-//                self?.noteViews.filter { noteView in
-//                    noteColors.map
-//                }
-//            }).store(in: &cancellables)
-//        viewModel?.$selectedNotes
-//            .subscribe(on: DispatchQueue.main)
-//        .sink()
-        //viewModel?.$acti
-        //viewModel?.noteColors
     }
     
     private func bindNoteViewModels() {
@@ -241,24 +208,6 @@ class PianoView: UIView, UIScrollViewDelegate {
     func hasTouch(_ hasTouch: Bool, noteView: NoteView) {
         guard let noteOctave = noteView.viewModel?.noteOctave else { return }
         viewModel?.hasTouch(hasTouch, noteOctave: noteOctave)
-        //pianoViewModel.hasTouch(hasTouch, noteView: noteView)
-//        if isNoteLocked {
-//            if !(lockedNotes?.contains(noteOctave) ?? false) && hasTouch {
-//                lockedNotes?.append(noteOctave)
-//                noteView.illuminate()
-//            } else if hasTouch {
-//                lockedNotes?.removeAll(where: { $0 == noteOctave })
-//                noteView.deIlluminate()
-//            }
-//        } else {
-//            if hasTouch {
-//                noteView.illuminate()
-//                AudioEngine.shared.play([noteOctave])
-//            } else {
-//                noteView.deIlluminate()
-//                AudioEngine.shared.stop([noteOctave])
-//            }
-//        }
     }
     
 }

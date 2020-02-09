@@ -7,8 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4207082123EA9718002FBB87 /* GameEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4207082023EA9718002FBB87 /* GameEngine.swift */; };
+		4207082323EEDA32002FBB87 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4207082223EEDA32002FBB87 /* CardView.swift */; };
+		4207082523EEDAC4002FBB87 /* CardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4207082423EEDAC4002FBB87 /* CardViewModel.swift */; };
+		4207082923EFAE49002FBB87 /* Interval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4207082823EFAE49002FBB87 /* Interval.swift */; };
 		425E0F3D23E679A7007536FA /* ContentModeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425E0F3C23E679A7007536FA /* ContentModeService.swift */; };
 		425E0F3F23E75AF3007536FA /* NoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425E0F3E23E75AF3007536FA /* NoteViewModel.swift */; };
+		425F4CF623F0C89100970DA7 /* IntervalGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425F4CF523F0C89100970DA7 /* IntervalGenerator.swift */; };
+		425F4CF823F0C89B00970DA7 /* ChordGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425F4CF723F0C89B00970DA7 /* ChordGenerator.swift */; };
+		425F4CFA23F0C8A300970DA7 /* ScaleGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425F4CF923F0C8A300970DA7 /* ScaleGenerator.swift */; };
 		4260125823BD54AC007BEC7F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4260125723BD54AC007BEC7F /* AppDelegate.swift */; };
 		4260125C23BD54AC007BEC7F /* ContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4260125B23BD54AC007BEC7F /* ContainerViewController.swift */; };
 		4260125F23BD54AC007BEC7F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4260125D23BD54AC007BEC7F /* Main.storyboard */; };
@@ -142,8 +149,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4207082023EA9718002FBB87 /* GameEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameEngine.swift; sourceTree = "<group>"; };
+		4207082223EEDA32002FBB87 /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
+		4207082423EEDAC4002FBB87 /* CardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardViewModel.swift; sourceTree = "<group>"; };
+		4207082823EFAE49002FBB87 /* Interval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Interval.swift; sourceTree = "<group>"; };
 		425E0F3C23E679A7007536FA /* ContentModeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentModeService.swift; sourceTree = "<group>"; };
 		425E0F3E23E75AF3007536FA /* NoteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteViewModel.swift; sourceTree = "<group>"; };
+		425F4CF523F0C89100970DA7 /* IntervalGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntervalGenerator.swift; sourceTree = "<group>"; };
+		425F4CF723F0C89B00970DA7 /* ChordGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChordGenerator.swift; sourceTree = "<group>"; };
+		425F4CF923F0C8A300970DA7 /* ScaleGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScaleGenerator.swift; sourceTree = "<group>"; };
 		4260125423BD54AC007BEC7F /* PianoPalPlus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PianoPalPlus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4260125723BD54AC007BEC7F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4260125B23BD54AC007BEC7F /* ContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerViewController.swift; sourceTree = "<group>"; };
@@ -355,6 +369,7 @@
 				4260128A23BD557E007BEC7F /* NoteView.swift */,
 				4260128C23BD558E007BEC7F /* PianoView.swift */,
 				42C974D223D6BF4D00841216 /* ToolBarView.swift */,
+				4207082223EEDA32002FBB87 /* CardView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -367,6 +382,7 @@
 				4260128F23BD55B8007BEC7F /* Note.swift */,
 				42AA3B6B23E40A0C0003F89F /* ToolBar.swift */,
 				42C2829C23E635BA005BCD62 /* Piano.swift */,
+				4207082823EFAE49002FBB87 /* Interval.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -401,6 +417,7 @@
 				42AA3B6523E4069A0003F89F /* ToolBarViewModel.swift */,
 				42AA3B6D23E40D4A0003F89F /* PianoViewModel.swift */,
 				425E0F3E23E75AF3007536FA /* NoteViewModel.swift */,
+				4207082423EEDAC4002FBB87 /* CardViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -501,6 +518,10 @@
 			children = (
 				42DF135923D622A400CC9D68 /* AudioEngine.swift */,
 				425E0F3C23E679A7007536FA /* ContentModeService.swift */,
+				4207082023EA9718002FBB87 /* GameEngine.swift */,
+				425F4CF523F0C89100970DA7 /* IntervalGenerator.swift */,
+				425F4CF723F0C89B00970DA7 /* ChordGenerator.swift */,
+				425F4CF923F0C8A300970DA7 /* ScaleGenerator.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -721,8 +742,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				42AA3B6A23E407950003F89F /* GameViewController.swift in Sources */,
+				4207082323EEDA32002FBB87 /* CardView.swift in Sources */,
+				4207082123EA9718002FBB87 /* GameEngine.swift in Sources */,
 				42DF135A23D622A400CC9D68 /* AudioEngine.swift in Sources */,
 				42AA3B6823E407320003F89F /* PianoViewController.swift in Sources */,
+				425F4CF823F0C89B00970DA7 /* ChordGenerator.swift in Sources */,
 				4260129223BD55C0007BEC7F /* NoteOctave.swift in Sources */,
 				4260129D23BD8ECD007BEC7F /* Colors.swift in Sources */,
 				4260125C23BD54AC007BEC7F /* ContainerViewController.swift in Sources */,
@@ -730,6 +754,7 @@
 				4260125823BD54AC007BEC7F /* AppDelegate.swift in Sources */,
 				4260129F23BD8ECD007BEC7F /* Constants.swift in Sources */,
 				42C974D323D6BF4D00841216 /* ToolBarView.swift in Sources */,
+				425F4CF623F0C89100970DA7 /* IntervalGenerator.swift in Sources */,
 				42AA3B6E23E40D4A0003F89F /* PianoViewModel.swift in Sources */,
 				429CD1DE23DE52AA00E86DFE /* SettingsViewController.swift in Sources */,
 				425E0F3D23E679A7007536FA /* ContentModeService.swift in Sources */,
@@ -738,12 +763,15 @@
 				425E0F3F23E75AF3007536FA /* NoteViewModel.swift in Sources */,
 				4260129023BD55B8007BEC7F /* Note.swift in Sources */,
 				426012A323BD9277007BEC7F /* SceneDelegate.swift in Sources */,
+				4207082523EEDAC4002FBB87 /* CardViewModel.swift in Sources */,
 				426012A123BD8ECD007BEC7F /* KeyProperties.swift in Sources */,
 				429CD1E023DE52BC00E86DFE /* EarTrainingSelectorViewController.swift in Sources */,
 				42D1AADF23DE3E60003A3DEA /* NavigationViewController.swift in Sources */,
+				4207082923EFAE49002FBB87 /* Interval.swift in Sources */,
 				42AA3B6C23E40A0C0003F89F /* ToolBar.swift in Sources */,
 				42AA3B6623E4069A0003F89F /* ToolBarViewModel.swift in Sources */,
 				42C2829D23E635BA005BCD62 /* Piano.swift in Sources */,
+				425F4CFA23F0C8A300970DA7 /* ScaleGenerator.swift in Sources */,
 				4260129423BD8E76007BEC7F /* KeyColorPair.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

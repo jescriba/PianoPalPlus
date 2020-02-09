@@ -10,26 +10,20 @@ import Foundation
 import UIKit
 import Combine
 
-class Selection {
-    var title: String?
-
-    init(title: String) {
-        self.title = title
-    }
-}
-
 class GameViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     private let contentModeService: ContentModeService
-    // hack for now.. yes card view could have its own proper view + vm
+    private let gameEngine: GameEngine
+    private let selectionCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     private let cardHeight: CGFloat = 150
     private let cardWidth: CGFloat = 400
-    let cardView = UIView()
-    let cardLabel = UILabel()
-    private let selectionCollectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
-    private let selectionItems: [Selection] = [Selection(title: "A"), Selection(title: "Minor Second"), Selection(title: "Major Second"), Selection(title: "A"), Selection(title: "Minor Second"), Selection(title: "Major Second"), Selection(title: "A"), Selection(title: "Minor Second"), Selection(title: "Major Second")]
+    private let cardView = CardView()
+    private let cardBackgroundView = UIView()
+    private let cardViewModel = CardViewModel()
     
-    init(contentModeService: ContentModeService = ContentModeService.shared) {
+    init(contentModeService: ContentModeService = ContentModeService.shared,
+         gameEngine: GameEngine = GameEngine.shared) {
         self.contentModeService = contentModeService
+        self.gameEngine = gameEngine
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -39,11 +33,15 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         view.backgroundColor = .systemBackground
-        setupCard()
-        setupSelectionCollectionView()
         setupSubscriptions()
+        setupSelectionCollectionView()
+        setupCardView()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        showCardView()
     }
     
     private var cancellables = Set<AnyCancellable>()
@@ -51,19 +49,23 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
         contentModeService.$contentMode
             .subscribe(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] contentMode in
-                self?.cardLabel.text = contentMode.description()
+                self?.cardViewModel.title = contentMode.description() ?? ""
+                self?.showCardView()
+            }).store(in: &cancellables)
+        gameEngine.$selectionItems
+            .subscribe(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] _ in
+                self?.selectionCollectionView.reloadData()
             }).store(in: &cancellables)
     }
     
-    private func setupCard() {
+    private func setupCardView() {
         cardView.translatesAutoresizingMaskIntoConstraints = false
         cardView.backgroundColor = .systemBackground
         cardView.layer.borderColor = UIColor.gray.cgColor
         cardView.layer.borderWidth = 3
-        cardLabel.textAlignment = .center
-        cardLabel.numberOfLines = 0
-        cardLabel.text = "welcome to the game zone"
-        cardView.addFullBoundsSubview(cardLabel)
+        cardView.layer.cornerRadius = 10
+        cardView.viewModel = cardViewModel
         view.addSubview(cardView)
         NSLayoutConstraint.activate([
             cardView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -71,33 +73,44 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
             cardView.heightAnchor.constraint(equalToConstant: cardHeight),
             cardView.widthAnchor.constraint(equalToConstant: cardWidth),
         ])
-        cardView.layer.shadowColor = UIColor.gray.cgColor
-        cardView.layer.shadowRadius = 3
-        cardView.layer.cornerRadius = 5
-        view.layoutIfNeeded()
-        // hack
-        hideCardView()
+        cardBackgroundView.backgroundColor = .clear
+        cardBackgroundView.alpha = 0.8
+        let effectView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
+        effectView.backgroundColor = .clear
+        cardBackgroundView.addFullBoundsSubview(effectView)
+        cardView.alpha = 0
     }
     
     private func showCardView() {
-        UIView.animate(withDuration: 4, delay: 0, options: [.curveEaseIn], animations: {
+        view.addFullBoundsSubview(cardBackgroundView)
+        view.layoutIfNeeded()
+        view.bringSubviewToFront(cardView)
+        UIView.animate(withDuration: 0.5, delay: 0, options: [.curveEaseIn], animations: {
             self.cardView.alpha = 1
             self.view.layoutIfNeeded()
-        }, completion: nil)
+        }, completion: { _ in
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 3, execute: { [weak self] in
+                self?.hideCardView()
+            })
+        })
     }
-    
+
     private func hideCardView() {
-        UIView.animate(withDuration: 4, delay: 0, options: [.curveEaseIn], animations: {
+        UIView.animate(withDuration: 0.5, delay: 0, options: [.curveEaseIn], animations: {
             self.cardView.alpha = 0
             self.view.layoutIfNeeded()
-        }, completion: nil)
+        }, completion: { _ in
+            self.cardBackgroundView.removeFromSuperview()
+        })
     }
     
     private func setupSelectionCollectionView() {
         selectionCollectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "SelectionCell")
         selectionCollectionView.delegate = self
         selectionCollectionView.dataSource = self
-        view.addFullBoundsSubview(selectionCollectionView)
+        selectionCollectionView.backgroundColor = .clear
+        selectionCollectionView.showsVerticalScrollIndicator = false
+        view.addFullBoundsSubview(selectionCollectionView, horizontalSpacing: 50, verticalSpacing: 10)
         view.sendSubviewToBack(selectionCollectionView)
     }
     
@@ -106,17 +119,24 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return selectionItems.count
+        return gameEngine.selectionItems.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SelectionCell", for: indexPath)
+        cell.subviews.forEach({ $0.removeFromSuperview() }) // hack clean up reused cell 
         cell.layer.borderColor = UIColor.gray.cgColor
         cell.layer.borderWidth = 2
         cell.layer.cornerRadius = 5
         let label = UILabel()
-        label.text = selectionItems[indexPath.row].title
+        label.numberOfLines = 0
+        label.text = gameEngine.selectionItems[indexPath.row].title
+        label.textAlignment = .center
         cell.addFullBoundsSubview(label)
+        let bgView = UIView()
+        bgView.backgroundColor = Colors.highlightedWhiteKey
+        bgView.layer.cornerRadius = 5
+        cell.selectedBackgroundView = bgView
         return cell
     }
     
@@ -125,7 +145,28 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 200, height: 200)
+        let width = 2 * collectionView.frame.size.width / CGFloat(gameEngine.selectionItems.count)
+        return CGSize(width: width, height: 80)
     }
-
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
+        gameEngine.submit(index: indexPath.row, completion: { [weak self] (isCorrect, correctAnswer)  in
+            if isCorrect {
+                self?.cardViewModel.title = "Correct!!"
+            } else {
+                var incorrectString = "Incorrect :("
+                if let answerString = correctAnswer?.title {
+                    incorrectString += "\n" + "correct answer is: \(answerString)"
+                }
+                self?.cardViewModel.title = incorrectString
+            }
+            self?.showCardView()
+            self?.gameEngine.next()
+        })
+    }
+    
+    func togglePlayActive() {
+        gameEngine.togglePlayState()
+    }
 }

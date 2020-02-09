@@ -11,6 +11,7 @@ import UIKit
 import Combine
 
 class ToolBarView: UIView {
+    // dry toolbar items
     @Published var settingsButtonPublisher = false // would prefer a void approach..
     @Published var playButtonPublisher = false
     @Published var sequenceButtonPublisher = false
@@ -46,6 +47,7 @@ class ToolBarView: UIView {
     }
     
     private func bindViewModel() {
+        // dry
         viewModel?.$title
             .subscribe(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] title in
@@ -81,7 +83,11 @@ class ToolBarView: UIView {
             .sink(receiveValue: { [weak self] hidden in
                 self?.sequenceButton.isHidden = hidden
             }).store(in: &cancellables)
-        
+        viewModel?.$scrollLockButtonHidden
+            .subscribe(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] hidden in
+                self?.scrollLockButton.isHidden = hidden
+            }).store(in: &cancellables)
     }
 
     private func setup() {
@@ -131,9 +137,8 @@ class ToolBarView: UIView {
         NSLayoutConstraint.activate([
             rightHStack.leftAnchor.constraint(equalTo: self.titleLabel.rightAnchor),
             rightHStack.widthAnchor.constraint(equalToConstant: 200),
-//            rightHStack.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -10),
             rightHStack.heightAnchor.constraint(equalToConstant: 50),
-            rightHStack.centerYAnchor.constraint(equalTo: self.centerYAnchor)
+            rightHStack.rightAnchor.constraint(equalTo: self.rightAnchor)
         ])
         playButton.setImage(playImage, for: .normal)
         playButton.addTarget(self, action: #selector(playTapped), for: .touchUpInside)

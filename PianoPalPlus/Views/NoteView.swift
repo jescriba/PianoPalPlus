@@ -10,16 +10,17 @@ import UIKit
 import Combine
 
 extension UIView {
-    func addFullBoundsSubview(_ view: UIView) {
+    func addFullBoundsSubview(_ view: UIView, horizontalSpacing: CGFloat = 0, verticalSpacing: CGFloat = 0) {
         view.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(view)
         NSLayoutConstraint.activate([
-            view.leftAnchor.constraint(equalTo: self.leftAnchor),
-            view.rightAnchor.constraint(equalTo: self.rightAnchor),
-            view.topAnchor.constraint(equalTo: self.topAnchor),
-            view.bottomAnchor.constraint(equalTo: self.bottomAnchor)
+            view.leftAnchor.constraint(equalTo: self.leftAnchor, constant: horizontalSpacing),
+            view.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -horizontalSpacing),
+            view.topAnchor.constraint(equalTo: self.topAnchor, constant: verticalSpacing),
+            view.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -verticalSpacing)
         ])
     }
+
 }
 
 class NoteView: UIView {

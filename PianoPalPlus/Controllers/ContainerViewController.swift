@@ -121,6 +121,7 @@ class ContainerViewController: UIViewController {
             .sink(receiveValue: { [weak self] _ in
                 self?.toolBarViewModel.togglePlayButton()
                 self?.pianoViewModel.togglePlayActive()
+                self?.gameViewController.togglePlayActive()
             }).store(in: &cancellables)
         contentModeService.$contentMode
             .subscribe(on: DispatchQueue.main)

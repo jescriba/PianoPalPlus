@@ -46,7 +46,8 @@ extension UIView {
 
 class NavigationTableViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     private var tableView: UITableView!
-    private let items: [NavigationItem] = [.freeplay, .earTraining, .theory]
+    // todo add the theory mode
+    private let items: [NavigationItem] = [.freeplay, .earTraining]
     private let contentModeService: ContentModeService
     
     init(contentModeService: ContentModeService = ContentModeService.shared) {

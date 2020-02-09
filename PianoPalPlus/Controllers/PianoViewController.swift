@@ -53,19 +53,8 @@ class PianoViewController: UIViewController {
         contentModeService.$contentMode
             .subscribe(on: DispatchQueue.main)
             .sink(receiveValue: { _ in
-                
+                // TODO
             }).store(in: &cancellables)
     }
-
-    
-//    func playDidChange() {
-//        if toolBar.isPlaying &&
-//            pianoView.isNoteLocked,
-//            let lockedNotes = pianoView.lockedNotes {
-//            AudioEngine.shared.play(lockedNotes, isSequencing: toolBar.isSequencing)
-//        } else if let lockedNotes = pianoView.lockedNotes {
-//            AudioEngine.shared.stop(lockedNotes)
-//        }
-//    }
     
 }

@@ -31,6 +31,8 @@ enum EarTrainingItem: String {
             return "match the melody"
         case .key:
             return "listen to the music and detect the key. You can use the piano for reference."
+        case .chordType:
+            return "listen and select the chord type"
         default:
             return nil
         }
@@ -40,7 +42,8 @@ enum EarTrainingItem: String {
 
 class EarTrainingSelectorViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     private var tableView: UITableView!
-    private let items: [EarTrainingItem] = [.interval, .melody, .key]
+    // todo add melody mode
+    private let items: [EarTrainingItem] = [.interval, .key, .chordType]
     private let contentModeService: ContentModeService
     
     init(contentModeService: ContentModeService = ContentModeService.shared) {

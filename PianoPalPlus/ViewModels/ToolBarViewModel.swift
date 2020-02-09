@@ -71,6 +71,7 @@ class ToolBarViewModel {
                     selfV.noteLockButtonHidden = false
                     selfV.sequenceButtonHidden = false
                 case .earTraining(_):
+                    selfV.scrollLockButtonHidden = true
                     selfV.noteLockButtonHidden = true
                     selfV.sequenceButtonHidden = true
                 case .theory:

@@ -48,7 +48,6 @@ class AudioEngine {
         if isSequencing {
             //let seq = AVAudioSequencer(audioEngine: _engine)
             // TODO Use AVAudioSequencer to schedule events so timing is consistent
-            
             notes.enumerated().forEach { (arg) in
                 let (index, note) = arg
                 // hack sequencing for now...
