@@ -8,6 +8,23 @@
 
 import Foundation
 
+class Notes {
+    static var all: [Note] {
+        return [Note.c,
+                Note.dFlat,
+                Note.d,
+                Note.eFlat,
+                Note.e,
+                Note.f,
+                Note.fSharp,
+                Note.g,
+                Note.aFlat,
+                Note.a,
+                Note.bFlat,
+                Note.b]
+    }
+}
+
 enum Note : Int {
     case c, dFlat, d, eFlat, e, f, fSharp, g, aFlat, a, bFlat, b
     

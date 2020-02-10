@@ -79,12 +79,19 @@ class GameEngine {
         case .earTraining(.interval):
             let randomInterval = Intervals.all.randomElement()!
             let noteOctaves = IntervalGenerator.notes(for: randomInterval)
-            currentPlayable = [noteOctaves]
-            currentAnswer = .init(title: randomInterval.title())
+            currentPlayable = [[NoteOctave]]()
+            noteOctaves.forEach({ currentPlayable.append([$0]) })
+            currentAnswer = Selection(title: randomInterval.title())
         case .earTraining(.key):
+            let randomNote = NoteOctaveGenerator.random()
+            currentPlayable = KeyGenerator.notesAndChords(for: randomNote)
+            currentAnswer = Selection(title: randomNote.note.simpleDescription() + " maj")
             break
         case .earTraining(.chordType):
-            break
+            let randomChordType = ChordTypes.all.randomElement()!
+            let noteOctaves = ChordGenerator.notes(for: randomChordType)
+            currentPlayable = [noteOctaves]
+            currentAnswer = Selection(title: randomChordType.rawValue)
         default:
             break
         }
@@ -94,6 +101,10 @@ class GameEngine {
         switch mode {
         case .earTraining(.interval):
             selectionItems = Intervals.all.map { Selection(title: $0.title()) }
+        case .earTraining(.key):
+            selectionItems = Notes.all.map { Selection(title: $0.simpleDescription() + " maj") }
+        case .earTraining(.chordType):
+            selectionItems = ChordTypes.all.map { Selection(title: $0.rawValue) }
         default:
             break
         }

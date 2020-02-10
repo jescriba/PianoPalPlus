@@ -11,7 +11,7 @@ import Foundation
 class NoteOctaveGenerator {
     static func random() -> NoteOctave {
         let randomNote = Constants.orderedNotes.randomElement()!
-        let randomOctave = Int.random(in: Octave.min..<Octave.max)
+        let randomOctave = Int.random(in: (Octave.min + 1)..<Octave.max) // keeping chords from going low...
         return NoteOctave(note: randomNote, octave: randomOctave)
     }
 }
@@ -22,24 +22,13 @@ class IntervalGenerator {
                       root: NoteOctave? = nil,
                       direction directionO: IntervalDirection? = nil) -> [NoteOctave] {
         let rootNote = root ?? NoteOctaveGenerator.random()
-        let rootNoteIndex = Constants.orderedNotes.firstIndex(of: rootNote.note)!
         let direction = directionO ?? IntervalDirection.random()
-        var secondNoteIndex: Int!
-        var secondOctave = rootNote.octave
+        var secondNoteOctave: NoteOctave!
         if direction == .up {
-            secondNoteIndex = rootNoteIndex + interval.rawValue
-            if secondNoteIndex >= Constants.orderedNotes.count {
-                secondOctave += 1
-            }
+            secondNoteOctave = rootNote + interval
         } else {
-            secondNoteIndex = rootNoteIndex - interval.rawValue
-            if secondNoteIndex < 0 {
-                secondNoteIndex += Constants.orderedNotes.count
-                secondOctave -= 1
-            }
+            secondNoteOctave = rootNote - interval
         }
-        let secondNote = Constants.orderedNotes[secondNoteIndex % Constants.orderedNotes.count]
-        let secondNoteOctave = NoteOctave(note: secondNote, octave: secondOctave)
         return [rootNote, secondNoteOctave]
     }
 }

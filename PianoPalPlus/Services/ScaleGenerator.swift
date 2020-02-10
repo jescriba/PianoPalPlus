@@ -7,3 +7,36 @@
 //
 
 import Foundation
+
+enum ScaleType: String {
+    // todo more scale types and compatibilty w/ chords
+    case major
+    
+    func intervals() -> [Interval] {
+        switch self {
+        case .major:
+            return [.majorSecond, .majorThird, .perfectFourth, .perfectFifth, .majorSixth, .majorSeventh]
+        }
+    }
+    
+    func chordTypes() -> [ChordType] {
+        switch self {
+        case .major:
+            return [.major, .minor, .minor, .major, .dominantSeventh, .minor, .diminished]
+        }
+    }
+}
+
+class ScaleGenerator {
+    // TODONOW @joshua - plan of attack. get the key mode working, then piano/game toggle button, then bug fixing and ship this iteration. v0.4 should have basic chord/scale mode. Before v1 I should probably get more accurate timing/sequencing figured out?
+    static func notes(for type: ScaleType,
+                      root: NoteOctave? = nil) -> [NoteOctave] {
+        let rootNote = root ?? NoteOctaveGenerator.random()
+        var scaleNotes = [NoteOctave]()
+        type.intervals().forEach { interval in
+            scaleNotes.append(rootNote + interval)
+        }
+        return scaleNotes
+    }
+    
+}

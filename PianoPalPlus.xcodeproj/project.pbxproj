@@ -16,6 +16,7 @@
 		425F4CF623F0C89100970DA7 /* IntervalGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425F4CF523F0C89100970DA7 /* IntervalGenerator.swift */; };
 		425F4CF823F0C89B00970DA7 /* ChordGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425F4CF723F0C89B00970DA7 /* ChordGenerator.swift */; };
 		425F4CFA23F0C8A300970DA7 /* ScaleGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425F4CF923F0C8A300970DA7 /* ScaleGenerator.swift */; };
+		425F4CFC23F0D50500970DA7 /* KeyGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425F4CFB23F0D50500970DA7 /* KeyGenerator.swift */; };
 		4260125823BD54AC007BEC7F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4260125723BD54AC007BEC7F /* AppDelegate.swift */; };
 		4260125C23BD54AC007BEC7F /* ContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4260125B23BD54AC007BEC7F /* ContainerViewController.swift */; };
 		4260125F23BD54AC007BEC7F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4260125D23BD54AC007BEC7F /* Main.storyboard */; };
@@ -158,6 +159,7 @@
 		425F4CF523F0C89100970DA7 /* IntervalGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntervalGenerator.swift; sourceTree = "<group>"; };
 		425F4CF723F0C89B00970DA7 /* ChordGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChordGenerator.swift; sourceTree = "<group>"; };
 		425F4CF923F0C8A300970DA7 /* ScaleGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScaleGenerator.swift; sourceTree = "<group>"; };
+		425F4CFB23F0D50500970DA7 /* KeyGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyGenerator.swift; sourceTree = "<group>"; };
 		4260125423BD54AC007BEC7F /* PianoPalPlus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PianoPalPlus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4260125723BD54AC007BEC7F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		4260125B23BD54AC007BEC7F /* ContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerViewController.swift; sourceTree = "<group>"; };
@@ -522,6 +524,7 @@
 				425F4CF523F0C89100970DA7 /* IntervalGenerator.swift */,
 				425F4CF723F0C89B00970DA7 /* ChordGenerator.swift */,
 				425F4CF923F0C8A300970DA7 /* ScaleGenerator.swift */,
+				425F4CFB23F0D50500970DA7 /* KeyGenerator.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -762,6 +765,7 @@
 				4260128D23BD558E007BEC7F /* PianoView.swift in Sources */,
 				425E0F3F23E75AF3007536FA /* NoteViewModel.swift in Sources */,
 				4260129023BD55B8007BEC7F /* Note.swift in Sources */,
+				425F4CFC23F0D50500970DA7 /* KeyGenerator.swift in Sources */,
 				426012A323BD9277007BEC7F /* SceneDelegate.swift in Sources */,
 				4207082523EEDAC4002FBB87 /* CardViewModel.swift in Sources */,
 				426012A123BD8ECD007BEC7F /* KeyProperties.swift in Sources */,

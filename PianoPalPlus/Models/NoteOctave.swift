@@ -43,4 +43,27 @@ class NoteOctave: Equatable, Hashable {
         hasher.combine(note)
         hasher.combine(octave)
     }
+    
+    static func +(noteOctave: NoteOctave, interval: Interval) -> NoteOctave {
+        let noteIndex = Notes.all.firstIndex(of: noteOctave.note)!
+        let newNoteIndex = noteIndex + interval.rawValue
+        var newOctave = noteOctave.octave
+        if newNoteIndex >= Notes.all.count {
+            newOctave += 1
+        }
+        let newNote = Notes.all[newNoteIndex % Notes.all.count]
+        return NoteOctave(note: newNote, octave: newOctave)
+    }
+    
+    static func -(noteOctave: NoteOctave, interval: Interval) -> NoteOctave {
+        let noteIndex = Notes.all.firstIndex(of: noteOctave.note)!
+        var newNoteIndex = noteIndex - interval.rawValue
+        var newOctave = noteOctave.octave
+        if newNoteIndex < 0 {
+            newOctave -= 1
+            newNoteIndex += Notes.all.count
+        }
+        let newNote = Notes.all[newNoteIndex % Notes.all.count]
+        return NoteOctave(note: newNote, octave: newOctave)
+    }
 }
