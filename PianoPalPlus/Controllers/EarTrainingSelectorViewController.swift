@@ -43,7 +43,7 @@ enum EarTrainingItem: String {
 class EarTrainingSelectorViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     private var tableView: UITableView!
     // todo add melody mode
-    private let items: [EarTrainingItem] = [.interval, .key, .chordType]
+    private let items: [EarTrainingItem] = [.interval, .chordType, .key]
     private let contentModeService: ContentModeService
     
     init(contentModeService: ContentModeService = ContentModeService.shared) {
