@@ -71,7 +71,7 @@ class NavigationTableViewController: UIViewController, UITableViewDataSource, UI
     
     private func setup() {
         navigationController?.navigationBar.topItem?.title = "Configure"
-        navigationController?.navigationBar.tintColor = .label
+        navigationController?.navigationBar.tintColor = UIColor.text
         
         tableView = self.view.addTableView()
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "NavigationItem")
@@ -90,7 +90,7 @@ class NavigationTableViewController: UIViewController, UITableViewDataSource, UI
         cell.textLabel?.font = UIFont(name: "Arial", size: 40)
         cell.textLabel?.textAlignment = .center
         let bgView = UIView()
-        bgView.backgroundColor = Colors.highlightedWhiteKey
+        bgView.backgroundColor = UIColor.selection
         cell.selectedBackgroundView = bgView
         return cell
     }

@@ -32,7 +32,7 @@ class CardView: UIView {
         cardLabel.textAlignment = .center
         cardLabel.numberOfLines = 0
         cardLabel.text = "welcome to the game zone"
-        addFullBoundsSubview(cardLabel)
+        addFullBoundsSubview(cardLabel, horizontalSpacing: 5)
         layer.shadowColor = UIColor.gray.cgColor
         layer.shadowRadius = 3
         layer.cornerRadius = 5

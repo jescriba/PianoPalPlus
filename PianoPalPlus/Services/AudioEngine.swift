@@ -34,7 +34,7 @@ class AudioEngine {
     private func setup() {
         var urls = [URL]()
         for octave in Octave.min...Octave.max {
-            Constants.orderedNotes.forEach { note in
+            Notes.all.forEach { note in
                 urls.append(NoteOctave(note: note, octave: octave).url())
             }
         }

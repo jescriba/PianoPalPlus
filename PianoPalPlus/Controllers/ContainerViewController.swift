@@ -9,7 +9,12 @@
 import UIKit
 import Combine
 
+enum ContentVC {
+    case piano, game
+}
+
 class ContainerViewController: UIViewController {
+    private var frontVC: ContentVC = .piano
     // controllers
     private var pianoViewController: PianoViewController!
     private var gameViewController: GameViewController!
@@ -119,18 +124,42 @@ class ContainerViewController: UIViewController {
             .filter({ $0 == true })
             .subscribe(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] _ in
-                self?.toolBarViewModel.togglePlayButton()
-                self?.pianoViewModel.togglePlayActive()
-                self?.gameViewController.togglePlayActive()
+                guard let selfV = self else { return }
+                selfV.toolBarViewModel.togglePlayButton()
+                switch selfV.contentModeService.contentMode {
+                case .earTraining(_):
+                    selfV.gameViewController.togglePlayActive()
+                default:
+                    selfV.pianoViewModel.togglePlayActive()
+                }
             }).store(in: &cancellables)
         contentModeService.$contentMode
             .subscribe(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] contentMode in
                 guard let selfV = self else { return }
                 if contentMode == ContentMode.freePlay {
+                    selfV.frontVC = .piano
                     selfV.view.bringSubviewToFront(selfV.pianoViewController.view)
                 } else {
+                    selfV.frontVC = .game
                     selfV.view.bringSubviewToFront(selfV.gameViewController.view)
+                }
+            }).store(in: &cancellables)
+        toolBarView.$pianoToggleButtonPublisher
+            .filter({ $0 == true })
+            .subscribe(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] _ in
+                guard let selfV = self else { return }
+                // TODONOw @joshua state with this and the above block fix
+                selfV.toolBarViewModel.togglePiano()
+                if selfV.frontVC == .piano {
+                    selfV.frontVC = .game
+                    selfV.view.bringSubviewToFront(selfV.gameViewController.view)
+                    selfV.toolBarViewModel.scrollLockButtonHidden = true
+                } else {
+                    selfV.frontVC = .piano
+                    selfV.view.bringSubviewToFront(selfV.pianoViewController.view)
+                    selfV.toolBarViewModel.scrollLockButtonHidden = false
                 }
             }).store(in: &cancellables)
     }

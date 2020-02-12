@@ -32,7 +32,7 @@ class PianoViewModel {
     private func setupNoteViewModels() {
         // DRY
         for octave in Octave.min...(Octave.max + 1) {
-            for note in Constants.orderedNotes.sorted(by: { a,b in
+            for note in Notes.all.sorted(by: { a,b in
                 if a.isWhiteKey() && b.isBlackKey() {
                     return true
                 }

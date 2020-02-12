@@ -71,7 +71,7 @@ class PianoView: UIView, UIScrollViewDelegate {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = UIColor.white
+        backgroundColor = UIColor.background
         setupView()
         setupSubscriptions()
     }
@@ -135,7 +135,7 @@ class PianoView: UIView, UIScrollViewDelegate {
         let offset = CGFloat(position - Octave.min) * scrollView.bounds.width
         let octaveView = UIView(frame: CGRect(x: offset, y: 0, width: width, height: height))
         var notes = [NoteOctave]()
-        for note in Constants.orderedNotes.sorted(by: { a,b in
+        for note in Notes.all.sorted(by: { a,b in
             if a.isWhiteKey() && b.isBlackKey() {
                 return true
             }

@@ -17,6 +17,7 @@ class ToolBarView: UIView {
     @Published var sequenceButtonPublisher = false
     @Published var scrollLockButtonPublisher = false
     @Published var noteLockButtonPublisher = false
+    @Published var pianoToggleButtonPublisher = false
     weak var viewModel: ToolBarViewModel? {
         didSet {
             bindViewModel()
@@ -31,8 +32,7 @@ class ToolBarView: UIView {
     private let scrollLockButton = UIButton()
     private let playButton = UIButton()
     private let settingsButton = UIButton()
-    private let playImage = UIImage(systemName: "play")?.withRenderingMode(.alwaysTemplate)
-    private let stopImage = UIImage(systemName: "stop")?.withRenderingMode(.alwaysTemplate)
+    private let pianoToggleButton = UIButton()
     private let scrollImage = UIImage(systemName: "arrow.right.arrow.left")?.withRenderingMode(.alwaysTemplate)
     private let settingsImage = UIImage(systemName: "gear")?.withRenderingMode(.alwaysTemplate)
     private let sequenceImage = UIImage(systemName: "square.stack.3d.down.dottedline")?.withRenderingMode(.alwaysTemplate)
@@ -52,6 +52,16 @@ class ToolBarView: UIView {
             .subscribe(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] title in
                 self?.titleLabel.text = title
+            }).store(in: &cancellables)
+        viewModel?.$pianoToggleButtonImage
+            .subscribe(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] image in
+                self?.pianoToggleButton.setImage(image, for: .normal)
+            }).store(in: &cancellables)
+        viewModel?.$pianoToggleButtonHidden
+            .subscribe(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] hidden in
+                self?.pianoToggleButton.isHidden = hidden
             }).store(in: &cancellables)
         viewModel?.$noteLockButtonImage
             .subscribe(on: DispatchQueue.main)
@@ -91,10 +101,10 @@ class ToolBarView: UIView {
     }
 
     private func setup() {
-        self.backgroundColor = .purple
+        self.backgroundColor = UIColor.toolbar
         
         // setup title
-        titleLabel.textColor = .white
+        titleLabel.textColor = UIColor.text
         titleLabel.textAlignment = .center
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(titleLabel)
@@ -118,11 +128,13 @@ class ToolBarView: UIView {
         scrollLockButton.setImage(scrollImage, for: .normal)
         scrollLockButton.addTarget(self, action: #selector(scrollLockTapped), for: .touchUpInside)
         noteLockButton.addTarget(self, action: #selector(noteLockTapped), for: .touchUpInside)
-        noteLockButton.imageView?.tintColor = .white
+        noteLockButton.imageView?.tintColor = UIColor.imageTint
         sequenceButton.setImage(sequenceImage, for: .normal)
         sequenceButton.addTarget(self, action: #selector(sequenceTapped), for: .touchUpInside)
-        sequenceButton.imageView?.tintColor = .white
-        [scrollLockButton, noteLockButton, sequenceButton].forEach { btn in
+        sequenceButton.imageView?.tintColor = UIColor.imageTint
+        pianoToggleButton.imageView?.tintColor = UIColor.imageTint
+        pianoToggleButton.addTarget(self, action: #selector(pianoToggleTapped), for: .touchUpInside)
+        [scrollLockButton, noteLockButton, sequenceButton, pianoToggleButton].forEach { btn in
             btn.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
                 btn.widthAnchor.constraint(equalToConstant: 50),
@@ -140,12 +152,12 @@ class ToolBarView: UIView {
             rightHStack.heightAnchor.constraint(equalToConstant: 50),
             rightHStack.rightAnchor.constraint(equalTo: self.rightAnchor)
         ])
-        playButton.setImage(playImage, for: .normal)
+        //playButton.setImage(playImage, for: .normal)
         playButton.addTarget(self, action: #selector(playTapped), for: .touchUpInside)
-        playButton.imageView?.tintColor = .white
+        playButton.imageView?.tintColor = UIColor.imageTint
         settingsButton.setImage(settingsImage, for: .normal)
         settingsButton.addTarget(self, action: #selector(settingsTapped), for: .touchUpInside)
-        settingsButton.imageView?.tintColor = .white
+        settingsButton.imageView?.tintColor = UIColor.imageTint
         [settingsButton, playButton].forEach { btn in
             btn.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
@@ -171,6 +183,10 @@ class ToolBarView: UIView {
 
     @objc func sequenceTapped() {
         sequenceButtonPublisher = true
+    }
+    
+    @objc func pianoToggleTapped() {
+        pianoToggleButtonPublisher = true
     }
 
     @objc func settingsTapped() {

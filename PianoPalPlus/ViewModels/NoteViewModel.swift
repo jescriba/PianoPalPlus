@@ -12,8 +12,8 @@ import Combine
 
 class NoteViewModel {
     @Published var label: String?
-    @Published var backgroundColor: UIColor = .white
-    @Published var borderColor: UIColor = Colors.keyBorder
+    @Published var backgroundColor: UIColor = UIColor.whiteKey
+    @Published var borderColor: UIColor = UIColor.border
     var isWhiteKey: Bool {
         return noteOctave.note.isWhiteKey()
     }

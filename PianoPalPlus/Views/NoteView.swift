@@ -51,7 +51,7 @@ class NoteView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.layer.borderWidth = 1
-        self.layer.borderColor = Colors.keyBorder.cgColor
+        self.layer.borderColor = UIColor.border.cgColor
         titleLabel.textAlignment = .center
         self.addFullBoundsSubview(titleLabel)
     }

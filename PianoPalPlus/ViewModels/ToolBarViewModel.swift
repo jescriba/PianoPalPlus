@@ -14,12 +14,16 @@ class ToolBarViewModel {
     @Published var title: String = ""
     @Published var noteLockButtonImage: UIImage?
     @Published var noteLockButtonHidden: Bool = false
+    @Published var pianoToggleButtonImage: UIImage?
+    @Published var pianoToggleButtonHidden: Bool = false
     @Published var playButtonImage: UIImage?
     @Published var playButtonHidden: Bool = false
-    @Published var sequenceButtonColor: UIColor = .white
+    @Published var sequenceButtonColor: UIColor = UIColor.imageTint
     @Published var sequenceButtonHidden: Bool = false
-    @Published var scrollLockButtonColor: UIColor = .white
+    @Published var scrollLockButtonColor: UIColor = UIColor.imageTint
     @Published var scrollLockButtonHidden: Bool = false
+    private let pianoImage = UIImage(named: "piano")?.withRenderingMode(.alwaysTemplate)
+    private let gridImage = UIImage(systemName: "square.grid.2x2.fill")?.withRenderingMode(.alwaysTemplate)
     private let noteLockedImage = UIImage(systemName: "lock")?.withRenderingMode(.alwaysTemplate)
     private let noteUnlockedImage = UIImage(systemName: "lock.open")?.withRenderingMode(.alwaysTemplate)
     private let playImage = UIImage(systemName: "play")?.withRenderingMode(.alwaysTemplate)
@@ -43,17 +47,23 @@ class ToolBarViewModel {
                 guard let selfV = self else { return }
                 selfV.noteLockButtonImage = noteLocked ? selfV.noteUnlockedImage : selfV.noteLockedImage
             }).store(in: &cancellables)
+        toolbar.$pianoToggled
+            .subscribe(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] pianoToggled in
+                guard let selfV = self else { return }
+                selfV.pianoToggleButtonImage = pianoToggled ? selfV.pianoImage : selfV.gridImage
+            }).store(in: &cancellables)
         toolbar.$scrollLocked
             .subscribe(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] scrollLocked in
                 guard let selfV = self else { return }
-                selfV.scrollLockButtonColor = scrollLocked ? .white : .gray
+                selfV.scrollLockButtonColor = scrollLocked ? UIColor.imageTint : UIColor.imageSelectedTint
             }).store(in: &cancellables)
         toolbar.$sequenceActive
             .subscribe(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] sequenceActive in
                 guard let selfV = self else { return }
-                selfV.sequenceButtonColor = sequenceActive ? .lightGray : .white
+                selfV.sequenceButtonColor = sequenceActive ? UIColor.imageSelectedTint : UIColor.imageTint
             }).store(in: &cancellables)
         toolbar.$playActive
             .subscribe(on: DispatchQueue.main)
@@ -70,13 +80,17 @@ class ToolBarViewModel {
                 case .freePlay:
                     selfV.noteLockButtonHidden = false
                     selfV.sequenceButtonHidden = false
+                    selfV.scrollLockButtonHidden = false
+                    selfV.pianoToggleButtonHidden = true
                 case .earTraining(_):
                     selfV.scrollLockButtonHidden = true
                     selfV.noteLockButtonHidden = true
                     selfV.sequenceButtonHidden = true
+                    selfV.pianoToggleButtonHidden = false
                 case .theory:
                     selfV.noteLockButtonHidden = false
                     selfV.sequenceButtonHidden = false
+                    selfV.pianoToggleButtonHidden = true
                 }
             }).store(in: &cancellables)
     }
@@ -97,7 +111,7 @@ class ToolBarViewModel {
         toolbar.sequenceActive = !toolbar.sequenceActive
     }
     
-    func toggleContentMode() {
-        //toolbar.contentMode
+    func togglePiano() {
+        toolbar.pianoToggled = !toolbar.pianoToggled
     }
 }

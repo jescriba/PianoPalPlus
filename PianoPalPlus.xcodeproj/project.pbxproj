@@ -29,8 +29,6 @@
 		4260129023BD55B8007BEC7F /* Note.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4260128F23BD55B8007BEC7F /* Note.swift */; };
 		4260129223BD55C0007BEC7F /* NoteOctave.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4260129123BD55C0007BEC7F /* NoteOctave.swift */; };
 		4260129423BD8E76007BEC7F /* KeyColorPair.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4260129323BD8E76007BEC7F /* KeyColorPair.swift */; };
-		4260129D23BD8ECD007BEC7F /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4260129823BD8ECC007BEC7F /* Colors.swift */; };
-		4260129F23BD8ECD007BEC7F /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4260129A23BD8ECD007BEC7F /* Constants.swift */; };
 		426012A123BD8ECD007BEC7F /* KeyProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4260129C23BD8ECD007BEC7F /* KeyProperties.swift */; };
 		426012A323BD9277007BEC7F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426012A223BD9277007BEC7F /* SceneDelegate.swift */; };
 		429CD1DE23DE52AA00E86DFE /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429CD1DD23DE52AA00E86DFE /* SettingsViewController.swift */; };
@@ -130,6 +128,7 @@
 		42C974D523DD0FA100841216 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42C974D423DD0FA100841216 /* SnapshotHelper.swift */; };
 		42D1AADF23DE3E60003A3DEA /* NavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D1AADE23DE3E60003A3DEA /* NavigationViewController.swift */; };
 		42DF135A23D622A400CC9D68 /* AudioEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF135923D622A400CC9D68 /* AudioEngine.swift */; };
+		42E0AC9D23F3FE3100C822EF /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E0AC9C23F3FE3100C822EF /* UIColor+Extension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -178,8 +177,6 @@
 		4260128F23BD55B8007BEC7F /* Note.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Note.swift; sourceTree = "<group>"; };
 		4260129123BD55C0007BEC7F /* NoteOctave.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoteOctave.swift; sourceTree = "<group>"; };
 		4260129323BD8E76007BEC7F /* KeyColorPair.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyColorPair.swift; sourceTree = "<group>"; };
-		4260129823BD8ECC007BEC7F /* Colors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
-		4260129A23BD8ECD007BEC7F /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		4260129C23BD8ECD007BEC7F /* KeyProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyProperties.swift; sourceTree = "<group>"; };
 		426012A223BD9277007BEC7F /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		429CD1DD23DE52AA00E86DFE /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
@@ -279,6 +276,7 @@
 		42C974D423DD0FA100841216 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SnapshotHelper.swift; path = fastlane/SnapshotHelper.swift; sourceTree = SOURCE_ROOT; };
 		42D1AADE23DE3E60003A3DEA /* NavigationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationViewController.swift; sourceTree = "<group>"; };
 		42DF135923D622A400CC9D68 /* AudioEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEngine.swift; sourceTree = "<group>"; };
+		42E0AC9C23F3FE3100C822EF /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -392,9 +390,8 @@
 		4260129723BD8EC4007BEC7F /* Constants */ = {
 			isa = PBXGroup;
 			children = (
-				4260129823BD8ECC007BEC7F /* Colors.swift */,
-				4260129A23BD8ECD007BEC7F /* Constants.swift */,
 				4260129C23BD8ECD007BEC7F /* KeyProperties.swift */,
+				42E0AC9C23F3FE3100C822EF /* UIColor+Extension.swift */,
 			);
 			path = Constants;
 			sourceTree = "<group>";
@@ -751,11 +748,9 @@
 				42AA3B6823E407320003F89F /* PianoViewController.swift in Sources */,
 				425F4CF823F0C89B00970DA7 /* ChordGenerator.swift in Sources */,
 				4260129223BD55C0007BEC7F /* NoteOctave.swift in Sources */,
-				4260129D23BD8ECD007BEC7F /* Colors.swift in Sources */,
 				4260125C23BD54AC007BEC7F /* ContainerViewController.swift in Sources */,
 				4260128B23BD557E007BEC7F /* NoteView.swift in Sources */,
 				4260125823BD54AC007BEC7F /* AppDelegate.swift in Sources */,
-				4260129F23BD8ECD007BEC7F /* Constants.swift in Sources */,
 				42C974D323D6BF4D00841216 /* ToolBarView.swift in Sources */,
 				425F4CF623F0C89100970DA7 /* IntervalGenerator.swift in Sources */,
 				42AA3B6E23E40D4A0003F89F /* PianoViewModel.swift in Sources */,
@@ -769,6 +764,7 @@
 				426012A323BD9277007BEC7F /* SceneDelegate.swift in Sources */,
 				4207082523EEDAC4002FBB87 /* CardViewModel.swift in Sources */,
 				426012A123BD8ECD007BEC7F /* KeyProperties.swift in Sources */,
+				42E0AC9D23F3FE3100C822EF /* UIColor+Extension.swift in Sources */,
 				429CD1E023DE52BC00E86DFE /* EarTrainingSelectorViewController.swift in Sources */,
 				42D1AADF23DE3E60003A3DEA /* NavigationViewController.swift in Sources */,
 				4207082923EFAE49002FBB87 /* Interval.swift in Sources */,

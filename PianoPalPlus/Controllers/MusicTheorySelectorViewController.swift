@@ -19,7 +19,7 @@ class MusicTheorySelectorViewController: UIViewController, UITableViewDataSource
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = UIColor.background
         title = "Music Theory"
         tableView = self.view.addTableView()
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "MusicTheoryItem")
@@ -38,7 +38,7 @@ class MusicTheorySelectorViewController: UIViewController, UITableViewDataSource
         cell.textLabel?.font = UIFont(name: "Arial", size: 40)
         cell.textLabel?.textAlignment = .center
         let bgView = UIView()
-        bgView.backgroundColor = Colors.highlightedWhiteKey
+        bgView.backgroundColor = UIColor(named: "sele")
         cell.selectedBackgroundView = bgView
         return cell
     }

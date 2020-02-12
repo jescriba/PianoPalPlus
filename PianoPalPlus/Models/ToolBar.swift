@@ -14,5 +14,6 @@ class ToolBar {
     @Published var noteLocked: Bool = false
     @Published var playActive: Bool = false
     @Published var sequenceActive: Bool = false
+    @Published var pianoToggled: Bool = true
     @Published var contentMode: ContentMode?
 }

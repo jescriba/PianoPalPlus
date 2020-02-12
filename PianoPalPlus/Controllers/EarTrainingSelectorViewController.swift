@@ -57,7 +57,7 @@ class EarTrainingSelectorViewController: UIViewController, UITableViewDataSource
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = UIColor.background
         title = "Ear Training"
         tableView = self.view.addTableView()
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "EarTrainingItem")
@@ -76,7 +76,7 @@ class EarTrainingSelectorViewController: UIViewController, UITableViewDataSource
         cell.textLabel?.font = UIFont(name: "Arial", size: 40)
         cell.textLabel?.textAlignment = .center
         let bgView = UIView()
-        bgView.backgroundColor = Colors.highlightedWhiteKey
+        bgView.backgroundColor = UIColor.selection
         cell.selectedBackgroundView = bgView
         return cell
     }

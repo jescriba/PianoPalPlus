@@ -33,7 +33,7 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = UIColor.background
         setupSubscriptions()
         setupSelectionCollectionView()
         setupCardView()
@@ -61,9 +61,7 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
     
     private func setupCardView() {
         cardView.translatesAutoresizingMaskIntoConstraints = false
-        cardView.backgroundColor = .systemBackground
-        cardView.layer.borderColor = UIColor.gray.cgColor
-        cardView.layer.borderWidth = 3
+        cardView.backgroundColor = UIColor.cellBackground
         cardView.layer.cornerRadius = 10
         cardView.viewModel = cardViewModel
         view.addSubview(cardView)
@@ -110,6 +108,7 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
         selectionCollectionView.dataSource = self
         selectionCollectionView.backgroundColor = .clear
         selectionCollectionView.showsVerticalScrollIndicator = false
+        selectionCollectionView.clipsToBounds = false
         view.addFullBoundsSubview(selectionCollectionView, horizontalSpacing: 50, verticalSpacing: 10)
         view.sendSubviewToBack(selectionCollectionView)
     }
@@ -124,18 +123,24 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SelectionCell", for: indexPath)
-        cell.subviews.forEach({ $0.removeFromSuperview() }) // hack clean up reused cell 
-        cell.layer.borderColor = UIColor.gray.cgColor
-        cell.layer.borderWidth = 2
-        cell.layer.cornerRadius = 5
+        cell.contentView.subviews.forEach({ $0.removeFromSuperview() }) // hack clean up reused cell
+        // refactor candidate
+        cell.layer.shadowOpacity = 1
+        cell.layer.shadowRadius = 1
+        cell.layer.shadowColor = UIColor.shadow.cgColor
+        cell.backgroundColor = UIColor.cellBackground
+        cell.layer.shadowOffset = CGSize(width: 0, height: 1)
+        cell.layer.masksToBounds = false
+        cell.layer.cornerRadius = 3
+        
         let label = UILabel()
         label.numberOfLines = 0
         label.text = gameEngine.selectionItems[indexPath.row].title
         label.textAlignment = .center
-        cell.addFullBoundsSubview(label)
+        cell.contentView.addFullBoundsSubview(label, horizontalSpacing: 5)
         let bgView = UIView()
-        bgView.backgroundColor = Colors.highlightedWhiteKey
-        bgView.layer.cornerRadius = 5
+        bgView.backgroundColor = UIColor.selection
+        bgView.layer.cornerRadius = 3
         cell.selectedBackgroundView = bgView
         return cell
     }

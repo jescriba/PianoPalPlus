@@ -71,6 +71,6 @@ enum Note : Int {
     }
     
     func baseInt() -> Int {
-        return Constants.orderedNotes.firstIndex(of: self)!
+        return Notes.all.firstIndex(of: self)!
     }
 }

@@ -15,8 +15,8 @@ struct NoteColor: Hashable {
 }
 
 struct KeyColorPair {
-    static let basic = KeyColorPair(whiteKeyColor: .white, blackKeyColor: .black)
-    static let selected = KeyColorPair(whiteKeyColor: Colors.highlightedWhiteKey, blackKeyColor: Colors.highlightedBlackKey)
+    static let basic = KeyColorPair(whiteKeyColor: UIColor.whiteKey, blackKeyColor: UIColor.blackKey)
+    static let selected = KeyColorPair(whiteKeyColor: UIColor.selectedWhiteKey, blackKeyColor: UIColor.selectedBlackKey)
     
     var whiteKeyColor: UIColor
     var blackKeyColor: UIColor

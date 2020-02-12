@@ -10,7 +10,7 @@ import Foundation
 
 class NoteOctaveGenerator {
     static func random() -> NoteOctave {
-        let randomNote = Constants.orderedNotes.randomElement()!
+        let randomNote = Notes.all.randomElement()!
         let randomOctave = Int.random(in: (Octave.min + 1)..<Octave.max) // keeping chords from going low...
         return NoteOctave(note: randomNote, octave: randomOctave)
     }
