@@ -8,16 +8,29 @@
   },
   "data": [
     {
-      "filter": "01",
+      "filter": "freePlay",
       "keyword": {
         "color": "#205CCD"
       }
     },
     {
-      "filter": "02",
+      "filter": "intervalTraining",
+      "keyword": {
+        "color": "#205CCD"
+      }
+    },
+    {
+      "filter": "chordTraining",
+      "keyword": {
+        "color": "#205CCD"
+      }
+    },
+    {
+      "filter": "keyTraining",
       "keyword": {
         "color": "#205CCD"
       }
     }
+
   ]
 }

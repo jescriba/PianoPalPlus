@@ -82,6 +82,8 @@ fastlane/Preview.html
 fastlane/screenshots/*
 !fastlane/screenshots/Framefile.json
 !fastlane/screenshots/background.jpg
+!fastlane/screenshots/en-US/keyword.strings
+!fastlane/screenshots/en-US/title.strings
 fastlane/test_output
 fastlane/Appfile
 
