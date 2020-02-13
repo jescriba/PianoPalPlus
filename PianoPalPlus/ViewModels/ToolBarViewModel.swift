@@ -29,11 +29,15 @@ class ToolBarViewModel {
     private let playImage = UIImage(systemName: "play")?.withRenderingMode(.alwaysTemplate)
     private let stopImage = UIImage(systemName: "stop")?.withRenderingMode(.alwaysTemplate)
     private let toolbar: ToolBar
+    private let audioEngine: AudioEngine
     private let contentModeService: ContentModeService
     private let contentModes: [ContentMode]  = [.freePlay, .earTraining(.interval)]
     
-    init(toolBar: ToolBar = ToolBar(), contentModeService: ContentModeService = ContentModeService.shared) {
+    init(toolBar: ToolBar = ToolBar(),
+         audioEngine: AudioEngine = AudioEngine.shared,
+         contentModeService: ContentModeService = ContentModeService.shared) {
         self.toolbar = toolBar
+        self.audioEngine = audioEngine
         self.contentModeService = contentModeService
         
         setupSubscriptions()
@@ -100,6 +104,11 @@ class ToolBarViewModel {
                     selfV.sequenceButtonHidden = false
                     selfV.pianoToggleButtonHidden = true
                 }
+            }).store(in: &cancellables)
+        audioEngine.$isPlaying
+            .subscribe(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] isPlaying in
+                self?.toolbar.playActive = isPlaying
             }).store(in: &cancellables)
     }
     

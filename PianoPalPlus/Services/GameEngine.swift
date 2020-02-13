@@ -66,6 +66,8 @@ class GameEngine {
     }
     
     func submit(index: Int, completion: ((Bool, Selection?) -> Void)) {
+        // ensure cancel work items
+        stop()
         guard index < selectionItems.count else { return }
         let selection = selectionItems[index]
         let result = isCorrectSubmission(selection)

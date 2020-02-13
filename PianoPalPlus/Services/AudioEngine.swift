@@ -11,6 +11,7 @@ import AVFoundation
 import Combine
 
 class AudioEngine {
+    @Published var isPlaying = false
     static let shared = AudioEngine()
     let format = AVAudioFormat(standardFormatWithSampleRate: 44100.0, channels: 2)
     private let noteVelocity: UInt8 = 127
@@ -46,6 +47,7 @@ class AudioEngine {
     
     private var workItems = [DispatchWorkItem]()
     func play<T: Sequence>(_ notes: T, isSequencing: Bool = false) where T.Iterator.Element == NoteOctave {
+        isPlaying = true
         if isSequencing {
             //let seq = AVAudioSequencer(audioEngine: _engine)
             // TODO Use AVAudioSequencer to schedule events so timing is consistent
@@ -71,5 +73,6 @@ class AudioEngine {
         // clear pending work items
         workItems.forEach({ $0.cancel() })
         workItems.removeAll()
+        isPlaying = false
     }
 }
