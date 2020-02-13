@@ -30,18 +30,45 @@ class PianoPalPlusUITests: XCTestCase {
         // UI tests must launch the application that they test.
         let app = XCUIApplication()
         app.launch()
-        snapshot("01")
         app.buttons["lock"].tap()
         
-        let elementsQuery = app.scrollViews.otherElements
-        elementsQuery.staticTexts["D3"].tap()
-        elementsQuery.staticTexts["F3"].tap()
-        elementsQuery.staticTexts["Bb3"].tap()
+        let element = app.scrollViews.children(matching: .other).element.children(matching: .other).element(boundBy: 3)
+        element.children(matching: .other).element(boundBy: 1).tap()
+        element.children(matching: .other).element(boundBy: 5).tap()
+        element.children(matching: .other).element(boundBy: 8).tap()
+        app.buttons["square.stack.3d.down.dottedline"].tap()
+        app.buttons["arrow.right.arrow.left"].tap()
         
-        let squareStack3dDownDottedlineButton = app.buttons["square.stack.3d.down.dottedline"]
-        squareStack3dDownDottedlineButton.tap()
-        snapshot("02")
+        // free play
+        snapshot("freePlay")
+        
+        app.buttons["gear"].tap()
+        var tablesQuery = app.tables
+        tablesQuery/*@START_MENU_TOKEN@*/.staticTexts["practice ear training"]/*[[".cells.staticTexts[\"practice ear training\"]",".staticTexts[\"practice ear training\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
+        tablesQuery/*@START_MENU_TOKEN@*/.staticTexts["interval"]/*[[".cells.staticTexts[\"interval\"]",".staticTexts[\"interval\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
+        app.buttons["play"].tap()
+        
+        // interval training
+        snapshot("intervalTraining")
+        
+        
+        let gearButton = app.buttons["gear"]
+        gearButton.tap()
+        
+        tablesQuery = app.tables
+        let practiceEarTrainingStaticText = tablesQuery/*@START_MENU_TOKEN@*/.staticTexts["practice ear training"]/*[[".cells.staticTexts[\"practice ear training\"]",".staticTexts[\"practice ear training\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/
+        practiceEarTrainingStaticText.tap()
+        tablesQuery/*@START_MENU_TOKEN@*/.staticTexts["chord type"]/*[[".cells.staticTexts[\"chord type\"]",".staticTexts[\"chord type\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
+        // chord training
+        snapshot("chordTraining")
+        
 
+        gearButton.tap()
+        practiceEarTrainingStaticText.tap()
+        tablesQuery/*@START_MENU_TOKEN@*/.staticTexts["key"]/*[[".cells.staticTexts[\"key\"]",".staticTexts[\"key\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
+        
+        // key training
+        snapshot("keyTraining")
         // Use recording to get started writing UI tests.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
