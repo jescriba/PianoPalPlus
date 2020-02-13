@@ -28,7 +28,7 @@ enum ScaleType: String {
 }
 
 class ScaleGenerator {
-    // TODONOW @joshua - plan of attack. get the key mode working, then piano/game toggle button, then bug fixing (canceling dispatch queue async after and improve play button binding). and ship this iteration. v0.4 should have basic chord/scale mode. Before v1 I should probably get more accurate timing/sequencing figured out
+    // TODONOW @joshua - plan of attack. get the key mode working, then piano/game toggle button, then bug fixing (canceling dispatch queue async after and improve play button binding). and ship this iteration. v0.4 should have basic chord/scale mode. v0.5 functional harmony. Before v1 I should probably get more accurate timing/sequencing figured out
     static func notes(for type: ScaleType,
                       root: NoteOctave? = nil) -> [NoteOctave] {
         let rootNote = root ?? NoteOctaveGenerator.random()

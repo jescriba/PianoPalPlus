@@ -46,12 +46,13 @@ class ToolBarViewModel {
             .sink(receiveValue: { [weak self] noteLocked in
                 guard let selfV = self else { return }
                 selfV.noteLockButtonImage = noteLocked ? selfV.noteUnlockedImage : selfV.noteLockedImage
+                selfV.sequenceButtonHidden = !noteLocked
             }).store(in: &cancellables)
         toolbar.$pianoToggled
             .subscribe(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] pianoToggled in
                 guard let selfV = self else { return }
-                selfV.pianoToggleButtonImage = pianoToggled ? selfV.pianoImage : selfV.gridImage
+                selfV.pianoToggleButtonImage = pianoToggled ? selfV.gridImage : selfV.pianoImage
             }).store(in: &cancellables)
         toolbar.$scrollLocked
             .subscribe(on: DispatchQueue.main)
@@ -79,14 +80,16 @@ class ToolBarViewModel {
                 switch contentMode {
                 case .freePlay:
                     selfV.noteLockButtonHidden = false
-                    selfV.sequenceButtonHidden = false
+                    selfV.sequenceButtonHidden = true
                     selfV.scrollLockButtonHidden = false
                     selfV.pianoToggleButtonHidden = true
+                    selfV.toolbar.pianoToggled = true
                 case .earTraining(_):
                     selfV.scrollLockButtonHidden = true
                     selfV.noteLockButtonHidden = true
                     selfV.sequenceButtonHidden = true
                     selfV.pianoToggleButtonHidden = false
+                    selfV.toolbar.pianoToggled = false
                 case .theory:
                     selfV.noteLockButtonHidden = false
                     selfV.sequenceButtonHidden = false
@@ -113,5 +116,11 @@ class ToolBarViewModel {
     
     func togglePiano() {
         toolbar.pianoToggled = !toolbar.pianoToggled
+        switch contentModeService.contentMode {
+        case .earTraining(_):
+            scrollLockButtonHidden = !toolbar.pianoToggled
+        default:
+            break
+        }
     }
 }

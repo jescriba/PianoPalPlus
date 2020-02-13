@@ -150,16 +150,13 @@ class ContainerViewController: UIViewController {
             .subscribe(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] _ in
                 guard let selfV = self else { return }
-                // TODONOw @joshua state with this and the above block fix
                 selfV.toolBarViewModel.togglePiano()
                 if selfV.frontVC == .piano {
                     selfV.frontVC = .game
                     selfV.view.bringSubviewToFront(selfV.gameViewController.view)
-                    selfV.toolBarViewModel.scrollLockButtonHidden = true
                 } else {
                     selfV.frontVC = .piano
                     selfV.view.bringSubviewToFront(selfV.pianoViewController.view)
-                    selfV.toolBarViewModel.scrollLockButtonHidden = false
                 }
             }).store(in: &cancellables)
     }
