@@ -63,6 +63,11 @@ class ToolBarView: UIView {
             .sink(receiveValue: { [weak self] hidden in
                 self?.pianoToggleButton.isHidden = hidden
             }).store(in: &cancellables)
+        viewModel?.$playButtonHidden
+            .subscribe(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] hidden in
+                self?.playButton.isHidden = hidden
+            }).store(in: &cancellables)
         viewModel?.$noteLockButtonImage
             .subscribe(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] image in

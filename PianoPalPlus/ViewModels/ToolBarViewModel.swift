@@ -47,6 +47,9 @@ class ToolBarViewModel {
                 guard let selfV = self else { return }
                 selfV.noteLockButtonImage = noteLocked ? selfV.noteUnlockedImage : selfV.noteLockedImage
                 selfV.sequenceButtonHidden = !noteLocked
+                if selfV.contentModeService.contentMode == .freePlay {
+                    selfV.playButtonHidden = !noteLocked
+                }
             }).store(in: &cancellables)
         toolbar.$pianoToggled
             .subscribe(on: DispatchQueue.main)
@@ -84,12 +87,14 @@ class ToolBarViewModel {
                     selfV.scrollLockButtonHidden = false
                     selfV.pianoToggleButtonHidden = true
                     selfV.toolbar.pianoToggled = true
+                    selfV.playButtonHidden = true
                 case .earTraining(_):
                     selfV.scrollLockButtonHidden = true
                     selfV.noteLockButtonHidden = true
                     selfV.sequenceButtonHidden = true
                     selfV.pianoToggleButtonHidden = false
                     selfV.toolbar.pianoToggled = false
+                    selfV.playButtonHidden = false
                 case .theory:
                     selfV.noteLockButtonHidden = false
                     selfV.sequenceButtonHidden = false
