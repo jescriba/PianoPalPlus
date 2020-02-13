@@ -75,6 +75,8 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
         cardBackgroundView.alpha = 0.8
         let effectView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
         effectView.backgroundColor = .clear
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(hideCardView(withDuration:)))
+        cardBackgroundView.addGestureRecognizer(tapRecognizer)
         cardBackgroundView.addFullBoundsSubview(effectView)
         cardView.alpha = 0
     }
@@ -88,13 +90,13 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
             self.view.layoutIfNeeded()
         }, completion: { _ in
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + 3, execute: { [weak self] in
-                self?.hideCardView()
+                self?.hideCardView(withDuration: 0.5)
             })
         })
     }
 
-    private func hideCardView() {
-        UIView.animate(withDuration: 0.5, delay: 0, options: [.curveEaseIn], animations: {
+    @objc private func hideCardView(withDuration duration: Double = 0) {
+        UIView.animate(withDuration: duration, delay: 0, options: [.curveEaseIn], animations: {
             self.cardView.alpha = 0
             self.view.layoutIfNeeded()
         }, completion: { _ in

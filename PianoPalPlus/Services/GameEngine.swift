@@ -32,25 +32,33 @@ class GameEngine {
     private func setupSubscriptions() {
         contentModeService.$contentMode
             .sink(receiveValue: { [weak self] mode in
-                // TODO
-                self?.setupSelectionItems(mode: mode)
-                self?.generatePlayable(mode: mode)
+                guard let selfV = self else { return }
+                // clear any existing work items
+                selfV.stop()
+                selfV.setupSelectionItems(mode: mode)
+                selfV.generatePlayable(mode: mode)
             }).store(in: &cancellables)
     }
     
+    private var workItems = [DispatchWorkItem]()
     func play() {
         isPlaying = true
         currentPlayable.enumerated().forEach({ (arg) in
             let (index, noteOctaves) = arg
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + DispatchTimeInterval.seconds(index), execute: { [weak self] in
+            let workItem = DispatchWorkItem(block: { [weak self] in
                 self?.audioEngine.play(noteOctaves)
             })
+            workItems.append(workItem)
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + DispatchTimeInterval.seconds(index), execute: workItem)
         })
     }
     
     func stop() {
         isPlaying = false
         audioEngine.stop(currentPlayable.flatMap({ $0 }))
+        // stop pending work items
+        workItems.forEach({ $0.cancel() })
+        workItems.removeAll()
     }
     
     func next() {

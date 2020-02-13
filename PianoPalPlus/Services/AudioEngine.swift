@@ -44,6 +44,7 @@ class AudioEngine {
         _engine.prepare()
     }
     
+    private var workItems = [DispatchWorkItem]()
     func play<T: Sequence>(_ notes: T, isSequencing: Bool = false) where T.Iterator.Element == NoteOctave {
         if isSequencing {
             //let seq = AVAudioSequencer(audioEngine: _engine)
@@ -51,9 +52,12 @@ class AudioEngine {
             notes.enumerated().forEach { (arg) in
                 let (index, note) = arg
                 // hack sequencing for now...
-                DispatchQueue.global().asyncAfter(deadline: .now() + Double(index) * 0.5, execute: {
-                    self.pianoSampler.startNote(note.midiNote, withVelocity: self.noteVelocity, onChannel: 0)
-                    })
+                let workItem = DispatchWorkItem(block: { [weak self] in
+                    guard let selfV = self else { return }
+                    selfV.pianoSampler.startNote(note.midiNote, withVelocity: selfV.noteVelocity, onChannel: 0)
+                })
+                workItems.append(workItem)
+                DispatchQueue.global().asyncAfter(deadline: .now() + Double(index) * 0.5, execute: workItem)
             }
         } else {
             notes.forEach {
@@ -64,5 +68,8 @@ class AudioEngine {
     
     func stop<T: Sequence>(_ notes: T) where T.Iterator.Element == NoteOctave {
         notes.forEach { pianoSampler.stopNote($0.midiNote, onChannel: 0) }
+        // clear pending work items
+        workItems.forEach({ $0.cancel() })
+        workItems.removeAll()
     }
 }
