@@ -12,8 +12,7 @@ import Combine
 class Piano {
     @Published var noteLocked: Bool = false
     @Published var scrollLocked: Bool = true
-    @Published var selectedNotes: Set<NoteOctave> = Set<NoteOctave>()
-    @Published var playingNotes: Set<NoteOctave> = Set<NoteOctave>()
-    @Published var playing: Bool = false
+    @Published var selectedNotes: ObservableUniqueArray<NoteOctave> = ObservableUniqueArray<NoteOctave>()
     @Published var sequencing: Bool = false
+    @Published var playing: Bool = false
 }

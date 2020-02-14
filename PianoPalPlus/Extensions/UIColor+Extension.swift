@@ -16,6 +16,8 @@ extension UIColor {
     static let border = UIColor(named: "border")!
     static let selectedBlackKey = UIColor(named: "selectedBlackKey")!
     static let selectedWhiteKey = UIColor(named: "selectedWhiteKey")!
+    static let playingBlackKey = UIColor(named: "playingBlackKey")!
+    static let playingWhiteKey = UIColor(named: "playingWhiteKey")!
     static let selection = UIColor(named: "selection")!
     static let text = UIColor(named: "text")!
     static let toolbar = UIColor(named: "toolbar")!

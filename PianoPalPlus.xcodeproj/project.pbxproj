@@ -129,6 +129,7 @@
 		42D1AADF23DE3E60003A3DEA /* NavigationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42D1AADE23DE3E60003A3DEA /* NavigationViewController.swift */; };
 		42DF135A23D622A400CC9D68 /* AudioEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42DF135923D622A400CC9D68 /* AudioEngine.swift */; };
 		42E0AC9D23F3FE3100C822EF /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E0AC9C23F3FE3100C822EF /* UIColor+Extension.swift */; };
+		42E0ACA323F58EA200C822EF /* ObservableUniqueArray.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E0ACA223F58EA200C822EF /* ObservableUniqueArray.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -277,6 +278,7 @@
 		42D1AADE23DE3E60003A3DEA /* NavigationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationViewController.swift; sourceTree = "<group>"; };
 		42DF135923D622A400CC9D68 /* AudioEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioEngine.swift; sourceTree = "<group>"; };
 		42E0AC9C23F3FE3100C822EF /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
+		42E0ACA223F58EA200C822EF /* ObservableUniqueArray.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObservableUniqueArray.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -327,6 +329,7 @@
 		4260125623BD54AC007BEC7F /* PianoPalPlus */ = {
 			isa = PBXGroup;
 			children = (
+				42E0AC9F23F58E0E00C822EF /* Extensions */,
 				42C973B123D58EA100841216 /* Audio */,
 				4260129723BD8EC4007BEC7F /* Constants */,
 				42DF135823D6227800CC9D68 /* Services */,
@@ -391,7 +394,6 @@
 			isa = PBXGroup;
 			children = (
 				4260129C23BD8ECD007BEC7F /* KeyProperties.swift */,
-				42E0AC9C23F3FE3100C822EF /* UIColor+Extension.swift */,
 			);
 			path = Constants;
 			sourceTree = "<group>";
@@ -524,6 +526,15 @@
 				425F4CFB23F0D50500970DA7 /* KeyGenerator.swift */,
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		42E0AC9F23F58E0E00C822EF /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				42E0AC9C23F3FE3100C822EF /* UIColor+Extension.swift */,
+				42E0ACA223F58EA200C822EF /* ObservableUniqueArray.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -767,6 +778,7 @@
 				42E0AC9D23F3FE3100C822EF /* UIColor+Extension.swift in Sources */,
 				429CD1E023DE52BC00E86DFE /* EarTrainingSelectorViewController.swift in Sources */,
 				42D1AADF23DE3E60003A3DEA /* NavigationViewController.swift in Sources */,
+				42E0ACA323F58EA200C822EF /* ObservableUniqueArray.swift in Sources */,
 				4207082923EFAE49002FBB87 /* Interval.swift in Sources */,
 				42AA3B6C23E40A0C0003F89F /* ToolBar.swift in Sources */,
 				42AA3B6623E4069A0003F89F /* ToolBarViewModel.swift in Sources */,

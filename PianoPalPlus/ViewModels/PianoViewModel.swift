@@ -26,7 +26,6 @@ class PianoViewModel {
         
         setupNoteViewModels()
         setupSubscriptions()
-        setupAudioBinding()
     }
     
     private func setupNoteViewModels() {
@@ -59,38 +58,34 @@ class PianoViewModel {
                     selfV.piano.selectedNotes.removeAll()
                 }
             }).store(in: &cancellables)
-        piano.$selectedNotes
+        piano.selectedNotes.$changedElements
             .subscribe(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] noteOctaves in
-                guard let selfV = self else { return }
-                if selfV.noteLocked {
-                    selfV.noteViewModels.forEach({ $0.keyColorPair =  noteOctaves.contains($0.noteOctave) ? .selected : .basic })
-                } else {
-                    selfV.noteViewModels.forEach({ $0.keyColorPair =  noteOctaves.contains($0.noteOctave) ? .selected : .basic })
-                    selfV.piano.playingNotes = noteOctaves.subtracting(selfV.piano.playingNotes)
+            .sink(receiveValue: { [weak self] changedElementsO in
+                guard let selfV = self, let changedElements = changedElementsO else { return }
+                if changedElements.change == .added {
+                    selfV.noteViewModels.filter({ changedElements.values.contains($0.noteOctave) })
+                        .forEach({ $0.keyColorPair = .selected })
+                    if !selfV.noteLocked {
+                        selfV.audioEngine.play(changedElements.values)
+                    }
+                } else if changedElements.change == .removed {
+                    selfV.noteViewModels.filter({ changedElements.values.contains($0.noteOctave) })
+                        .forEach({ $0.keyColorPair = .basic })
+                    if !selfV.noteLocked {
+                        selfV.audioEngine.stop(changedElements.values)
+                    }
                 }
-            }).store(in: &cancellables)
-        piano.$playingNotes
-            .subscribe(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] noteOctaves in
-                guard let selfV = self else { return }
-                selfV.audioEngine.stop(Set(selfV.noteViewModels.map { $0.noteOctave }).subtracting(noteOctaves))
-                selfV.audioEngine.play(noteOctaves, isSequencing: selfV.piano.sequencing)
             }).store(in: &cancellables)
         piano.$playing
             .subscribe(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] playing in
-                guard let selfV = self else { return }
+                guard let selfV = self, selfV.piano.noteLocked else { return }
                 if playing {
-                    selfV.audioEngine.play(selfV.piano.selectedNotes, isSequencing: selfV.piano.sequencing)
+                    selfV.audioEngine.play(selfV.piano.selectedNotes.array, isSequencing: selfV.piano.sequencing)
                 } else {
-                    selfV.audioEngine.stop(selfV.piano.selectedNotes)
+                    selfV.audioEngine.stop(selfV.piano.selectedNotes.array)
                 }
             }).store(in: &cancellables)
-    }
-    
-    private func setupAudioBinding() {
-        // TODO
     }
     
     func hasTouch(_ hasTouch: Bool, noteOctave: NoteOctave) {
