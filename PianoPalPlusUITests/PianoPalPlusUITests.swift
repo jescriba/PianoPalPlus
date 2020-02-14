@@ -47,6 +47,7 @@ class PianoPalPlusUITests: XCTestCase {
         tablesQuery/*@START_MENU_TOKEN@*/.staticTexts["practice ear training"]/*[[".cells.staticTexts[\"practice ear training\"]",".staticTexts[\"practice ear training\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
         tablesQuery/*@START_MENU_TOKEN@*/.staticTexts["interval"]/*[[".cells.staticTexts[\"interval\"]",".staticTexts[\"interval\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
         app.buttons["play"].tap()
+        sleep(4) // hack to wait for dismissing animation
         
         // interval training
         snapshot("intervalTraining")
@@ -59,6 +60,7 @@ class PianoPalPlusUITests: XCTestCase {
         let practiceEarTrainingStaticText = tablesQuery/*@START_MENU_TOKEN@*/.staticTexts["practice ear training"]/*[[".cells.staticTexts[\"practice ear training\"]",".staticTexts[\"practice ear training\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/
         practiceEarTrainingStaticText.tap()
         tablesQuery/*@START_MENU_TOKEN@*/.staticTexts["chord type"]/*[[".cells.staticTexts[\"chord type\"]",".staticTexts[\"chord type\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
+        sleep(4)
         // chord training
         snapshot("chordTraining")
         
@@ -66,7 +68,7 @@ class PianoPalPlusUITests: XCTestCase {
         gearButton.tap()
         practiceEarTrainingStaticText.tap()
         tablesQuery/*@START_MENU_TOKEN@*/.staticTexts["key"]/*[[".cells.staticTexts[\"key\"]",".staticTexts[\"key\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
-        
+        sleep(4)
         // key training
         snapshot("keyTraining")
         // Use recording to get started writing UI tests.
