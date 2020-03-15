@@ -123,7 +123,9 @@ extension TheoryItemViewModel: UIPickerViewDataSource, UIPickerViewDelegate {
         var rootNoteOctaveO: NoteOctave?
         for selection in selections {
             guard selection.row > 0 else { continue }
-            let option = ComponentType.all[selection.section].options(constraint: itemType)[selection.row - 1]
+            let options = ComponentType.all[selection.section].options(constraint: theoryItemType)
+            guard options.count > selection.row - 1 else { continue }
+            let option = options[selection.row - 1]
             switch option {
             case is MusicTheoryItem:
                 theoryItemType = option as? MusicTheoryItem
