@@ -13,11 +13,9 @@ import Combine
 class PianoViewController: UIViewController {
     private var pianoView: PianoView!
     private let pianoViewModel: PianoViewModel
-    private let contentModeService: ContentModeService
     
-    init(pianoViewModel: PianoViewModel, contentModeService: ContentModeService = ContentModeService.shared) {
+    init(pianoViewModel: PianoViewModel) {
         self.pianoViewModel = pianoViewModel
-        self.contentModeService = contentModeService
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -37,7 +35,6 @@ class PianoViewController: UIViewController {
         if previousTraitCollection?.verticalSizeClass == .regular && traitCollection.verticalSizeClass == .compact {
             view.subviews.forEach({ $0.removeFromSuperview() })
             setupViews()
-            setupSubscriptions()
         }
     }
     
@@ -45,16 +42,6 @@ class PianoViewController: UIViewController {
         self.pianoView = PianoView(frame: view.bounds)
         self.pianoView.viewModel = pianoViewModel
         view.addSubview(pianoView)
-    }
-    
-    private var cancellables = Set<AnyCancellable>()
-    private func setupSubscriptions() {
-        cancellables.forEach { $0.cancel() }
-        contentModeService.$contentMode
-            .subscribe(on: DispatchQueue.main)
-            .sink(receiveValue: { _ in
-                // TODO
-            }).store(in: &cancellables)
     }
     
 }

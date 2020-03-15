@@ -25,4 +25,6 @@ extension UIColor {
     static let imageTint = UIColor(named: "imageTint")!
     static let imageSelectedTint = UIColor(named: "imageSelectedTint")!
     static let shadow = UIColor(named: "shadow")!
+    static let saveButton = UIColor(named: "saveButton")!
+    static let deleteButton = UIColor(named: "deleteButton")!
 }

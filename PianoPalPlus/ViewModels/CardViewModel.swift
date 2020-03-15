@@ -11,4 +11,5 @@ import UIKit
 
 class CardViewModel {
     @Published var title = ""
+    @Published var image: UIImage?
 }

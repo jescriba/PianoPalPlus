@@ -31,7 +31,6 @@ class ToolBarViewModel {
     private let toolbar: ToolBar
     private let audioEngine: AudioEngine
     private let contentModeService: ContentModeService
-    private let contentModes: [ContentMode]  = [.freePlay, .earTraining(.interval)]
     
     init(toolBar: ToolBar = ToolBar(),
          audioEngine: AudioEngine = AudioEngine.shared,
@@ -100,9 +99,12 @@ class ToolBarViewModel {
                     selfV.toolbar.pianoToggled = false
                     selfV.playButtonHidden = false
                 case .theory:
-                    selfV.noteLockButtonHidden = false
-                    selfV.sequenceButtonHidden = false
-                    selfV.pianoToggleButtonHidden = true
+                    selfV.scrollLockButtonHidden = true
+                    selfV.noteLockButtonHidden = true
+                    selfV.sequenceButtonHidden = true
+                    selfV.pianoToggleButtonHidden = false
+                    selfV.toolbar.pianoToggled = false
+                    selfV.playButtonHidden = false
                 }
             }).store(in: &cancellables)
         audioEngine.$isPlaying
@@ -131,10 +133,10 @@ class ToolBarViewModel {
     func togglePiano() {
         toolbar.pianoToggled = !toolbar.pianoToggled
         switch contentModeService.contentMode {
-        case .earTraining(_):
-            scrollLockButtonHidden = !toolbar.pianoToggled
-        default:
+        case .freePlay:
             break
+        default:
+            scrollLockButtonHidden = !toolbar.pianoToggled
         }
     }
 }

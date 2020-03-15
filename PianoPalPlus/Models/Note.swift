@@ -74,3 +74,7 @@ enum Note : Int {
         return Notes.all.firstIndex(of: self)!
     }
 }
+
+extension Note: Stringable {
+    func asString() -> String { return simpleDescription() }
+}

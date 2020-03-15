@@ -98,10 +98,10 @@ class GameEngine {
             currentAnswer = Selection(title: randomNote.note.simpleDescription() + " maj")
             break
         case .earTraining(.chordType):
-            let randomChordType = ChordTypes.all.randomElement()!
-            let noteOctaves = ChordGenerator.notes(for: randomChordType)
+            let randomChordType = ChordType.all.randomElement()!
+            let noteOctaves = ChordGenerator.notes(for: randomChordType as! ChordType)
             currentPlayable = [noteOctaves]
-            currentAnswer = Selection(title: randomChordType.rawValue)
+            currentAnswer = Selection(title: randomChordType.asString())
         default:
             break
         }
@@ -114,7 +114,7 @@ class GameEngine {
         case .earTraining(.key):
             selectionItems = Notes.all.map { Selection(title: $0.simpleDescription() + " maj") }
         case .earTraining(.chordType):
-            selectionItems = ChordTypes.all.map { Selection(title: $0.rawValue) }
+            selectionItems = ChordType.all.map { Selection(title: $0.asString()) }
         default:
             break
         }
