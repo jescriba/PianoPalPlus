@@ -10,8 +10,24 @@ import Foundation
 import UIKit
 import Combine
 
-enum TheoryModeItem: String {
-    case progression, editor
+enum TheoryModeItem: Stringable, Equatable {
+    case progression, editor(ProgressionItem?)
+    
+    func asString() -> String {
+        switch self {
+        case .progression:
+            return "progression"
+        case .editor(let item):
+            guard let guid = item?.guid else {
+                return "editor"
+            }
+            return "editor \(String(describing: guid))"
+        }
+    }
+    
+    static func == (lhs: TheoryModeItem, rhs: TheoryModeItem) -> Bool {
+        return lhs.asString() == rhs.asString()
+    }
 }
 
 class TheoryViewController: UIViewController {
@@ -49,10 +65,14 @@ class TheoryViewController: UIViewController {
             .subscribe(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] contentMode in
                 guard let selfV = self else { return }
-                if contentMode == .theory(.editor) {
+                switch contentMode {
+                case .theory(.editor(let item)):
+                    selfV.theoryItemViewModel.edit(item: item)
                     selfV.view.bringSubviewToFront(selfV.theoryItemView)
-                } else if contentMode == .theory(.progression) {
-                    selfV.view.bringSubviewToFront(selfV.progressionView)
+                case .theory(.progression):
+                     selfV.view.bringSubviewToFront(selfV.progressionView)
+                default:
+                    break
                 }
             }).store(in: &cancellables)
     }

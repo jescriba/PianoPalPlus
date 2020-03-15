@@ -79,6 +79,16 @@ class TheoryItemView: UIView {
         deleteButton.addTarget(self, action: #selector(didDelete), for: .touchUpInside)
         pickerView.dataSource = viewModel
         pickerView.delegate = viewModel
+        viewModel?.$pickerSelections
+            .filter({ $0 != nil })
+            .subscribe(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] selectionsO in
+                guard let selfV = self, let selections = selectionsO else { return }
+                selections.forEach({ indexPath in
+                    selfV.pickerView.selectRow(indexPath.row, inComponent: indexPath.section, animated: true)
+                    selfV.viewModel?.pickerView(selfV.pickerView, didSelectRow: indexPath.row, inComponent: indexPath.section)
+                })
+            }).store(in: &cancellables)
     }
     
     @objc func didSave() {

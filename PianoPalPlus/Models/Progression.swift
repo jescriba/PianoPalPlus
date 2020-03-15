@@ -23,6 +23,15 @@ protocol TheoryItemDescriptor: Stringable {
 
 enum MusicTheoryItem: String {
     case chord, scale
+    
+    func descriptors() -> [TheoryItemDescriptor] {
+        switch self {
+        case .chord:
+            return ChordType.all
+        case .scale:
+            return ScaleType.all
+        }
+    }
         
     static var all: [MusicTheoryItem] {
         return [.chord, .scale]
@@ -34,7 +43,7 @@ extension MusicTheoryItem: Stringable {
 }
 
 class ProgressionItem  {
-    var guid: String?
+    var guid: Int?
     var type: MusicTheoryItem
     var description: TheoryItemDescriptor
     var title: String {
@@ -57,5 +66,11 @@ class Progression {
     
     init(items: [ProgressionItem] = [ProgressionItem]()) {
         self.items = items
+    }
+    
+    func updateGuids() {
+        items.enumerated().forEach({ index, item in
+            item.guid = index
+        })
     }
 }
