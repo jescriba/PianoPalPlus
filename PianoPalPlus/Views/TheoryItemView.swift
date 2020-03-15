@@ -55,11 +55,11 @@ class TheoryItemView: UIView {
             saveButton.widthAnchor.constraint(equalToConstant: 200),
             saveButton.heightAnchor.constraint(equalToConstant: 50),
             saveButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -30),
-            saveButton.rightAnchor.constraint(equalTo: horiztonalStackView.centerXAnchor, constant: -10),
+            saveButton.leftAnchor.constraint(equalTo: horiztonalStackView.centerXAnchor, constant: 10),
             deleteButton.widthAnchor.constraint(equalToConstant: 200),
             deleteButton.heightAnchor.constraint(equalToConstant: 50),
             deleteButton.centerYAnchor.constraint(equalTo: saveButton.centerYAnchor),
-            deleteButton.leftAnchor.constraint(equalTo: horiztonalStackView.centerXAnchor, constant: 10)
+            deleteButton.rightAnchor.constraint(equalTo: horiztonalStackView.centerXAnchor, constant: -10)
         ])
         
         // Add picker view that drives item selection

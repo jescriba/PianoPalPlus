@@ -111,7 +111,8 @@ extension ProgressionViewModel: UICollectionViewDropDelegate {
     func collectionView(_ collectionView: UICollectionView, performDropWith coordinator: UICollectionViewDropCoordinator) {
         guard let dropItem = coordinator.items.first,
             let sourceIndexPath = dropItem.sourceIndexPath,
-            let destinationIndexPath = coordinator.destinationIndexPath else { return }
+            let destinationIndexPath = coordinator.destinationIndexPath,
+            destinationIndexPath.row > 0 else { return }
         collectionView.performBatchUpdates({
             let item = progression.items[sourceIndexPath.row - 1]
             progression.items.remove(at: sourceIndexPath.row - 1)
