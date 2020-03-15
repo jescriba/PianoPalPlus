@@ -16,8 +16,8 @@ enum ContentMode: Equatable {
         switch self {
         case .earTraining(let item):
             return "Ear Training - \(item.title())"
-        case .theory(_):
-            return "Theory"
+        case .theory(let item):
+            return "Theory \(item.asString())"
         default:
             return "Free Play \0/"
         }

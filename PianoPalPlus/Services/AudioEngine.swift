@@ -10,6 +10,8 @@ import Foundation
 import AVFoundation
 import Combine
 
+typealias PlayableSequence = [[NoteOctave]]
+
 class AudioEngine {
     @Published var isPlaying = false
     static let shared = AudioEngine()
@@ -74,5 +76,20 @@ class AudioEngine {
         workItems.forEach({ $0.cancel() })
         workItems.removeAll()
         isPlaying = false
+    }
+    
+    func play(_ sequence: PlayableSequence) {
+        sequence.enumerated().forEach({ (arg) in
+            let (index, noteOctaves) = arg
+            let workItem = DispatchWorkItem(block: { [weak self] in
+                self?.play(noteOctaves)
+            })
+            workItems.append(workItem)
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + DispatchTimeInterval.seconds(index), execute: workItem)
+        })
+    }
+    
+    func stop(_ sequence: PlayableSequence) {
+        stop(sequence.flatMap({ $0 }))
     }
 }

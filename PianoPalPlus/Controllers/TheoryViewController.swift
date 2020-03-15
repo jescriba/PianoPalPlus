@@ -32,15 +32,17 @@ enum TheoryModeItem: Stringable, Equatable {
 
 class TheoryViewController: UIViewController {
     private let contentModeService: ContentModeService
+    private let audioEngine: AudioEngine
     private let progressionViewModel: ProgressionViewModel
     private let theoryItemViewModel: TheoryItemViewModel
     private var progressionView: ProgressionView!
     private var theoryItemView: TheoryItemView!
+    private var progression: Progression
     
-    init(contentModeService: ContentModeService = .shared) {
+    init(contentModeService: ContentModeService = .shared, audioEngine: AudioEngine = .shared) {
         self.contentModeService = contentModeService
-        
-        let progression = Progression()
+        self.audioEngine = audioEngine
+        self.progression = Progression()
         self.progressionViewModel = ProgressionViewModel(progression: progression)
         self.theoryItemViewModel = TheoryItemViewModel(progression: progression)
         super.init(nibName: nil, bundle: nil)
@@ -75,5 +77,9 @@ class TheoryViewController: UIViewController {
                     break
                 }
             }).store(in: &cancellables)
+    }
+    
+    func togglePlayActive() {
+        audioEngine.isPlaying ? audioEngine.stop(progression.playable) : audioEngine.play(progression.playable)
     }
 }

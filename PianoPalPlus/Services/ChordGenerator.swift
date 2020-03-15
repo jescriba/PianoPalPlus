@@ -10,7 +10,7 @@ import Foundation
 
 typealias Chord = [NoteOctave]
 
-enum ChordType: String, TheoryItemDescriptor {
+enum ChordType: String, Stringable, TheoryItemDescriptor {
     // todo a lot more chords and altered chord types
     case major
     case majorSixth
@@ -44,12 +44,26 @@ enum ChordType: String, TheoryItemDescriptor {
             return [.unison, .majorThird, .perfectFifth, .minorSeventh]
         }
     }
+    
+    func asString() -> String {
+        switch self {
+        case .majorSeventh:
+            return "M7"
+        case .minorSeventh:
+            return "m7"
+        case .dominantSeventh:
+            return "7"
+        case .majorSixth:
+            return "M6"
+        case .minorSixth:
+            return "m6"
+        default:
+            return rawValue
+        }
+    }
+
         
     static var all: [TheoryItemDescriptor] = [ChordType.major, ChordType.minor, ChordType.augmented, ChordType.diminished, ChordType.majorSixth, ChordType.minorSixth, ChordType.majorSeventh, ChordType.minorSeventh, ChordType.dominantSeventh]
-}
-
-extension ChordType: Stringable {
-    func asString() -> String { return rawValue }
 }
 
 class ChordGenerator {

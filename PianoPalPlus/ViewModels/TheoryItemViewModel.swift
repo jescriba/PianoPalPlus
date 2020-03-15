@@ -76,7 +76,7 @@ class TheoryItemViewModel: NSObject {
             case is MusicTheoryItem:
                 selectedIndexO = options.firstIndex(where: { $0.asString() == item.type.asString() })
             case is Note:
-                selectedIndexO = options.firstIndex(where: { $0.asString() == item.items.first?.note.asString() })
+                selectedIndexO = options.firstIndex(where: { $0.asString() == item.root.note.asString() })
             case is TheoryItemDescriptor:
                 selectedIndexO = options.firstIndex(where: { $0.asString() == item.description.asString() })
             default:
@@ -90,7 +90,7 @@ class TheoryItemViewModel: NSObject {
     
     @objc func didSave() {
         contentModeService.contentMode = .theory(.progression)
-        guard let item = progressionItem, !item.items.isEmpty else { return }
+        guard let item = progressionItem else { return }
         if isEditing {
             guard let index = progression.items.firstIndex(where: { $0.guid == item.guid }) else { return }
             progression.items[index] = item
@@ -120,26 +120,30 @@ extension TheoryItemViewModel: UIPickerViewDataSource, UIPickerViewDelegate {
         (0..<pickerView.numberOfComponents).forEach { selections.append(IndexPath(row: pickerView.selectedRow(inComponent: $0), section: $0)) }
         var theoryItemType: MusicTheoryItem!
         var theoryItemDescriptor: TheoryItemDescriptor!
-        var noteOctaves = [NoteOctave]()
+        var rootNoteOctaveO: NoteOctave?
         for selection in selections {
             guard selection.row > 0 else { continue }
-            let option = ComponentType.all[selection.section].options()[selection.row - 1]
+            let option = ComponentType.all[selection.section].options(constraint: itemType)[selection.row - 1]
             switch option {
             case is MusicTheoryItem:
                 theoryItemType = option as? MusicTheoryItem
                 self.itemType = theoryItemType
                 pickerView.reloadComponent(2)
             case is Note:
-                noteOctaves.append(NoteOctave(note: option as! Note, octave: 3))
+                rootNoteOctaveO = NoteOctave(note: option as! Note, octave: 3)
             case is TheoryItemDescriptor:
                 theoryItemDescriptor = option as? TheoryItemDescriptor
             default:
                 break
             }
         }
-        guard let itemType = theoryItemType, let descriptor = theoryItemDescriptor else { return }
+        guard let itemType = theoryItemType,
+            let descriptor = theoryItemDescriptor,
+            let rootNoteOctave = rootNoteOctaveO else {
+                return
+        }
         let cachedGuid = progressionItem?.guid
-        progressionItem = ProgressionItem(type: itemType, description: descriptor, items: noteOctaves)
+        progressionItem = ProgressionItem(type: itemType, description: descriptor, root: rootNoteOctave)
         progressionItem?.guid = cachedGuid
     }
     

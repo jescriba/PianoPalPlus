@@ -47,22 +47,40 @@ class ProgressionItem  {
     var type: MusicTheoryItem
     var description: TheoryItemDescriptor
     var title: String {
-        guard let firstNote = items.first?.note else {
-            return type.rawValue
-        }
-        return "\(firstNote.simpleDescription()) \(description.asString())" + " \(type == .scale ? type.rawValue : "")"
+        return "\(root.note.asString()) \(description.asString())" + " \(type == .scale ? type.rawValue : "")"
     }
-    var items: [NoteOctave]
+    var root: NoteOctave
+    var items = [NoteOctave]()
     
-    init(type: MusicTheoryItem, description: TheoryItemDescriptor, items: [NoteOctave]) {
+    init(type: MusicTheoryItem, description: TheoryItemDescriptor, root: NoteOctave) {
         self.type = type
-        self.items = items
+        self.root = root
         self.description = description
+        createItems()
+    }
+    
+    private func createItems() {
+        if type == .scale, let scaleType = description as? ScaleType {
+            self.items = ScaleGenerator.notes(for: scaleType, root: root)
+        } else if type == .chord, let chordType = description as? ChordType {
+            self.items = ChordGenerator.notes(for: chordType, root: root)
+        }
     }
 }
 
 class Progression {
     @Published var items: [ProgressionItem]
+    var playable: PlayableSequence {
+        var sequence = PlayableSequence()
+        items.forEach({ item in
+            if item.type == .scale {
+                item.items.forEach({ sequence.append([$0]) })
+            } else {
+                sequence.append(item.items)
+            }
+        })
+        return sequence
+    }
     
     init(items: [ProgressionItem] = [ProgressionItem]()) {
         self.items = items

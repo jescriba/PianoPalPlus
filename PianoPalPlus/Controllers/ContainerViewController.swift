@@ -157,6 +157,8 @@ class ContainerViewController: UIViewController {
                 switch selfV.contentModeService.contentMode {
                 case .earTraining(_):
                     selfV.gameViewController?.togglePlayActive()
+                case .theory(_):
+                    selfV.progressionViewController?.togglePlayActive()
                 default:
                     selfV.pianoViewModel.togglePlayActive()
                 }
