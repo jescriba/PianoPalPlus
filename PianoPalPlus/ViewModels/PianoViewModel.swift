@@ -20,7 +20,7 @@ class PianoViewModel {
     private let audioEngine: AudioEngine
     
     init(piano: Piano = Piano(),
-         audioEngine: AudioEngine = AudioEngine.shared) {
+         audioEngine: AudioEngine = .shared) {
         self.piano = piano
         self.audioEngine = audioEngine
         
@@ -45,12 +45,12 @@ class PianoViewModel {
     private var cancellables = Set<AnyCancellable>()
     private func setupSubscriptions() {
         piano.$scrollLocked
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] scrollLocked in
                 self?.scrollLocked = scrollLocked
             }).store(in: &cancellables)
         piano.$noteLocked
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] noteLocked in
                 guard let selfV = self else { return }
                 selfV.noteLocked = noteLocked
@@ -59,7 +59,7 @@ class PianoViewModel {
                 }
             }).store(in: &cancellables)
         piano.selectedNotes.$changedElements
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] changedElementsO in
                 guard let selfV = self, let changedElements = changedElementsO else { return }
                 if changedElements.change == .added {
@@ -77,14 +77,41 @@ class PianoViewModel {
                 }
             }).store(in: &cancellables)
         piano.$playing
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] playing in
                 guard let selfV = self, selfV.piano.noteLocked else { return }
                 if playing {
-                    selfV.audioEngine.play(selfV.piano.selectedNotes.array, isSequencing: selfV.piano.sequencing)
+                    let playableSequence = selfV.piano.sequencing ? selfV.piano.selectedNotes.array.map({ [$0] }) : [selfV.piano.selectedNotes.array]
+                    selfV.audioEngine.play(playableSequence)
                 } else {
                     selfV.audioEngine.stop(selfV.piano.selectedNotes.array)
                 }
+            }).store(in: &cancellables)
+        piano.$playingNotes
+            .combineLatest(piano.selectedNotes.$changedElements)
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] (notes, changedElements) in
+                guard let selfV = self else { return }
+                selfV.noteViewModels.forEach({ noteViewModel in
+                    if notes?.contains(noteViewModel.noteOctave) ?? false {
+                        noteViewModel.keyColorPair = .playing
+                    } else if selfV.piano.selectedNotes.contains(noteViewModel.noteOctave) {
+                        // todo having to combine these to get latest selected notes state :/ refactor
+                        if let changed = changedElements,
+                            changed.change == .removed && changed.values.contains(noteViewModel.noteOctave) {
+                            noteViewModel.keyColorPair = .basic
+                        } else {
+                            noteViewModel.keyColorPair = .selected
+                        }
+                    } else {
+                        noteViewModel.keyColorPair = .basic
+                    }
+                })
+            }).store(in: &cancellables)
+        audioEngine.$playData
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] playableData in
+                self?.piano.playingNotes = playableData?.playable
             }).store(in: &cancellables)
     }
     

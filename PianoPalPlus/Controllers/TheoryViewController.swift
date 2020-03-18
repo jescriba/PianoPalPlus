@@ -64,7 +64,7 @@ class TheoryViewController: UIViewController {
     private var cancellables = Set<AnyCancellable>()
     private func setupSubscriptions() {
         contentModeService.$contentMode
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] contentMode in
                 guard let selfV = self else { return }
                 switch contentMode {
@@ -80,6 +80,6 @@ class TheoryViewController: UIViewController {
     }
     
     func togglePlayActive() {
-        audioEngine.isPlaying ? audioEngine.stop(progression.playable) : audioEngine.play(progression.playable)
+        audioEngine.isPlaying ? audioEngine.stop(progression.sequences) : audioEngine.play(progression.sequences)
     }
 }

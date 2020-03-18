@@ -11,21 +11,33 @@ import UIKit
 import Combine
 
 class ProgressionViewModel: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
-    private var contentModeService: ContentModeService
+    private let contentModeService: ContentModeService
+    private let audioEngine: AudioEngine
     var progression: Progression
     @Published var reload: Bool = false
     
     private var cancellables = Set<AnyCancellable>()
-    init(contentModeService: ContentModeService = .shared, progression: Progression) {
+    init(contentModeService: ContentModeService = .shared,
+         audioEngine: AudioEngine = .shared,
+         progression: Progression) {
         self.contentModeService = contentModeService
+        self.audioEngine = audioEngine
         self.progression = progression
         self.reload = true
         super.init()
         
         progression.$items
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] _ in
                 self?.reload = true
+            }).store(in: &cancellables)
+        audioEngine.$playData
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] playableData in
+                print(playableData?.guid ?? "")
+                // TODONOW @joshua
+                //playableData?..first
+                //progression.currentItem
             }).store(in: &cancellables)
     }
     
@@ -60,7 +72,7 @@ class ProgressionViewModel: NSObject, UICollectionViewDataSource, UICollectionVi
         }
         let vm = CardViewModel()
         let progressionItem = progression.items[indexPath.row - 1]
-        progressionItem.guid = indexPath.row - 1
+        progressionItem.guid = "progressionItem-\(indexPath.row - 1)"
         vm.title = progressionItem.title
         cell.viewModel = vm
         return cell

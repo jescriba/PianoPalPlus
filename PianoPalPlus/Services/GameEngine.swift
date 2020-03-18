@@ -42,7 +42,7 @@ class GameEngine {
     
     func play() {
         isPlaying = true
-        audioEngine.play(currentPlayableSequence)
+        _ = audioEngine.play(currentPlayableSequence)
     }
     
     func stop() {

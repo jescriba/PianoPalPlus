@@ -10,11 +10,38 @@ import Foundation
 import AVFoundation
 import Combine
 
-typealias PlayableSequence = [[NoteOctave]]
+typealias Playable = [NoteOctave]
+typealias PlayableSequence = [Playable]
+typealias PlayableDataSequence = [PlayableDataP]
+protocol PlayableDataP {
+    var playable: Playable { get set }
+    var guid: String { get set }
+}
+class PlayableData: PlayableDataP {
+    var playable: Playable
+    var guid: String
+    
+    init(playable: Playable, guid: String = "") {
+        self.playable = playable
+        self.guid = guid
+    }
+}
+extension Playable: PlayableDataP {
+    var playable: Playable {
+        get {
+            return self
+        } set { self = newValue }
+    }
+    var guid: String {
+        get { return "" } set { }
+    }
+}
 
 class AudioEngine {
     @Published var isPlaying = false
+    @Published private(set) var playData: PlayableDataP?
     static let shared = AudioEngine()
+    private let audioSerialQueue = DispatchQueue(label: "audioQueue", qos: .userInitiated)
     let format = AVAudioFormat(standardFormatWithSampleRate: 44100.0, channels: 2)
     private let noteVelocity: UInt8 = 127
     private var _engine: AVAudioEngine
@@ -48,48 +75,67 @@ class AudioEngine {
     }
     
     private var workItems = [DispatchWorkItem]()
-    func play<T: Sequence>(_ notes: T, isSequencing: Bool = false) where T.Iterator.Element == NoteOctave {
+
+    func play(_ data: PlayableDataP) {
         isPlaying = true
-        if isSequencing {
-            //let seq = AVAudioSequencer(audioEngine: _engine)
-            // TODO Use AVAudioSequencer to schedule events so timing is consistent
-            notes.enumerated().forEach { (arg) in
-                let (index, note) = arg
-                // hack sequencing for now...
-                let workItem = DispatchWorkItem(block: { [weak self] in
-                    guard let selfV = self else { return }
-                    selfV.pianoSampler.startNote(note.midiNote, withVelocity: selfV.noteVelocity, onChannel: 0)
-                })
-                workItems.append(workItem)
-                DispatchQueue.global().asyncAfter(deadline: .now() + Double(index) * 0.5, execute: workItem)
-            }
-        } else {
-            notes.forEach {
-                pianoSampler.startNote($0.midiNote, withVelocity: self.noteVelocity, onChannel: 0)
-            }
-        }
-    }
-    
-    func stop<T: Sequence>(_ notes: T) where T.Iterator.Element == NoteOctave {
-        notes.forEach { pianoSampler.stopNote($0.midiNote, onChannel: 0) }
-        // clear pending work items
-        workItems.forEach({ $0.cancel() })
-        workItems.removeAll()
-        isPlaying = false
-    }
-    
-    func play(_ sequence: PlayableSequence) {
-        sequence.enumerated().forEach({ (arg) in
-            let (index, noteOctaves) = arg
-            let workItem = DispatchWorkItem(block: { [weak self] in
-                self?.play(noteOctaves)
-            })
-            workItems.append(workItem)
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + DispatchTimeInterval.seconds(index), execute: workItem)
+        playData = data
+        data.playable.forEach({ note in
+            pianoSampler.startNote(note.midiNote, withVelocity: self.noteVelocity, onChannel: 0)
         })
     }
     
-    func stop(_ sequence: PlayableSequence) {
-        stop(sequence.flatMap({ $0 }))
+    func stop(_ data: PlayableDataP) {
+        data.playable.forEach({ pianoSampler.stopNote($0.midiNote, onChannel: 0) })
+        playData = nil
+        isPlaying = false
+    }
+    
+    private var playGroups = [DispatchGroup]()
+    func play(_ sequence: PlayableDataSequence, delay: Int = 0) {
+        let newGroup = DispatchGroup()
+        newGroup.enter()
+        let sequenceWorkItem = DispatchWorkItem(block: { [weak self] in
+            sequence.enumerated().forEach({ arg in
+                let (index, data) = arg
+                newGroup.enter()
+                let workItem = DispatchWorkItem(block: { [weak self] in
+                    self?.play(data)
+                    newGroup.leave()
+                })
+                self?.workItems.append(workItem)
+                self?.audioSerialQueue.asyncAfter(deadline: .now() + .seconds(1 * index), execute: workItem)
+            })
+            newGroup.leave()
+        })
+        self.workItems.append(sequenceWorkItem)
+        let lastGroupO = playGroups.last
+        self.playGroups.append(newGroup)
+        guard let lastGroup = lastGroupO else {
+            audioSerialQueue.asyncAfter(deadline: .now() + .seconds(delay), execute: sequenceWorkItem)
+            return
+        }
+        // basically want to notify with the delay
+        let delayedWorkItem = DispatchWorkItem { [weak self] in
+            self?.audioSerialQueue.asyncAfter(deadline: .now() + .seconds(delay), execute: sequenceWorkItem)
+        }
+        self.workItems.append(delayedWorkItem)
+        lastGroup.notify(queue: audioSerialQueue, work: delayedWorkItem)
+    }
+    
+    func stop(_ sequence: PlayableDataSequence) {
+        sequence.forEach({ stop($0) })
+        workItems.forEach({ $0.cancel() })
+        workItems.removeAll()
+        playGroups.removeAll()
+    }
+    
+    func play(_ sequences: [PlayableDataSequence]) {
+        sequences.enumerated().forEach({ (index, sequence) in
+            play(sequence, delay: index == 0 ? 0 : 1)
+        })
+    }
+    
+    func stop(_ sequences: [PlayableDataSequence]) {
+        sequences.forEach({ stop($0) })
     }
 }

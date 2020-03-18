@@ -47,13 +47,13 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
     private var cancellables = Set<AnyCancellable>()
     private func setupSubscriptions() {
         contentModeService.$contentMode
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] contentMode in
                 self?.cardViewModel.title = contentMode.description() ?? ""
                 self?.showCardView()
             }).store(in: &cancellables)
         gameEngine.$selectionItems
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] _ in
                 self?.selectionCollectionView.reloadData()
             }).store(in: &cancellables)

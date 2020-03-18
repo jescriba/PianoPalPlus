@@ -81,7 +81,7 @@ class TheoryItemView: UIView {
         pickerView.delegate = viewModel
         viewModel?.$pickerSelections
             .filter({ $0 != nil })
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] selectionsO in
                 guard let selfV = self, let selections = selectionsO else { return }
                 selections.forEach({ indexPath in

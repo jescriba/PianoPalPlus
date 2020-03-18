@@ -99,7 +99,7 @@ class PianoView: UIView, UIScrollViewDelegate {
     
     private func bindViewModel() {
         viewModel?.$scrollLocked
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] scrollLocked in
                 self?.isScrollLocked = scrollLocked
             }).store(in: &cancellables)

@@ -42,15 +42,24 @@ extension MusicTheoryItem: Stringable {
     func asString() -> String { return rawValue }
 }
 
-class ProgressionItem  {
-    var guid: Int?
-    var type: MusicTheoryItem
-    var description: TheoryItemDescriptor
+class ProgressionItem {
+    var guid: String = ""
+    var sequence: PlayableDataSequence? {
+        get {
+            if type == .scale {
+                return items.map({ PlayableData(playable: [$0], guid: guid) })
+            } else {
+                return [PlayableData(playable: items, guid: guid)]
+            }
+        }
+    }
     var title: String {
         return "\(root.note.asString()) \(description.asString())" + " \(type == .scale ? type.rawValue : "")"
     }
-    var root: NoteOctave
-    var items = [NoteOctave]()
+    private(set) var type: MusicTheoryItem
+    private(set) var description: TheoryItemDescriptor
+    private(set) var root: NoteOctave
+    private var items = [NoteOctave]()
     
     init(type: MusicTheoryItem, description: TheoryItemDescriptor, root: NoteOctave) {
         self.type = type
@@ -70,16 +79,9 @@ class ProgressionItem  {
 
 class Progression {
     @Published var items: [ProgressionItem]
-    var playable: PlayableSequence {
-        var sequence = PlayableSequence()
-        items.forEach({ item in
-            if item.type == .scale {
-                item.items.forEach({ sequence.append([$0]) })
-            } else {
-                sequence.append(item.items)
-            }
-        })
-        return sequence
+    @Published var currentItem: ProgressionItem?
+    var sequences: [PlayableDataSequence] {
+        return items.compactMap({ $0.sequence })
     }
     
     init(items: [ProgressionItem] = [ProgressionItem]()) {
@@ -88,7 +90,7 @@ class Progression {
     
     func updateGuids() {
         items.enumerated().forEach({ index, item in
-            item.guid = index
+            item.guid = "progressionItem-\(index)"
         })
     }
 }

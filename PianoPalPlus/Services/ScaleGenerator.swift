@@ -15,9 +15,9 @@ enum ScaleType: String, TheoryItemDescriptor {
     func intervals() -> [Interval] {
         switch self {
         case .major:
-            return [.majorSecond, .majorThird, .perfectFourth, .perfectFifth, .majorSixth, .majorSeventh]
+            return [.unison, .majorSecond, .majorThird, .perfectFourth, .perfectFifth, .majorSixth, .majorSeventh]
         case .minor:
-            return [.majorSecond, .minorThird, .perfectFourth, .perfectFifth, .minorSixth, .minorSeventh]
+            return [.unison, .majorSecond, .minorThird, .perfectFourth, .perfectFifth, .minorSixth, .minorSeventh]
         }
     }
     

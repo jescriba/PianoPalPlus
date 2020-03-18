@@ -144,9 +144,9 @@ extension TheoryItemViewModel: UIPickerViewDataSource, UIPickerViewDelegate {
             let rootNoteOctave = rootNoteOctaveO else {
                 return
         }
-        let cachedGuid = progressionItem?.guid
+        let cachedGuid = progressionItem?.guid ?? ""
         progressionItem = ProgressionItem(type: itemType, description: descriptor, root: rootNoteOctave)
-        progressionItem?.guid = cachedGuid
+        progressionItem?.guid = "\(cachedGuid)"
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {

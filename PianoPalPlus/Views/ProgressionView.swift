@@ -42,7 +42,7 @@ class ProgressionView: UIView {
     private var cancellables = Set<AnyCancellable>()
     private func bindViewModel() {
         viewModel?.$reload
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] _ in
                 self?.collectionView.reloadData()
             }).store(in: &cancellables)

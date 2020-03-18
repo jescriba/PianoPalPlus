@@ -123,34 +123,34 @@ class ContainerViewController: UIViewController {
     private func setupSubscriptions() {
         toolBarView.$settingsButtonPublisher
             .filter({ $0 == true})
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] _ in
                 self?.settingsOpened()
             }).store(in: &cancellables)
         toolBarView.$noteLockButtonPublisher
             .filter({ $0 == true })
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] _ in
                 self?.toolBarViewModel.toggleNoteLock()
                 self?.pianoViewModel.toggleNoteLock()
             }).store(in: &cancellables)
         toolBarView.$scrollLockButtonPublisher
             .filter({ $0 == true })
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] _ in
                 self?.toolBarViewModel.toggleScrollLock()
                 self?.pianoViewModel.toggleScrollLock()
             }).store(in: &cancellables)
         toolBarView.$sequenceButtonPublisher
             .filter({ $0 == true })
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] _ in
                 self?.toolBarViewModel.toggleSequenceButton()
                 self?.pianoViewModel.toggleSequenceActive()
             }).store(in: &cancellables)
         toolBarView.$playButtonPublisher
             .filter({ $0 == true })
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] _ in
                 guard let selfV = self else { return }
                 selfV.toolBarViewModel.togglePlayButton()
@@ -164,7 +164,7 @@ class ContainerViewController: UIViewController {
                 }
             }).store(in: &cancellables)
         contentModeService.$contentMode
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] contentMode in
                 guard let selfV = self else { return }
                 switch contentMode {
@@ -178,7 +178,7 @@ class ContainerViewController: UIViewController {
             }).store(in: &cancellables)
         toolBarView.$pianoToggleButtonPublisher
             .filter({ $0 == true })
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] _ in
                 guard let selfV = self else { return }
                 selfV.toolBarViewModel.togglePiano()

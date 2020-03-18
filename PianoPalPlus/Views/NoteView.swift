@@ -73,12 +73,12 @@ class NoteView: UIView {
     private var cancellables = Set<AnyCancellable>()
     private func bindViewModel() {
         viewModel?.$backgroundColor
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] color in
                 self?.backgroundColor = color
             }).store(in: &cancellables)
         viewModel?.$borderColor
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] color in
                 self?.layer.borderColor = color.cgColor
             }).store(in: &cancellables)

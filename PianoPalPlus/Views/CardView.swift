@@ -54,12 +54,12 @@ class CardView: UIView {
     private var cancellables = Set<AnyCancellable>()
     private func bindViewModel() {
         viewModel?.$title
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] title in
                 self?.cardLabel.text = title
             }).store(in: &cancellables)
         viewModel?.$image
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] image in
                 self?.cardImageView.image = image
                 self?.cardImageView.isHidden = image == nil
