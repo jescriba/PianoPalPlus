@@ -73,7 +73,8 @@ class TheoryViewController: UIViewController {
                     selfV.theoryItemViewModel.edit(item: item)
                     selfV.view.bringSubviewToFront(selfV.theoryItemView)
                 case .theory(.progression):
-                     selfV.view.bringSubviewToFront(selfV.progressionView)
+                    selfV.progressionView.resetSelections()
+                    selfV.view.bringSubviewToFront(selfV.progressionView)
                 default:
                     break
                 }

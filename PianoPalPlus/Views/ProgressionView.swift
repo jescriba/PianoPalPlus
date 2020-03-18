@@ -68,4 +68,8 @@ class ProgressionView: UIView {
                 })
             }).store(in: &cancellables)
     }
+    
+    func resetSelections() {
+        collectionView.selectItem(at: nil, animated: true, scrollPosition: .bottom)
+    }
 }

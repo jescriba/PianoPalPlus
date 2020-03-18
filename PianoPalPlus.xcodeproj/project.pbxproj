@@ -11,6 +11,7 @@
 		4207082323EEDA32002FBB87 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4207082223EEDA32002FBB87 /* CardView.swift */; };
 		4207082523EEDAC4002FBB87 /* CardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4207082423EEDAC4002FBB87 /* CardViewModel.swift */; };
 		4207082923EFAE49002FBB87 /* Interval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4207082823EFAE49002FBB87 /* Interval.swift */; };
+		422C33B42422E63F0097BFB5 /* ProgressionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422C33B32422E63F0097BFB5 /* ProgressionStore.swift */; };
 		425E0F3D23E679A7007536FA /* ContentModeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425E0F3C23E679A7007536FA /* ContentModeService.swift */; };
 		425E0F3F23E75AF3007536FA /* NoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425E0F3E23E75AF3007536FA /* NoteViewModel.swift */; };
 		425F4CF623F0C89100970DA7 /* IntervalGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425F4CF523F0C89100970DA7 /* IntervalGenerator.swift */; };
@@ -161,6 +162,7 @@
 		4207082223EEDA32002FBB87 /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
 		4207082423EEDAC4002FBB87 /* CardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardViewModel.swift; sourceTree = "<group>"; };
 		4207082823EFAE49002FBB87 /* Interval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Interval.swift; sourceTree = "<group>"; };
+		422C33B32422E63F0097BFB5 /* ProgressionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressionStore.swift; sourceTree = "<group>"; };
 		425E0F3C23E679A7007536FA /* ContentModeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentModeService.swift; sourceTree = "<group>"; };
 		425E0F3E23E75AF3007536FA /* NoteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteViewModel.swift; sourceTree = "<group>"; };
 		425F4CF523F0C89100970DA7 /* IntervalGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntervalGenerator.swift; sourceTree = "<group>"; };
@@ -544,6 +546,7 @@
 				425F4CF723F0C89B00970DA7 /* ChordGenerator.swift */,
 				425F4CF923F0C8A300970DA7 /* ScaleGenerator.swift */,
 				425F4CFB23F0D50500970DA7 /* KeyGenerator.swift */,
+				422C33B32422E63F0097BFB5 /* ProgressionStore.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -783,6 +786,7 @@
 				4260129223BD55C0007BEC7F /* NoteOctave.swift in Sources */,
 				4260125C23BD54AC007BEC7F /* ContainerViewController.swift in Sources */,
 				42A09BD22415C6D200F304B1 /* ProgressionView.swift in Sources */,
+				422C33B42422E63F0097BFB5 /* ProgressionStore.swift in Sources */,
 				4260128B23BD557E007BEC7F /* NoteView.swift in Sources */,
 				4260125823BD54AC007BEC7F /* AppDelegate.swift in Sources */,
 				42C974D323D6BF4D00841216 /* ToolBarView.swift in Sources */,
