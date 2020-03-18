@@ -18,11 +18,14 @@ class PianoViewModel {
     private (set) var noteViewModels = [NoteViewModel]()
     private let piano: Piano
     private let audioEngine: AudioEngine
+    private let contentModeService: ContentModeService
     
     init(piano: Piano = Piano(),
-         audioEngine: AudioEngine = .shared) {
+         audioEngine: AudioEngine = .shared,
+         contentModeService: ContentModeService = .shared) {
         self.piano = piano
         self.audioEngine = audioEngine
+        self.contentModeService = contentModeService
         
         setupNoteViewModels()
         setupSubscriptions()
@@ -88,9 +91,18 @@ class PianoViewModel {
                 }
             }).store(in: &cancellables)
         piano.$playingNotes
-            .combineLatest(piano.selectedNotes.$changedElements)
+            .combineLatest(piano.selectedNotes.$changedElements,
+                           contentModeService.$contentMode)
             .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] (notes, changedElements) in
+            .sink(receiveValue: { [weak self] arg in
+                let (notes, changedElements, contentMode) = arg
+                // ear training doesnt show playing notes
+                switch contentMode {
+                case .earTraining(_):
+                    return
+                default:
+                    break
+                }
                 guard let selfV = self else { return }
                 selfV.noteViewModels.forEach({ noteViewModel in
                     if notes?.contains(noteViewModel.noteOctave) ?? false {
@@ -112,6 +124,12 @@ class PianoViewModel {
             .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] playableData in
                 self?.piano.playingNotes = playableData?.playable
+            }).store(in: &cancellables)
+        contentModeService.$contentMode
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] _ in
+                // reset selected note state if mode changes
+                self?.piano.selectedNotes.removeAll()
             }).store(in: &cancellables)
     }
     
