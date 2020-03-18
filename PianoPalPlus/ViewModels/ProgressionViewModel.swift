@@ -15,6 +15,7 @@ class ProgressionViewModel: NSObject, UICollectionViewDataSource, UICollectionVi
     private let audioEngine: AudioEngine
     var progression: Progression
     @Published var reload: Bool = false
+    @Published var highlightedIndexPath: IndexPath?
     
     private var cancellables = Set<AnyCancellable>()
     init(contentModeService: ContentModeService = .shared,
@@ -34,10 +35,18 @@ class ProgressionViewModel: NSObject, UICollectionViewDataSource, UICollectionVi
         audioEngine.$playData
             .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] playableData in
-                print(playableData?.guid ?? "")
-                // TODONOW @joshua
-                //playableData?..first
-                //progression.currentItem
+                let guid = playableData?.guid
+                self?.progression.currentItem = progression.items.first(where: { $0.guid == guid })
+            }).store(in: &cancellables)
+        progression.$currentItem
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] currentItem in
+                guard let row = self?.progression.items.firstIndex(where: { $0.guid == currentItem?.guid })
+                    else {
+                        return
+                }
+                // annoying +1 for addition cell
+                self?.highlightedIndexPath = IndexPath(row: row + 1, section: 0)
             }).store(in: &cancellables)
     }
     

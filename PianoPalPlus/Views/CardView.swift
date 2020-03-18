@@ -39,7 +39,7 @@ class CardView: UIView {
     private func setup() {
         cardLabel.textAlignment = .center
         cardLabel.numberOfLines = 0
-        cardLabel.text = "welcome to the game zone"
+        cardLabel.text = ""
         addFullBoundsSubview(cardLabel, horizontalSpacing: 5)
         addFullBoundsSubview(cardImageView, horizontalMultiplier: 0.3, verticalMultiplier: 0.3)
         cardImageView.isHidden = true
@@ -85,6 +85,9 @@ class CardViewCell: UICollectionViewCell {
         layer.shadowOffset = CGSize(width: 0, height: 1)
         layer.masksToBounds = false
         layer.cornerRadius = 3
+        let selectedView = UIView()
+        selectedView.backgroundColor = .selection
+        selectedBackgroundView = selectedView
     }
     
     required init?(coder: NSCoder) {

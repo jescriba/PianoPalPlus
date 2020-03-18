@@ -52,5 +52,20 @@ class ProgressionView: UIView {
             collectionView.dragDelegate = vm
             vm.register(collectionView: collectionView)
         }
+        viewModel?.$highlightedIndexPath
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] indexPathO in
+                guard let indexPath = indexPathO,
+                    let item = self?.collectionView.cellForItem(at: indexPath) else {
+                        return
+                }
+                self?.collectionView.visibleCells.forEach({ cell in
+                    if cell != item {
+                        cell.backgroundColor = .cellBackground
+                    } else {
+                        cell.backgroundColor = .selection
+                    }
+                })
+            }).store(in: &cancellables)
     }
 }

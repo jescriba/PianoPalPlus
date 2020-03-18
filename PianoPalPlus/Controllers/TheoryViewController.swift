@@ -31,6 +31,7 @@ enum TheoryModeItem: Stringable, Equatable {
 }
 
 class TheoryViewController: UIViewController {
+    @Published var header: String = "Progression"
     private let contentModeService: ContentModeService
     private let audioEngine: AudioEngine
     private let progressionViewModel: ProgressionViewModel
@@ -56,8 +57,8 @@ class TheoryViewController: UIViewController {
         super.viewDidLoad()
         self.progressionView = ProgressionView(viewModel: progressionViewModel)
         self.theoryItemView = TheoryItemView(viewModel: theoryItemViewModel)
-        view.addFullBoundsSubview(progressionView)
         view.addFullBoundsSubview(theoryItemView)
+        view.addFullBoundsSubview(progressionView)
         setupSubscriptions()
     }
     
@@ -76,6 +77,11 @@ class TheoryViewController: UIViewController {
                 default:
                     break
                 }
+            }).store(in: &cancellables)
+        progression.$currentItem
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] progressionItem in
+                self?.header = progressionItem?.title ?? "theory progression"
             }).store(in: &cancellables)
     }
     

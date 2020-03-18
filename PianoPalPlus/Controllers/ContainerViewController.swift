@@ -102,6 +102,11 @@ class ContainerViewController: UIViewController {
             // TODO refactor
             if progressionViewController == nil {
                 progressionViewController = TheoryViewController()
+                progressionViewController?.$header
+                    .receive(on: DispatchQueue.main)
+                    .sink(receiveValue: { [weak self] title in
+                        self?.toolBarViewModel.title = title
+                    }).store(in: &cancellables)
                 addViewController(progressionViewController!)
             }
             if gameViewController != nil {
