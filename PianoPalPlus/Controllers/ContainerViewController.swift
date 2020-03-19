@@ -103,8 +103,16 @@ class ContainerViewController: UIViewController {
             if progressionViewController == nil {
                 progressionViewController = TheoryViewController()
                 progressionViewController?.$header
+                    .combineLatest(contentModeService.$contentMode)
                     .receive(on: DispatchQueue.main)
-                    .sink(receiveValue: { [weak self] title in
+                    .sink(receiveValue: { [weak self] (title, contentMode) in
+                        switch contentMode {
+                        case .theory(_):
+                            break
+                        default:
+                            return
+                        }
+                        // only update title when on the selected content mode
                         self?.toolBarViewModel.title = title
                     }).store(in: &cancellables)
                 addViewController(progressionViewController!)
