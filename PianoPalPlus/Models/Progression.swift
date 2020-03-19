@@ -70,11 +70,12 @@ class ProgressionItem: Codable {
         self.guid = try container.decode(String.self, forKey: .guid)
         self.type = try container.decode(MusicTheoryItem.self, forKey: .type)
         self.root = try container.decode(NoteOctave.self, forKey: .root)
-        if let scaleDescription = try? container.decode(ScaleType.self, forKey: .description) {
-            self.description = scaleDescription
-        } else {
+        if type == .chord {
             self.description = try container.decode(ChordType.self, forKey: .description)
+        } else {
+            self.description = try container.decode(ScaleType.self, forKey: .description)
         }
+        self.createItems()
     }
     
     func encode(to encoder: Encoder) throws {
@@ -82,10 +83,10 @@ class ProgressionItem: Codable {
         try container.encode(guid, forKey: .guid)
         try container.encode(type, forKey: .type)
         try container.encode(root, forKey: .root)
-        if let scaleDescription = description as? ScaleType {
-            try container.encode(scaleDescription, forKey: .description)
-        } else {
+        if type == .chord {
             try container.encode(description as? ChordType, forKey: .description)
+        } else {
+            try container.encode(description as? ScaleType, forKey: .description)
         }
     }
     
