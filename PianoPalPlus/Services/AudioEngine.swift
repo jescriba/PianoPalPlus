@@ -91,6 +91,7 @@ class AudioEngine {
     }
     
     private var playGroups = [DispatchGroup]()
+    private var previousPlay: PlayableDataP?
     func play(_ sequence: PlayableDataSequence, delay: Int = 0) {
         let newGroup = DispatchGroup()
         newGroup.enter()
@@ -99,7 +100,12 @@ class AudioEngine {
                 let (index, data) = arg
                 newGroup.enter()
                 let workItem = DispatchWorkItem(block: { [weak self] in
-                    self?.play(data)
+                    guard let selfV = self else { return }
+                    if let previous = selfV.previousPlay {
+                        selfV.stop(previous)
+                    }
+                    selfV.play(data)
+                    selfV.previousPlay = data
                     newGroup.leave()
                 })
                 self?.workItems.append(workItem)

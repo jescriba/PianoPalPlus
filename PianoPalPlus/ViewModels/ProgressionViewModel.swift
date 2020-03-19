@@ -49,6 +49,7 @@ class ProgressionViewModel: NSObject, UICollectionViewDataSource, UICollectionVi
                     else {
                         return
                 }
+                
                 // annoying +1 for addition cell
                 self?.highlightedIndexPath = IndexPath(row: row + 1, section: 0)
             }).store(in: &cancellables)
