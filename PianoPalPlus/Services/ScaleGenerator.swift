@@ -8,14 +8,16 @@
 
 import Foundation
 
-enum ScaleType: String {
+enum ScaleType: String, TheoryItemDescriptor {
     // todo more scale types and compatibilty w/ chords
-    case major
+    case major, minor
     
     func intervals() -> [Interval] {
         switch self {
         case .major:
-            return [.majorSecond, .majorThird, .perfectFourth, .perfectFifth, .majorSixth, .majorSeventh]
+            return [.unison, .majorSecond, .majorThird, .perfectFourth, .perfectFifth, .majorSixth, .majorSeventh]
+        case .minor:
+            return [.unison, .majorSecond, .minorThird, .perfectFourth, .perfectFifth, .minorSixth, .minorSeventh]
         }
     }
     
@@ -23,8 +25,17 @@ enum ScaleType: String {
         switch self {
         case .major:
             return [.major, .minor, .minor, .major, .dominantSeventh, .minor, .diminished]
+        case .minor:
+            return [.minor, .diminished, .major, .minor, .minor, .major, .major]
         }
     }
+    
+    static var all: [TheoryItemDescriptor] = [ScaleType.major, ScaleType.minor]
+
+}
+
+extension ScaleType: Stringable {
+    func asString() -> String { return rawValue }
 }
 
 class ScaleGenerator {

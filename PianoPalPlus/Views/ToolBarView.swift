@@ -49,57 +49,57 @@ class ToolBarView: UIView {
     private func bindViewModel() {
         // dry
         viewModel?.$title
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] title in
                 self?.titleLabel.text = title
             }).store(in: &cancellables)
         viewModel?.$pianoToggleButtonImage
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] image in
                 self?.pianoToggleButton.setImage(image, for: .normal)
             }).store(in: &cancellables)
         viewModel?.$pianoToggleButtonHidden
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] hidden in
                 self?.pianoToggleButton.isHidden = hidden
             }).store(in: &cancellables)
         viewModel?.$playButtonHidden
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] hidden in
                 self?.playButton.isHidden = hidden
             }).store(in: &cancellables)
         viewModel?.$noteLockButtonImage
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] image in
                 self?.noteLockButton.setImage(image, for: .normal)
             }).store(in: &cancellables)
         viewModel?.$playButtonImage
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] image in
                 self?.playButton.setImage(image, for: .normal)
             }).store(in: &cancellables)
         viewModel?.$sequenceButtonColor
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] color in
                 self?.sequenceButton.imageView?.tintColor = color
             }).store(in: &cancellables)
         viewModel?.$scrollLockButtonColor
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] color in
                 self?.scrollLockButton.imageView?.tintColor = color
             }).store(in: &cancellables)
         viewModel?.$noteLockButtonHidden
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] hidden in
                 self?.noteLockButton.isHidden = hidden
             }).store(in: &cancellables)
         viewModel?.$sequenceButtonHidden
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] hidden in
                 self?.sequenceButton.isHidden = hidden
             }).store(in: &cancellables)
         viewModel?.$scrollLockButtonHidden
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] hidden in
                 self?.scrollLockButton.isHidden = hidden
             }).store(in: &cancellables)

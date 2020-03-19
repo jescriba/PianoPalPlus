@@ -10,7 +10,9 @@ import UIKit
 import Combine
 
 extension UIView {
-    func addFullBoundsSubview(_ view: UIView, horizontalSpacing: CGFloat = 0, verticalSpacing: CGFloat = 0) {
+    func addFullBoundsSubview(_ view: UIView,
+                              horizontalSpacing: CGFloat = 0,
+                              verticalSpacing: CGFloat = 0) {
         view.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(view)
         NSLayoutConstraint.activate([
@@ -20,7 +22,19 @@ extension UIView {
             view.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -verticalSpacing)
         ])
     }
-
+    
+    func addFullBoundsSubview(_ view: UIView,
+                              horizontalMultiplier: CGFloat,
+                              verticalMultiplier: CGFloat) {
+        view.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(view)
+        NSLayoutConstraint.activate([
+            view.centerXAnchor.constraint(equalTo: self.centerXAnchor),
+            view.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+            view.heightAnchor.constraint(equalTo: self.heightAnchor, multiplier: verticalMultiplier),
+            view.widthAnchor.constraint(equalTo: self.widthAnchor, multiplier: horizontalMultiplier)
+        ])
+    }
 }
 
 class NoteView: UIView {
@@ -59,12 +73,12 @@ class NoteView: UIView {
     private var cancellables = Set<AnyCancellable>()
     private func bindViewModel() {
         viewModel?.$backgroundColor
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] color in
                 self?.backgroundColor = color
             }).store(in: &cancellables)
         viewModel?.$borderColor
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] color in
                 self?.layer.borderColor = color.cgColor
             }).store(in: &cancellables)

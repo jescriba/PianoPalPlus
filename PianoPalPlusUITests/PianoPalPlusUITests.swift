@@ -73,6 +73,45 @@ class PianoPalPlusUITests: XCTestCase {
         snapshot("keyTraining")
         // Use recording to get started writing UI tests.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
+            
+        app.buttons["gear"].tap()
+        app.tables/*@START_MENU_TOKEN@*/.staticTexts["study chords/scales"]/*[[".cells.staticTexts[\"study chords\/scales\"]",".staticTexts[\"study chords\/scales\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
+        
+        let plusElement = app.collectionViews.cells.otherElements.containing(.image, identifier:"plus").element
+        plusElement.tap()
+        
+        let itemPickerWheel = app/*@START_MENU_TOKEN@*/.pickerWheels["item"]/*[[".pickers.pickerWheels[\"item\"]",".pickerWheels[\"item\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/
+        let rootPickerWheel = app/*@START_MENU_TOKEN@*/.pickerWheels["root"]/*[[".pickers.pickerWheels[\"root\"]",".pickerWheels[\"root\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/
+        let qualityPickerWheel = app.pickerWheels["quality"]
+
+        itemPickerWheel.adjust(toPickerWheelValue: "chord")
+        rootPickerWheel.adjust(toPickerWheelValue: "C")
+        qualityPickerWheel.adjust(toPickerWheelValue: "m7")
+        let saveButton = app.buttons["save"]
+        saveButton.tap()
+        plusElement.tap()
+        
+        itemPickerWheel.adjust(toPickerWheelValue: "chord")
+        rootPickerWheel.adjust(toPickerWheelValue: "Eb")
+        qualityPickerWheel.adjust(toPickerWheelValue: "M7")
+        saveButton.tap()
+        sleep(1)
+        snapshot("theoryTraining")
+        
+        let playButton = app.buttons["play"]
+        playButton.tap()
+        sleep(1)
+        snapshot("theoryTraining1")
+
+        let stopButton = app.buttons["stop"]
+        stopButton.tap()
+        app.buttons["piano"].tap()
+        playButton.tap()
+        sleep(1)
+        snapshot("theoryTraining2")
+        
+        stopButton.tap()
+        
     }
 
     func testLaunchPerformance() {

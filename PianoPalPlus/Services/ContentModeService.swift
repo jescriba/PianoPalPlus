@@ -10,14 +10,16 @@ import Foundation
 import Combine
 
 enum ContentMode: Equatable {
-    case freePlay, earTraining(EarTrainingItem), theory
+    case freePlay, earTraining(EarTrainingItem), theory(TheoryModeItem)
     
     func title() -> String {
         switch self {
         case .earTraining(let item):
             return "Ear Training - \(item.title())"
+        case .theory(let item):
+            return "Theory \(item.asString())"
         default:
-            return "free play"
+            return "Free Play \0/"
         }
     }
     
@@ -25,6 +27,8 @@ enum ContentMode: Equatable {
         switch self {
         case .earTraining(let item):
             return "practice ear training: \(item.description() ?? "")"
+        case .theory(_):
+            return "study theory"
         default:
             return nil
         }

@@ -31,7 +31,6 @@ class ToolBarViewModel {
     private let toolbar: ToolBar
     private let audioEngine: AudioEngine
     private let contentModeService: ContentModeService
-    private let contentModes: [ContentMode]  = [.freePlay, .earTraining(.interval)]
     
     init(toolBar: ToolBar = ToolBar(),
          audioEngine: AudioEngine = AudioEngine.shared,
@@ -46,7 +45,7 @@ class ToolBarViewModel {
     private var cancellables = Set<AnyCancellable>()
     private func setupSubscriptions() {
         toolbar.$noteLocked
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] noteLocked in
                 guard let selfV = self else { return }
                 selfV.noteLockButtonImage = noteLocked ? selfV.noteUnlockedImage : selfV.noteLockedImage
@@ -56,31 +55,31 @@ class ToolBarViewModel {
                 }
             }).store(in: &cancellables)
         toolbar.$pianoToggled
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] pianoToggled in
                 guard let selfV = self else { return }
                 selfV.pianoToggleButtonImage = pianoToggled ? selfV.gridImage : selfV.pianoImage
             }).store(in: &cancellables)
         toolbar.$scrollLocked
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] scrollLocked in
                 guard let selfV = self else { return }
                 selfV.scrollLockButtonColor = scrollLocked ? UIColor.imageTint : UIColor.imageSelectedTint
             }).store(in: &cancellables)
         toolbar.$sequenceActive
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] sequenceActive in
                 guard let selfV = self else { return }
                 selfV.sequenceButtonColor = sequenceActive ? UIColor.imageSelectedTint : UIColor.imageTint
             }).store(in: &cancellables)
         toolbar.$playActive
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] playActive in
                 guard let selfV = self else { return }
                 selfV.playButtonImage = playActive ? selfV.stopImage : selfV.playImage
             }).store(in: &cancellables)
         contentModeService.$contentMode
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] contentMode in
                 guard let selfV = self else { return }
                 selfV.title = contentMode.title()
@@ -100,13 +99,16 @@ class ToolBarViewModel {
                     selfV.toolbar.pianoToggled = false
                     selfV.playButtonHidden = false
                 case .theory:
-                    selfV.noteLockButtonHidden = false
-                    selfV.sequenceButtonHidden = false
-                    selfV.pianoToggleButtonHidden = true
+                    selfV.scrollLockButtonHidden = true
+                    selfV.noteLockButtonHidden = true
+                    selfV.sequenceButtonHidden = true
+                    selfV.pianoToggleButtonHidden = false
+                    selfV.toolbar.pianoToggled = false
+                    selfV.playButtonHidden = false
                 }
             }).store(in: &cancellables)
         audioEngine.$isPlaying
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] isPlaying in
                 self?.toolbar.playActive = isPlaying
             }).store(in: &cancellables)
@@ -131,10 +133,10 @@ class ToolBarViewModel {
     func togglePiano() {
         toolbar.pianoToggled = !toolbar.pianoToggled
         switch contentModeService.contentMode {
-        case .earTraining(_):
-            scrollLockButtonHidden = !toolbar.pianoToggled
-        default:
+        case .freePlay:
             break
+        default:
+            scrollLockButtonHidden = !toolbar.pianoToggled
         }
     }
 }

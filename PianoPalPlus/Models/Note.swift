@@ -25,7 +25,7 @@ class Notes {
     }
 }
 
-enum Note : Int {
+enum Note : Int, Codable {
     case c, dFlat, d, eFlat, e, f, fSharp, g, aFlat, a, bFlat, b
     
     func isWhiteKey() -> Bool {
@@ -73,4 +73,8 @@ enum Note : Int {
     func baseInt() -> Int {
         return Notes.all.firstIndex(of: self)!
     }
+}
+
+extension Note: Stringable {
+    func asString() -> String { return simpleDescription() }
 }

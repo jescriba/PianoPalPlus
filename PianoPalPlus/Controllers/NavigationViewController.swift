@@ -28,26 +28,10 @@ enum NavigationItem: String {
     }
 }
 
-extension UIView {
-    func addTableView() -> UITableView {
-        let tableView = UITableView()
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        tableView.showsVerticalScrollIndicator = false
-        self.addSubview(tableView)
-        NSLayoutConstraint.activate([
-            tableView.centerXAnchor.constraint(equalTo: self.centerXAnchor),
-            tableView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-            tableView.widthAnchor.constraint(equalTo: self.widthAnchor),
-            tableView.heightAnchor.constraint(equalTo: self.heightAnchor)
-        ])
-        return tableView
-    }
-}
-
-class NavigationTableViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class NavigationCollectionViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     private var tableView: UITableView!
     // todo add the theory mode
-    private let items: [NavigationItem] = [.freeplay, .earTraining]
+    private let items: [NavigationItem] = [.freeplay, .earTraining, .theory]
     private let contentModeService: ContentModeService
     
     init(contentModeService: ContentModeService = ContentModeService.shared) {
@@ -102,7 +86,8 @@ class NavigationTableViewController: UIViewController, UITableViewDataSource, UI
         case .earTraining:
             navigationController?.pushViewController(EarTrainingSelectorViewController(contentModeService: contentModeService), animated: true)
         case .theory:
-            navigationController?.pushViewController(MusicTheorySelectorViewController(), animated: true)
+            contentModeService.contentMode = .theory(.progression)
+            dismiss(animated: false, completion: nil)
         case .freeplay:
             contentModeService.contentMode = .freePlay
             dismiss(animated: false, completion: nil)
@@ -132,7 +117,7 @@ class NavigationViewController: UIViewController, UIGestureRecognizerDelegate {
             _navigationVC.view.widthAnchor.constraint(equalTo: self.view.widthAnchor, multiplier: 0.75),
             _navigationVC.view.heightAnchor.constraint(equalTo: self.view.heightAnchor, multiplier: 0.75)
         ])
-        _navigationVC.setViewControllers([NavigationTableViewController()], animated: false)
+        _navigationVC.setViewControllers([NavigationCollectionViewController()], animated: false)
     }
     
     func addBlurView() {

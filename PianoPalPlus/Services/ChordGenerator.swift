@@ -8,17 +8,14 @@
 
 import Foundation
 
-class ChordTypes {
-    static var all: [ChordType]  {
-        return [.major, .minor, .augmented, .diminished, .majorSeventh,
-                .minorSeventh, .dominantSeventh]
-    }
-}
+typealias Chord = [NoteOctave]
 
-enum ChordType: String {
+enum ChordType: String, Stringable, TheoryItemDescriptor {
     // todo a lot more chords and altered chord types
     case major
+    case majorSixth
     case minor
+    case minorSixth
     case augmented
     case diminished
     case majorSeventh
@@ -29,8 +26,12 @@ enum ChordType: String {
         switch self {
         case .major:
             return [.unison, .majorThird, .perfectFifth]
+        case .majorSixth:
+            return [.unison, .majorThird, .perfectFifth, .majorSixth]
         case .minor:
             return [.unison, .minorThird, .perfectFifth]
+        case .minorSixth:
+            return [.unison, .minorThird, .perfectFifth, .majorSixth]
         case .augmented:
             return [.unison, .majorThird, .minorSixth]
         case .diminished:
@@ -43,6 +44,26 @@ enum ChordType: String {
             return [.unison, .majorThird, .perfectFifth, .minorSeventh]
         }
     }
+    
+    func asString() -> String {
+        switch self {
+        case .majorSeventh:
+            return "M7"
+        case .minorSeventh:
+            return "m7"
+        case .dominantSeventh:
+            return "7"
+        case .majorSixth:
+            return "M6"
+        case .minorSixth:
+            return "m6"
+        default:
+            return rawValue
+        }
+    }
+
+        
+    static var all: [TheoryItemDescriptor] = [ChordType.major, ChordType.minor, ChordType.augmented, ChordType.diminished, ChordType.majorSixth, ChordType.minorSixth, ChordType.majorSeventh, ChordType.minorSeventh, ChordType.dominantSeventh]
 }
 
 class ChordGenerator {

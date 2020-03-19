@@ -30,6 +30,24 @@
       "keyword": {
         "color": "#205CCD"
       }
+    },
+    {
+      "filter": "theoryTraining",
+      "keyword": {
+        "color": "#205CCD"
+      }
+    },
+    {
+      "filter": "theoryTraining1",
+      "keyword": {
+        "color": "#205CCD"
+      }
+    },
+    {
+      "filter": "theoryTraining2",
+      "keyword": {
+        "color": "#205CCD"
+      }
     }
 
   ]

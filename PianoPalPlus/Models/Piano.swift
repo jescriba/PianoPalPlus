@@ -13,6 +13,7 @@ class Piano {
     @Published var noteLocked: Bool = false
     @Published var scrollLocked: Bool = true
     @Published var selectedNotes: ObservableUniqueArray<NoteOctave> = ObservableUniqueArray<NoteOctave>()
+    @Published var playingNotes: Playable?
     @Published var sequencing: Bool = false
     @Published var playing: Bool = false
 }

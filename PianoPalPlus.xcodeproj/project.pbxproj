@@ -11,6 +11,7 @@
 		4207082323EEDA32002FBB87 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4207082223EEDA32002FBB87 /* CardView.swift */; };
 		4207082523EEDAC4002FBB87 /* CardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4207082423EEDAC4002FBB87 /* CardViewModel.swift */; };
 		4207082923EFAE49002FBB87 /* Interval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4207082823EFAE49002FBB87 /* Interval.swift */; };
+		422C33B42422E63F0097BFB5 /* ProgressionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422C33B32422E63F0097BFB5 /* ProgressionStore.swift */; };
 		425E0F3D23E679A7007536FA /* ContentModeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425E0F3C23E679A7007536FA /* ContentModeService.swift */; };
 		425E0F3F23E75AF3007536FA /* NoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425E0F3E23E75AF3007536FA /* NoteViewModel.swift */; };
 		425F4CF623F0C89100970DA7 /* IntervalGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425F4CF523F0C89100970DA7 /* IntervalGenerator.swift */; };
@@ -31,9 +32,16 @@
 		4260129423BD8E76007BEC7F /* KeyColorPair.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4260129323BD8E76007BEC7F /* KeyColorPair.swift */; };
 		426012A123BD8ECD007BEC7F /* KeyProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4260129C23BD8ECD007BEC7F /* KeyProperties.swift */; };
 		426012A323BD9277007BEC7F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 426012A223BD9277007BEC7F /* SceneDelegate.swift */; };
+		4285310223F7660C0051A6F0 /* TheoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4285310123F7660C0051A6F0 /* TheoryViewController.swift */; };
 		429CD1DE23DE52AA00E86DFE /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429CD1DD23DE52AA00E86DFE /* SettingsViewController.swift */; };
 		429CD1E023DE52BC00E86DFE /* EarTrainingSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429CD1DF23DE52BC00E86DFE /* EarTrainingSelectorViewController.swift */; };
-		429CD1E223DE532600E86DFE /* MusicTheorySelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429CD1E123DE532600E86DFE /* MusicTheorySelectorViewController.swift */; };
+		42A09BC823FE7A8C00F304B1 /* Progression.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A09BC723FE7A8C00F304B1 /* Progression.swift */; };
+		42A09BCA23FE7F8900F304B1 /* ProgressionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A09BC923FE7F8900F304B1 /* ProgressionViewModel.swift */; };
+		42A09BCC241369B100F304B1 /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A09BCB241369B100F304B1 /* UIView+Extension.swift */; };
+		42A09BCE2415BAB700F304B1 /* CommandableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A09BCD2415BAB700F304B1 /* CommandableView.swift */; };
+		42A09BD22415C6D200F304B1 /* ProgressionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A09BD12415C6D200F304B1 /* ProgressionView.swift */; };
+		42A09BD6241D806700F304B1 /* TheoryItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A09BD5241D806700F304B1 /* TheoryItemView.swift */; };
+		42A09BD8241D828C00F304B1 /* TheoryItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A09BD7241D828C00F304B1 /* TheoryItemViewModel.swift */; };
 		42AA3B6623E4069A0003F89F /* ToolBarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AA3B6523E4069A0003F89F /* ToolBarViewModel.swift */; };
 		42AA3B6823E407320003F89F /* PianoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AA3B6723E407320003F89F /* PianoViewController.swift */; };
 		42AA3B6A23E407950003F89F /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AA3B6923E407950003F89F /* GameViewController.swift */; };
@@ -154,6 +162,7 @@
 		4207082223EEDA32002FBB87 /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
 		4207082423EEDAC4002FBB87 /* CardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardViewModel.swift; sourceTree = "<group>"; };
 		4207082823EFAE49002FBB87 /* Interval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Interval.swift; sourceTree = "<group>"; };
+		422C33B32422E63F0097BFB5 /* ProgressionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressionStore.swift; sourceTree = "<group>"; };
 		425E0F3C23E679A7007536FA /* ContentModeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentModeService.swift; sourceTree = "<group>"; };
 		425E0F3E23E75AF3007536FA /* NoteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteViewModel.swift; sourceTree = "<group>"; };
 		425F4CF523F0C89100970DA7 /* IntervalGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntervalGenerator.swift; sourceTree = "<group>"; };
@@ -180,9 +189,16 @@
 		4260129323BD8E76007BEC7F /* KeyColorPair.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyColorPair.swift; sourceTree = "<group>"; };
 		4260129C23BD8ECD007BEC7F /* KeyProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyProperties.swift; sourceTree = "<group>"; };
 		426012A223BD9277007BEC7F /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		4285310123F7660C0051A6F0 /* TheoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TheoryViewController.swift; sourceTree = "<group>"; };
 		429CD1DD23DE52AA00E86DFE /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		429CD1DF23DE52BC00E86DFE /* EarTrainingSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarTrainingSelectorViewController.swift; sourceTree = "<group>"; };
-		429CD1E123DE532600E86DFE /* MusicTheorySelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicTheorySelectorViewController.swift; sourceTree = "<group>"; };
+		42A09BC723FE7A8C00F304B1 /* Progression.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Progression.swift; sourceTree = "<group>"; };
+		42A09BC923FE7F8900F304B1 /* ProgressionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressionViewModel.swift; sourceTree = "<group>"; };
+		42A09BCB241369B100F304B1 /* UIView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
+		42A09BCD2415BAB700F304B1 /* CommandableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommandableView.swift; sourceTree = "<group>"; };
+		42A09BD12415C6D200F304B1 /* ProgressionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressionView.swift; sourceTree = "<group>"; };
+		42A09BD5241D806700F304B1 /* TheoryItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TheoryItemView.swift; sourceTree = "<group>"; };
+		42A09BD7241D828C00F304B1 /* TheoryItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TheoryItemViewModel.swift; sourceTree = "<group>"; };
 		42AA3B6523E4069A0003F89F /* ToolBarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolBarViewModel.swift; sourceTree = "<group>"; };
 		42AA3B6723E407320003F89F /* PianoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PianoViewController.swift; sourceTree = "<group>"; };
 		42AA3B6923E407950003F89F /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
@@ -372,7 +388,10 @@
 				4260128A23BD557E007BEC7F /* NoteView.swift */,
 				4260128C23BD558E007BEC7F /* PianoView.swift */,
 				42C974D223D6BF4D00841216 /* ToolBarView.swift */,
+				42A09BCD2415BAB700F304B1 /* CommandableView.swift */,
 				4207082223EEDA32002FBB87 /* CardView.swift */,
+				42A09BD12415C6D200F304B1 /* ProgressionView.swift */,
+				42A09BD5241D806700F304B1 /* TheoryItemView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -386,6 +405,7 @@
 				42AA3B6B23E40A0C0003F89F /* ToolBar.swift */,
 				42C2829C23E635BA005BCD62 /* Piano.swift */,
 				4207082823EFAE49002FBB87 /* Interval.swift */,
+				42A09BC723FE7A8C00F304B1 /* Progression.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -404,10 +424,10 @@
 				4260125B23BD54AC007BEC7F /* ContainerViewController.swift */,
 				42AA3B6723E407320003F89F /* PianoViewController.swift */,
 				42AA3B6923E407950003F89F /* GameViewController.swift */,
-				42D1AADE23DE3E60003A3DEA /* NavigationViewController.swift */,
+				4285310123F7660C0051A6F0 /* TheoryViewController.swift */,
 				429CD1DD23DE52AA00E86DFE /* SettingsViewController.swift */,
+				42D1AADE23DE3E60003A3DEA /* NavigationViewController.swift */,
 				429CD1DF23DE52BC00E86DFE /* EarTrainingSelectorViewController.swift */,
-				429CD1E123DE532600E86DFE /* MusicTheorySelectorViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -419,6 +439,8 @@
 				42AA3B6D23E40D4A0003F89F /* PianoViewModel.swift */,
 				425E0F3E23E75AF3007536FA /* NoteViewModel.swift */,
 				4207082423EEDAC4002FBB87 /* CardViewModel.swift */,
+				42A09BC923FE7F8900F304B1 /* ProgressionViewModel.swift */,
+				42A09BD7241D828C00F304B1 /* TheoryItemViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -524,6 +546,7 @@
 				425F4CF723F0C89B00970DA7 /* ChordGenerator.swift */,
 				425F4CF923F0C8A300970DA7 /* ScaleGenerator.swift */,
 				425F4CFB23F0D50500970DA7 /* KeyGenerator.swift */,
+				422C33B32422E63F0097BFB5 /* ProgressionStore.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -533,6 +556,7 @@
 			children = (
 				42E0AC9C23F3FE3100C822EF /* UIColor+Extension.swift */,
 				42E0ACA223F58EA200C822EF /* ObservableUniqueArray.swift */,
+				42A09BCB241369B100F304B1 /* UIView+Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -757,17 +781,22 @@
 				4207082123EA9718002FBB87 /* GameEngine.swift in Sources */,
 				42DF135A23D622A400CC9D68 /* AudioEngine.swift in Sources */,
 				42AA3B6823E407320003F89F /* PianoViewController.swift in Sources */,
+				4285310223F7660C0051A6F0 /* TheoryViewController.swift in Sources */,
 				425F4CF823F0C89B00970DA7 /* ChordGenerator.swift in Sources */,
 				4260129223BD55C0007BEC7F /* NoteOctave.swift in Sources */,
 				4260125C23BD54AC007BEC7F /* ContainerViewController.swift in Sources */,
+				42A09BD22415C6D200F304B1 /* ProgressionView.swift in Sources */,
+				422C33B42422E63F0097BFB5 /* ProgressionStore.swift in Sources */,
 				4260128B23BD557E007BEC7F /* NoteView.swift in Sources */,
 				4260125823BD54AC007BEC7F /* AppDelegate.swift in Sources */,
 				42C974D323D6BF4D00841216 /* ToolBarView.swift in Sources */,
+				42A09BCC241369B100F304B1 /* UIView+Extension.swift in Sources */,
 				425F4CF623F0C89100970DA7 /* IntervalGenerator.swift in Sources */,
 				42AA3B6E23E40D4A0003F89F /* PianoViewModel.swift in Sources */,
 				429CD1DE23DE52AA00E86DFE /* SettingsViewController.swift in Sources */,
+				42A09BCE2415BAB700F304B1 /* CommandableView.swift in Sources */,
+				42A09BD8241D828C00F304B1 /* TheoryItemViewModel.swift in Sources */,
 				425E0F3D23E679A7007536FA /* ContentModeService.swift in Sources */,
-				429CD1E223DE532600E86DFE /* MusicTheorySelectorViewController.swift in Sources */,
 				4260128D23BD558E007BEC7F /* PianoView.swift in Sources */,
 				425E0F3F23E75AF3007536FA /* NoteViewModel.swift in Sources */,
 				4260129023BD55B8007BEC7F /* Note.swift in Sources */,
@@ -777,12 +806,15 @@
 				426012A123BD8ECD007BEC7F /* KeyProperties.swift in Sources */,
 				42E0AC9D23F3FE3100C822EF /* UIColor+Extension.swift in Sources */,
 				429CD1E023DE52BC00E86DFE /* EarTrainingSelectorViewController.swift in Sources */,
+				42A09BC823FE7A8C00F304B1 /* Progression.swift in Sources */,
 				42D1AADF23DE3E60003A3DEA /* NavigationViewController.swift in Sources */,
 				42E0ACA323F58EA200C822EF /* ObservableUniqueArray.swift in Sources */,
 				4207082923EFAE49002FBB87 /* Interval.swift in Sources */,
+				42A09BCA23FE7F8900F304B1 /* ProgressionViewModel.swift in Sources */,
 				42AA3B6C23E40A0C0003F89F /* ToolBar.swift in Sources */,
 				42AA3B6623E4069A0003F89F /* ToolBarViewModel.swift in Sources */,
 				42C2829D23E635BA005BCD62 /* Piano.swift in Sources */,
+				42A09BD6241D806700F304B1 /* TheoryItemView.swift in Sources */,
 				425F4CFA23F0C8A300970DA7 /* ScaleGenerator.swift in Sources */,
 				4260129423BD8E76007BEC7F /* KeyColorPair.swift in Sources */,
 			);
@@ -967,7 +999,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.3;
+				MARKETING_VERSION = 0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = joshuae.PianoPalPlus;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -989,7 +1021,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.3;
+				MARKETING_VERSION = 0.4;
 				PRODUCT_BUNDLE_IDENTIFIER = joshuae.PianoPalPlus;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";

@@ -43,21 +43,6 @@ class PianoView: UIView, UIScrollViewDelegate {
             }
         }
     }
-//    private var activeNotes: [NoteOctave] = [NoteOctave]() {
-//        didSet {
-//            noteViews.filter({ activeNotes.contains($0.noteOctave) })
-//        }
-//    }
-    private var isNoteLocked: Bool = false {
-        didSet {
-//            if isNoteLocked {
-//                lockedNotes = [NoteOctave]()
-//            } else {
-//                lockedNotes = nil
-//                noteViews.forEach({ $0.deIlluminate() })
-//            }
-        }
-    }
     weak var viewModel: PianoViewModel? {
         didSet {
             bindViewModel()
@@ -114,7 +99,7 @@ class PianoView: UIView, UIScrollViewDelegate {
     
     private func bindViewModel() {
         viewModel?.$scrollLocked
-            .subscribe(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] scrollLocked in
                 self?.isScrollLocked = scrollLocked
             }).store(in: &cancellables)

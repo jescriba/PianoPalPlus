@@ -19,7 +19,7 @@ class GameEngine {
     private var isPlaying = false
     private let contentModeService: ContentModeService
     private let audioEngine: AudioEngine
-    private var currentPlayable = [[NoteOctave]]()
+    private var currentPlayableSequence = PlayableSequence()
     private var currentAnswer: Selection?
     
     init(contentModeService: ContentModeService = .shared, audioEngine: AudioEngine = AudioEngine.shared) {
@@ -40,25 +40,14 @@ class GameEngine {
             }).store(in: &cancellables)
     }
     
-    private var workItems = [DispatchWorkItem]()
     func play() {
         isPlaying = true
-        currentPlayable.enumerated().forEach({ (arg) in
-            let (index, noteOctaves) = arg
-            let workItem = DispatchWorkItem(block: { [weak self] in
-                self?.audioEngine.play(noteOctaves)
-            })
-            workItems.append(workItem)
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + DispatchTimeInterval.seconds(index), execute: workItem)
-        })
+        _ = audioEngine.play(currentPlayableSequence)
     }
     
     func stop() {
         isPlaying = false
-        audioEngine.stop(currentPlayable.flatMap({ $0 }))
-        // stop pending work items
-        workItems.forEach({ $0.cancel() })
-        workItems.removeAll()
+        audioEngine.stop(currentPlayableSequence)
     }
     
     func next() {
@@ -84,24 +73,23 @@ class GameEngine {
     }
     
     private func generatePlayable(mode: ContentMode) {
-        // TODO
         switch mode {
         case .earTraining(.interval):
             let randomInterval = Intervals.all.randomElement()!
             let noteOctaves = IntervalGenerator.notes(for: randomInterval)
-            currentPlayable = [[NoteOctave]]()
-            noteOctaves.forEach({ currentPlayable.append([$0]) })
+            currentPlayableSequence = [[NoteOctave]]()
+            noteOctaves.forEach({ currentPlayableSequence.append([$0]) })
             currentAnswer = Selection(title: randomInterval.title())
         case .earTraining(.key):
             let randomNote = NoteOctaveGenerator.random()
-            currentPlayable = KeyGenerator.notesAndChords(for: randomNote)
+            currentPlayableSequence = KeyGenerator.notesAndChords(for: randomNote)
             currentAnswer = Selection(title: randomNote.note.simpleDescription() + " maj")
             break
         case .earTraining(.chordType):
-            let randomChordType = ChordTypes.all.randomElement()!
-            let noteOctaves = ChordGenerator.notes(for: randomChordType)
-            currentPlayable = [noteOctaves]
-            currentAnswer = Selection(title: randomChordType.rawValue)
+            let randomChordType = ChordType.all.randomElement()!
+            let noteOctaves = ChordGenerator.notes(for: randomChordType as! ChordType)
+            currentPlayableSequence = [noteOctaves]
+            currentAnswer = Selection(title: randomChordType.asString())
         default:
             break
         }
@@ -114,7 +102,7 @@ class GameEngine {
         case .earTraining(.key):
             selectionItems = Notes.all.map { Selection(title: $0.simpleDescription() + " maj") }
         case .earTraining(.chordType):
-            selectionItems = ChordTypes.all.map { Selection(title: $0.rawValue) }
+            selectionItems = ChordType.all.map { Selection(title: $0.asString()) }
         default:
             break
         }
