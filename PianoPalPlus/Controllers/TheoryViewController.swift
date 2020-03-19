@@ -40,10 +40,12 @@ class TheoryViewController: UIViewController {
     private var theoryItemView: TheoryItemView!
     private var progression: Progression
     
-    init(contentModeService: ContentModeService = .shared, audioEngine: AudioEngine = .shared) {
+    init(contentModeService: ContentModeService = .shared,
+         audioEngine: AudioEngine = .shared,
+         progressionStore: ProgressionStore = .shared) {
         self.contentModeService = contentModeService
         self.audioEngine = audioEngine
-        self.progression = Progression()
+        self.progression = progressionStore.load() ?? Progression()
         self.progressionViewModel = ProgressionViewModel(progression: progression)
         self.theoryItemViewModel = TheoryItemViewModel(progression: progression)
         super.init(nibName: nil, bundle: nil)

@@ -25,7 +25,7 @@ class Notes {
     }
 }
 
-enum Note : Int {
+enum Note : Int, Codable {
     case c, dFlat, d, eFlat, e, f, fSharp, g, aFlat, a, bFlat, b
     
     func isWhiteKey() -> Bool {

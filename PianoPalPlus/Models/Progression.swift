@@ -16,12 +16,12 @@ extension String: Stringable {
     func asString() -> String { return self }
 }
 
-protocol TheoryItemDescriptor: Stringable {
+protocol TheoryItemDescriptor: Stringable, Codable {
     static var all: [TheoryItemDescriptor] { get set }
     func intervals() -> [Interval]
 }
 
-enum MusicTheoryItem: String {
+enum MusicTheoryItem: String, Codable {
     case chord, scale
     
     func descriptors() -> [TheoryItemDescriptor] {
@@ -42,7 +42,7 @@ extension MusicTheoryItem: Stringable {
     func asString() -> String { return rawValue }
 }
 
-class ProgressionItem {
+class ProgressionItem: Codable {
     var guid: String = ""
     var sequence: PlayableDataSequence? {
         get {
@@ -61,6 +61,34 @@ class ProgressionItem {
     private(set) var root: NoteOctave
     private var items = [NoteOctave]()
     
+    enum CodingKeys: String, CodingKey {
+        case guid, type, description, root
+    }
+
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.guid = try container.decode(String.self, forKey: .guid)
+        self.type = try container.decode(MusicTheoryItem.self, forKey: .type)
+        self.root = try container.decode(NoteOctave.self, forKey: .root)
+        if let scaleDescription = try? container.decode(ScaleType.self, forKey: .description) {
+            self.description = scaleDescription
+        } else {
+            self.description = try container.decode(ChordType.self, forKey: .description)
+        }
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(guid, forKey: .guid)
+        try container.encode(type, forKey: .type)
+        try container.encode(root, forKey: .root)
+        if let scaleDescription = description as? ScaleType {
+            try container.encode(scaleDescription, forKey: .description)
+        } else {
+            try container.encode(description as? ChordType, forKey: .description)
+        }
+    }
+    
     init(type: MusicTheoryItem, description: TheoryItemDescriptor, root: NoteOctave) {
         self.type = type
         self.root = root
@@ -77,7 +105,7 @@ class ProgressionItem {
     }
 }
 
-class Progression {
+class Progression: Codable {
     @Published var items: [ProgressionItem]
     @Published var currentItem: ProgressionItem?
     var sequences: [PlayableDataSequence] {
@@ -86,6 +114,20 @@ class Progression {
     
     init(items: [ProgressionItem] = [ProgressionItem]()) {
         self.items = items
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case items
+    }
+    
+    required init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.items = try container.decode([ProgressionItem].self, forKey: .items)
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(items, forKey: .items)
     }
     
     func updateGuids() {

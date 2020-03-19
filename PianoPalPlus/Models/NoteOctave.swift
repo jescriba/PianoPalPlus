@@ -14,7 +14,7 @@ extension Octave {
     static let min = 0
 }
 
-class NoteOctave: Equatable, Hashable {
+class NoteOctave: Equatable, Hashable, Codable {
     var note: Note
     var octave: Int
     var midiNote: UInt8 {
