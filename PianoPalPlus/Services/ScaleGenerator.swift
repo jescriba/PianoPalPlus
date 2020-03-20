@@ -32,41 +32,41 @@ enum ScaleType: String, Stringable, TheoryItemDescriptor {
     func intervals() -> [Interval] {
         switch self {
         case .major:
-            return [.unison, .majorSecond, .majorThird, .perfectFourth, .perfectFifth, .majorSixth, .majorSeventh]
+            return [.unison, .majorSecond, .majorThird, .perfectFourth, .perfectFifth, .majorSixth, .majorSeventh, .octave]
         case .minor:
-            return [.unison, .majorSecond, .minorThird, .perfectFourth, .perfectFifth, .minorSixth, .minorSeventh]
+            return [.unison, .majorSecond, .minorThird, .perfectFourth, .perfectFifth, .minorSixth, .minorSeventh, .octave]
         case .melodicMinor:
-            return [.unison, .majorSecond, .minorThird, .perfectFourth, .perfectFifth, .majorSixth, .majorSeventh]
+            return [.unison, .majorSecond, .minorThird, .perfectFourth, .perfectFifth, .majorSixth, .majorSeventh, .octave]
         case .harmonicMinor:
-            return [.unison, .majorSecond, .minorThird, .perfectFourth, .perfectFifth, .minorSixth, .majorSeventh]
+            return [.unison, .majorSecond, .minorThird, .perfectFourth, .perfectFifth, .minorSixth, .majorSeventh, .octave]
         case .minorPentatonic:
-            return [.unison, .minorThird, .perfectFourth, .perfectFifth, .minorSeventh]
+            return [.unison, .minorThird, .perfectFourth, .perfectFifth, .minorSeventh, .octave]
         case .blues:
-            return [.unison, .minorThird, .perfectFourth, .tritone, .perfectFifth, .minorSeventh]
+            return [.unison, .minorThird, .perfectFourth, .tritone, .perfectFifth, .minorSeventh, .octave]
         case .wholeTone:
-            return [.unison, .majorSecond, .majorThird, .tritone, .minorSixth, .minorSeventh]
+            return [.unison, .majorSecond, .majorThird, .tritone, .minorSixth, .minorSeventh, .octave]
         case .chromatic:
             return Intervals.all
         case .augmented:
-            return [.unison, .minorThird, .majorThird, .perfectFifth, .minorSixth, .majorSeventh]
+            return [.unison, .minorThird, .majorThird, .perfectFifth, .minorSixth, .majorSeventh, .octave]
         case .enigmatic:
-            return [.unison, .minorSecond, .majorThird, .tritone, .minorSixth, .minorSeventh, .majorSeventh]
+            return [.unison, .minorSecond, .majorThird, .tritone, .minorSixth, .minorSeventh, .majorSeventh, .octave]
         case .enigmaticMinor:
-            return [.unison, .minorSecond, .minorThird, .tritone, .perfectFifth, .minorSeventh, .majorSeventh]
+            return [.unison, .minorSecond, .minorThird, .tritone, .perfectFifth, .minorSeventh, .majorSeventh, .octave]
         case .wholeHalfDiminished:
-            return [.unison, .majorSecond, .minorThird, .perfectFourth, .tritone, .minorSixth, .majorSixth, .majorSeventh]
+            return [.unison, .majorSecond, .minorThird, .perfectFourth, .tritone, .minorSixth, .majorSixth, .majorSeventh, .octave]
         case .bebopDorian:
-            return [.unison, .majorSecond, .minorThird, .perfectFourth, .perfectFifth, .majorSixth, .minorSeventh, .majorSeventh]
+            return [.unison, .majorSecond, .minorThird, .perfectFourth, .perfectFifth, .majorSixth, .minorSeventh, .majorSeventh, .octave]
         case .bebopMajor:
-            return [.unison, .majorSecond, .majorThird, .perfectFourth, .perfectFifth, .minorSixth, .majorSixth, .majorSeventh]
+            return [.unison, .majorSecond, .majorThird, .perfectFourth, .perfectFifth, .minorSixth, .majorSixth, .majorSeventh, .octave]
         case .bebopDominant:
-            return [.unison, .majorSecond, .majorThird, .perfectFourth, .perfectFifth, .majorSixth, .minorSeventh, .majorSeventh]
+            return [.unison, .majorSecond, .majorThird, .perfectFourth, .perfectFifth, .majorSixth, .minorSeventh, .majorSeventh, .octave]
         case .persian:
-            return [.unison, .minorSecond, .majorThird, .perfectFourth, .tritone, .minorSixth, .majorSeventh]
+            return [.unison, .minorSecond, .majorThird, .perfectFourth, .tritone, .minorSixth, .majorSeventh, .octave]
         case .hungarianMinor:
-            return [.unison, .majorSecond, .minorThird, .tritone, .perfectFifth, .minorSixth, .majorSeventh]
+            return [.unison, .majorSecond, .minorThird, .tritone, .perfectFifth, .minorSixth, .majorSeventh, .octave]
         case .hungarianMajor:
-            return [.unison, .minorThird, .majorThird, .tritone, .perfectFifth, .majorSixth, .minorSeventh]
+            return [.unison, .minorThird, .majorThird, .tritone, .perfectFifth, .majorSixth, .minorSeventh, .octave]
         }
     }
     

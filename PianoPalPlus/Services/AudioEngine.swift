@@ -109,7 +109,7 @@ class AudioEngine {
                     newGroup.leave()
                 })
                 self?.workItems.append(workItem)
-                self?.audioSerialQueue.asyncAfter(deadline: .now() + .seconds(1 * index), execute: workItem)
+                self?.audioSerialQueue.asyncAfter(deadline: .now() + .milliseconds(600 * index), execute: workItem)
             })
             newGroup.leave()
         })
