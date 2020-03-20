@@ -1,6 +1,4 @@
-v0.4 in progress: basic scale and chords. highlight playing now
 v0.5 
-- fix bugs like sequences stopping the previous chord, etc..
 - add more chord types and scale types
 - add some basic chord 'alterations'
 - be able to save progressions/sessions
