@@ -59,7 +59,7 @@ class ProgressionItem: Codable {
     private(set) var type: MusicTheoryItem
     private(set) var description: TheoryItemDescriptor
     private(set) var root: NoteOctave
-    private var items = [NoteOctave]()
+    private(set) var items = [NoteOctave]()
     
     enum CodingKeys: String, CodingKey {
         case guid, type, description, root

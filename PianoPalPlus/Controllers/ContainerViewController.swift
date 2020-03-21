@@ -101,7 +101,7 @@ class ContainerViewController: UIViewController {
         case .progression:
             // TODO refactor
             if progressionViewController == nil {
-                progressionViewController = TheoryViewController()
+                progressionViewController = TheoryViewController(piano: pianoViewModel.piano)
                 progressionViewController?.$header
                     .combineLatest(contentModeService.$contentMode)
                     .receive(on: DispatchQueue.main)

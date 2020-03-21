@@ -55,4 +55,5 @@ class ObservableUniqueArray<T:Hashable> {
         _array.removeAll()
         _dictionary.removeAll()
     }
+
 }

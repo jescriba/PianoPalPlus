@@ -87,7 +87,9 @@ class AudioEngine {
     func stop(_ data: PlayableDataP) {
         data.playable.forEach({ pianoSampler.stopNote($0.midiNote, onChannel: 0) })
         playData = nil
-        isPlaying = false
+        if workItems.isEmpty {
+            isPlaying = false
+        }
     }
     
     private var playGroups = [DispatchGroup]()
@@ -130,6 +132,13 @@ class AudioEngine {
     
     func stop(_ sequence: PlayableDataSequence) {
         sequence.forEach({ stop($0) })
+        workItems.forEach({ $0.cancel() })
+        workItems.removeAll()
+        playGroups.removeAll()
+    }
+    
+    func stop() {
+        NoteOctaves.all.forEach({ pianoSampler.stopNote($0.midiNote, onChannel: 0) })
         workItems.forEach({ $0.cancel() })
         workItems.removeAll()
         playGroups.removeAll()

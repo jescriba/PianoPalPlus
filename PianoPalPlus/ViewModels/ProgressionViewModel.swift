@@ -52,7 +52,7 @@ class ProgressionViewModel: NSObject, UICollectionViewDataSource, UICollectionVi
                 
                 // annoying +1 for addition cell
                 self?.highlightedIndexPath = IndexPath(row: row + 1, section: 0)
-            }).store(in: &cancellables)
+            }).store(in: &cancellables)        
     }
     
     func register(collectionView: UICollectionView) {

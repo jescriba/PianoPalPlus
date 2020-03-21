@@ -14,6 +14,18 @@ extension Octave {
     static let min = 0
 }
 
+class NoteOctaves {
+    static var all: [NoteOctave] {
+        var values = [NoteOctave]()
+        Notes.all.forEach({ note in
+            (Octave.min...Octave.max).forEach { octave in
+                values.append(NoteOctave(note: note, octave: octave))
+            }
+        })
+        return values
+    }
+}
+
 class NoteOctave: Equatable, Hashable, Codable {
     var note: Note
     var octave: Int

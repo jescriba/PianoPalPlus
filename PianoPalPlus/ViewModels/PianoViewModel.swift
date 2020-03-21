@@ -16,7 +16,7 @@ class PianoViewModel {
     @Published var playActive: Bool = false
     @Published var sequenceActive: Bool = false
     private (set) var noteViewModels = [NoteViewModel]()
-    private let piano: Piano
+    let piano: Piano
     private let audioEngine: AudioEngine
     private let contentModeService: ContentModeService
     
@@ -68,7 +68,7 @@ class PianoViewModel {
                 if changedElements.change == .added {
                     selfV.noteViewModels.filter({ changedElements.values.contains($0.noteOctave) })
                         .forEach({ $0.keyColorPair = .selected })
-                    if !selfV.noteLocked {
+                    if !selfV.noteLocked && selfV.contentModeService.contentMode == .freePlay {
                         selfV.audioEngine.play(changedElements.values)
                     }
                 } else if changedElements.change == .removed {
