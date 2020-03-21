@@ -39,13 +39,16 @@ class TheoryViewController: UIViewController {
     private var progressionView: ProgressionView!
     private var theoryItemView: TheoryItemView!
     private var progression: Progression
+    private var piano: Piano
     
     init(contentModeService: ContentModeService = .shared,
          audioEngine: AudioEngine = .shared,
-         progressionStore: ProgressionStore = .shared) {
+         progressionStore: ProgressionStore = .shared,
+         piano: Piano) {
         self.contentModeService = contentModeService
         self.audioEngine = audioEngine
         self.progression = progressionStore.load() ?? Progression()
+        self.piano = piano
         self.progressionViewModel = ProgressionViewModel(progression: progression)
         self.theoryItemViewModel = TheoryItemViewModel(progression: progression)
         super.init(nibName: nil, bundle: nil)
@@ -62,6 +65,11 @@ class TheoryViewController: UIViewController {
         view.addFullBoundsSubview(theoryItemView)
         view.addFullBoundsSubview(progressionView)
         setupSubscriptions()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        audioEngine.stop()
     }
     
     private var cancellables = Set<AnyCancellable>()
@@ -81,10 +89,16 @@ class TheoryViewController: UIViewController {
                     break
                 }
             }).store(in: &cancellables)
+        // theoryVC does the binding to piano. Is passing a piano to progressionViewModel better?
         progression.$currentItem
             .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] progressionItem in
-                self?.header = progressionItem?.title ?? "theory progression"
+            .sink(receiveValue: { [weak self] progressionItemO in
+                guard let progressionItem = progressionItemO else { return }
+                self?.header = progressionItem.title
+                self?.piano.highlightedNotes.array
+                    .filter({ !progressionItem.items.contains($0) })
+                    .forEach({ self?.piano.highlightedNotes.remove($0) })
+                progressionItem.items.forEach({ self?.piano.highlightedNotes.insert($0) })
             }).store(in: &cancellables)
     }
     

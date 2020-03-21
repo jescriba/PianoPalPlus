@@ -91,6 +91,12 @@ class PianoPalPlusUITests: XCTestCase {
         saveButton.tap()
         plusElement.tap()
         
+        itemPickerWheel.adjust(toPickerWheelValue: "scale")
+        rootPickerWheel.adjust(toPickerWheelValue: "E")
+        qualityPickerWheel.adjust(toPickerWheelValue: "blues")
+        saveButton.tap()
+        plusElement.tap()
+        
         itemPickerWheel.adjust(toPickerWheelValue: "chord")
         rootPickerWheel.adjust(toPickerWheelValue: "Eb")
         qualityPickerWheel.adjust(toPickerWheelValue: "M7")

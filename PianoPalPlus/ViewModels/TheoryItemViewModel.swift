@@ -18,7 +18,8 @@ class TheoryItemViewModel: NSObject {
     private var isEditing: Bool = false
     
     enum ComponentType: String {
-        case item, root, quality, alterations
+        case item, root, quality
+        //, alterations
         
         func options(constraint: Any? = nil) -> [Stringable] {
             switch self {
@@ -36,7 +37,7 @@ class TheoryItemViewModel: NSObject {
             }
         }
         
-        static var all: [ComponentType] { return [.item, .root, .quality, .alterations] }
+        static var all: [ComponentType] { return [.item, .root, .quality] }
     }
     
     init(contentModeService: ContentModeService = .shared, progression: Progression) {

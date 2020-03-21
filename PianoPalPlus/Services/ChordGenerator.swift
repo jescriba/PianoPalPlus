@@ -21,6 +21,8 @@ enum ChordType: String, Stringable, TheoryItemDescriptor {
     case majorSeventh
     case minorSeventh
     case dominantSeventh
+    case halfDiminishedSeventh
+    case diminishedSeventh
     
     func intervals() -> [Interval] {
         switch self {
@@ -42,6 +44,10 @@ enum ChordType: String, Stringable, TheoryItemDescriptor {
             return [.unison, .minorThird, .perfectFifth, .minorSeventh]
         case .dominantSeventh:
             return [.unison, .majorThird, .perfectFifth, .minorSeventh]
+        case .halfDiminishedSeventh:
+            return [.unison, .minorThird, .tritone, .minorSeventh]
+        case .diminishedSeventh:
+            return [.unison, .minorThird, .tritone, .majorSixth]
         }
     }
     
@@ -57,13 +63,27 @@ enum ChordType: String, Stringable, TheoryItemDescriptor {
             return "M6"
         case .minorSixth:
             return "m6"
+        case .halfDiminishedSeventh:
+            return "m7b5"
+        case .diminishedSeventh:
+            return "dim7"
         default:
             return rawValue
         }
     }
 
         
-    static var all: [TheoryItemDescriptor] = [ChordType.major, ChordType.minor, ChordType.augmented, ChordType.diminished, ChordType.majorSixth, ChordType.minorSixth, ChordType.majorSeventh, ChordType.minorSeventh, ChordType.dominantSeventh]
+    static var all: [TheoryItemDescriptor] = [ChordType.major,
+                                              ChordType.minor,
+                                              ChordType.augmented,
+                                              ChordType.diminished,
+                                              ChordType.majorSixth,
+                                              ChordType.minorSixth,
+                                              ChordType.majorSeventh,
+                                              ChordType.minorSeventh,
+                                              ChordType.dominantSeventh,
+                                              ChordType.halfDiminishedSeventh,
+                                              ChordType.diminishedSeventh]
 }
 
 class ChordGenerator {
