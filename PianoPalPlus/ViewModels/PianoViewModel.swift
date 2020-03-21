@@ -59,6 +59,7 @@ class PianoViewModel {
                 selfV.noteLocked = noteLocked
                 if !noteLocked {
                     selfV.piano.selectedNotes.removeAll()
+                    selfV.piano.highlightedNotes.removeAll()
                 }
             }).store(in: &cancellables)
         piano.selectedNotes.$changedElements
@@ -66,17 +67,27 @@ class PianoViewModel {
             .sink(receiveValue: { [weak self] changedElementsO in
                 guard let selfV = self, let changedElements = changedElementsO else { return }
                 if changedElements.change == .added {
-                    selfV.noteViewModels.filter({ changedElements.values.contains($0.noteOctave) })
-                        .forEach({ $0.keyColorPair = .selected })
-                    if !selfV.noteLocked && selfV.contentModeService.contentMode == .freePlay {
+                    changedElements.values.forEach({ selfV.piano.highlightedNotes.insert($0) })
+                    if !selfV.noteLocked {
                         selfV.audioEngine.play(changedElements.values)
                     }
                 } else if changedElements.change == .removed {
-                    selfV.noteViewModels.filter({ changedElements.values.contains($0.noteOctave) })
-                        .forEach({ $0.keyColorPair = .basic })
+                    changedElements.values.forEach({ selfV.piano.highlightedNotes.remove($0) })
                     if !selfV.noteLocked {
                         selfV.audioEngine.stop(changedElements.values)
                     }
+                }
+            }).store(in: &cancellables)
+        piano.highlightedNotes.$changedElements
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] changedElementsO in
+                guard let selfV = self, let changedElements = changedElementsO else { return }
+                if changedElements.change == .added {
+                    selfV.noteViewModels.filter({ changedElements.values.contains($0.noteOctave) })
+                        .forEach({ $0.keyColorPair = .selected })
+                } else if changedElements.change == .removed {
+                    selfV.noteViewModels.filter({ changedElements.values.contains($0.noteOctave) })
+                        .forEach({ $0.keyColorPair = .basic })
                 }
             }).store(in: &cancellables)
         piano.$playing
@@ -84,14 +95,14 @@ class PianoViewModel {
             .sink(receiveValue: { [weak self] playing in
                 guard let selfV = self, selfV.piano.noteLocked else { return }
                 if playing {
-                    let playableSequence = selfV.piano.sequencing ? selfV.piano.selectedNotes.array.map({ [$0] }) : [selfV.piano.selectedNotes.array]
+                    let playableSequence = selfV.piano.sequencing ? selfV.piano.highlightedNotes.array.map({ [$0] }) : [selfV.piano.highlightedNotes.array]
                     selfV.audioEngine.play(playableSequence)
                 } else {
-                    selfV.audioEngine.stop(selfV.piano.selectedNotes.array)
+                    selfV.audioEngine.stop(selfV.piano.highlightedNotes.array)
                 }
             }).store(in: &cancellables)
         piano.$playingNotes
-            .combineLatest(piano.selectedNotes.$changedElements,
+            .combineLatest(piano.highlightedNotes.$changedElements,
                            contentModeService.$contentMode)
             .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] arg in
@@ -107,7 +118,7 @@ class PianoViewModel {
                 selfV.noteViewModels.forEach({ noteViewModel in
                     if notes?.contains(noteViewModel.noteOctave) ?? false {
                         noteViewModel.keyColorPair = .playing
-                    } else if selfV.piano.selectedNotes.contains(noteViewModel.noteOctave) {
+                    } else if selfV.piano.highlightedNotes.contains(noteViewModel.noteOctave) {
                         // todo having to combine these to get latest selected notes state :/ refactor
                         if let changed = changedElements,
                             changed.change == .removed && changed.values.contains(noteViewModel.noteOctave) {
@@ -130,13 +141,17 @@ class PianoViewModel {
             .sink(receiveValue: { [weak self] _ in
                 // reset selected note state if mode changes
                 self?.piano.selectedNotes.removeAll()
+                self?.piano.highlightedNotes.removeAll()
+                self?.piano.noteLocked = false
             }).store(in: &cancellables)
     }
     
     func hasTouch(_ hasTouch: Bool, noteOctave: NoteOctave) {
         if hasTouch {
-            if noteLocked && piano.selectedNotes.contains(noteOctave) {
-                piano.selectedNotes.remove(noteOctave)
+            if noteLocked && piano.highlightedNotes.contains(noteOctave) {
+                piano.highlightedNotes.remove(noteOctave)
+            } else if noteLocked {
+                piano.highlightedNotes.insert(noteOctave)
             } else {
                 piano.selectedNotes.insert(noteOctave)
             }

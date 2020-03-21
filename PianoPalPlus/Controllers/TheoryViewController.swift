@@ -95,10 +95,10 @@ class TheoryViewController: UIViewController {
             .sink(receiveValue: { [weak self] progressionItemO in
                 guard let progressionItem = progressionItemO else { return }
                 self?.header = progressionItem.title
-                self?.piano.selectedNotes.array
+                self?.piano.highlightedNotes.array
                     .filter({ !progressionItem.items.contains($0) })
-                    .forEach({ self?.piano.selectedNotes.remove($0) })
-                progressionItem.items.forEach({ self?.piano.selectedNotes.insert($0) })
+                    .forEach({ self?.piano.highlightedNotes.remove($0) })
+                progressionItem.items.forEach({ self?.piano.highlightedNotes.insert($0) })
             }).store(in: &cancellables)
     }
     
