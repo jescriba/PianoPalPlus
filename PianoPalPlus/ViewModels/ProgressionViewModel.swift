@@ -13,7 +13,7 @@ import Combine
 class ProgressionViewModel: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     private let contentModeService: ContentModeService
     private let audioEngine: AudioEngine
-    private let store: ProgressionStore
+    private let store: Store
     var progression: Progression
     @Published var reload: Bool = false
     @Published var highlightedIndexPath: IndexPath?
@@ -22,7 +22,7 @@ class ProgressionViewModel: NSObject, UICollectionViewDataSource, UICollectionVi
     init(contentModeService: ContentModeService = .shared,
          audioEngine: AudioEngine = .shared,
          progression: Progression,
-         store: ProgressionStore = .shared) {
+         store: Store = .shared) {
         self.contentModeService = contentModeService
         self.audioEngine = audioEngine
         self.progression = progression
@@ -34,7 +34,7 @@ class ProgressionViewModel: NSObject, UICollectionViewDataSource, UICollectionVi
             .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] _ in
                 self?.reload = true
-                self?.store.save(progression)
+                self?.store.save(progression, key: .progression)
             }).store(in: &cancellables)
         audioEngine.$playData
             .receive(on: DispatchQueue.main)

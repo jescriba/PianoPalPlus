@@ -31,10 +31,11 @@ class ContainerViewController: UIViewController {
     private var cancellables = Set<AnyCancellable>()
     // services
     private let contentModeService: ContentModeService
+    private let toolbar = ToolBar()
     
     init(contentModeService: ContentModeService = ContentModeService.shared) {
         self.contentModeService = contentModeService
-        toolBarViewModel = ToolBarViewModel(contentModeService: contentModeService)
+        toolBarViewModel = ToolBarViewModel(toolbar: toolbar, contentModeService: contentModeService)
         pianoViewModel = PianoViewModel()
         pianoViewController = PianoViewController(pianoViewModel: pianoViewModel)
         super.init(nibName: nil, bundle: nil)
@@ -112,8 +113,6 @@ class ContainerViewController: UIViewController {
                         default:
                             return
                         }
-                        // only update title when on the selected content mode
-                        self?.toolBarViewModel.title = title
                     }).store(in: &cancellables)
                 addViewController(progressionViewController!)
             }
@@ -130,52 +129,17 @@ class ContainerViewController: UIViewController {
     private func setupToolBarView() {
         self.toolBarView = ToolBarView(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: toolBarViewHeight))
         view.addSubview(toolBarView)
+        let settingsButton = ToolBarButton(id: .settings,
+                                           priority: 0,
+                                           position: .right,
+                                           image: UIImage(systemName: "gear"),
+                                           action: { [weak self] in self?.settingsOpened() })
+        toolBarViewModel.addButton(settingsButton)
         toolBarView.viewModel = toolBarViewModel
     }
     
     private func setupSubscriptions() {
-        toolBarView.$settingsButtonPublisher
-            .filter({ $0 == true})
-            .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] _ in
-                self?.settingsOpened()
-            }).store(in: &cancellables)
-        toolBarView.$noteLockButtonPublisher
-            .filter({ $0 == true })
-            .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] _ in
-                self?.toolBarViewModel.toggleNoteLock()
-                self?.pianoViewModel.toggleNoteLock()
-            }).store(in: &cancellables)
-        toolBarView.$scrollLockButtonPublisher
-            .filter({ $0 == true })
-            .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] _ in
-                self?.toolBarViewModel.toggleScrollLock()
-                self?.pianoViewModel.toggleScrollLock()
-            }).store(in: &cancellables)
-        toolBarView.$sequenceButtonPublisher
-            .filter({ $0 == true })
-            .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] _ in
-                self?.toolBarViewModel.toggleSequenceButton()
-                self?.pianoViewModel.toggleSequenceActive()
-            }).store(in: &cancellables)
-        toolBarView.$playButtonPublisher
-            .filter({ $0 == true })
-            .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] _ in
-                guard let selfV = self else { return }
-                selfV.toolBarViewModel.togglePlayButton()
-                switch selfV.contentModeService.contentMode {
-                case .earTraining(_):
-                    selfV.gameViewController?.togglePlayActive()
-                case .theory(_):
-                    selfV.progressionViewController?.togglePlayActive()
-                default:
-                    selfV.pianoViewModel.togglePlayActive()
-                }
-            }).store(in: &cancellables)
+        setupToolBarSubscriptions()
         contentModeService.$contentMode
             .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] contentMode in
@@ -189,23 +153,21 @@ class ContainerViewController: UIViewController {
                     selfV.bringViewControllerToFront(.progression)
                 }
             }).store(in: &cancellables)
-        toolBarView.$pianoToggleButtonPublisher
-            .filter({ $0 == true })
+    }
+    
+    // MARK: ToolBar Providing
+    private func setupToolBarSubscriptions() {
+        contentModeService.$contentMode
             .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] _ in
+            .sink(receiveValue: { [weak self] contentMode in
                 guard let selfV = self else { return }
-                selfV.toolBarViewModel.togglePiano()
-                if selfV.frontVC == .piano {
-                    switch selfV.contentModeService.contentMode {
-                    case .earTraining(_):
-                        selfV.bringViewControllerToFront(.game)
-                    case .theory:
-                        selfV.bringViewControllerToFront(.progression)
-                    default:
-                        break
-                    }
-                } else {
-                    selfV.bringViewControllerToFront(.piano)
+                switch contentMode {
+                case .freePlay:
+                    selfV.pianoViewModel.toolbarButtons.forEach({ selfV.toolBarViewModel.addButton($0) })
+                case .earTraining(_):
+                    break
+                case .theory:
+                    break
                 }
             }).store(in: &cancellables)
     }

@@ -43,11 +43,11 @@ class TheoryViewController: UIViewController {
     
     init(contentModeService: ContentModeService = .shared,
          audioEngine: AudioEngine = .shared,
-         progressionStore: ProgressionStore = .shared,
+         store: Store = .shared,
          piano: Piano) {
         self.contentModeService = contentModeService
         self.audioEngine = audioEngine
-        self.progression = progressionStore.load() ?? Progression()
+        self.progression = store.load(from: .progression) ?? Progression()
         self.piano = piano
         self.progressionViewModel = ProgressionViewModel(progression: progression)
         self.theoryItemViewModel = TheoryItemViewModel(progression: progression)

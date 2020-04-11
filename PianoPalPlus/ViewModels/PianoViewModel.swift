@@ -11,6 +11,7 @@ import Combine
 import UIKit
 
 class PianoViewModel {
+    @Published var toolbarButtons = [ToolBarButton]()
     @Published var scrollLocked: Bool = false
     @Published var noteLocked: Bool = false
     @Published var playActive: Bool = false
@@ -29,6 +30,7 @@ class PianoViewModel {
         
         setupNoteViewModels()
         setupSubscriptions()
+        setupToolBarButtons()
     }
     
     private func setupNoteViewModels() {
@@ -58,8 +60,11 @@ class PianoViewModel {
                 guard let selfV = self else { return }
                 selfV.noteLocked = noteLocked
                 if !noteLocked {
+                    selfV.toolbarButtons.removeAll(where: { $0.id == .sequenceLock })
                     selfV.piano.selectedNotes.removeAll()
                     selfV.piano.highlightedNotes.removeAll()
+                } else {
+                    selfV.toolbarButtons.append(selfV.sequencerButton)
                 }
             }).store(in: &cancellables)
         piano.selectedNotes.$changedElements
@@ -174,5 +179,57 @@ class PianoViewModel {
     
     func togglePlayActive() {
         piano.playing = !piano.playing
+    }
+    
+    private func setupToolBarButtons() {
+        toolbarButtons.append(scrollLockButton)
+        toolbarButtons.append(noteLockButton)
+        toolbarButtons.append(sequencerButton)
+        toolbarButtons.append(playButton)
+        
+    }
+    
+    // MARK: ToolBar Buttons
+    private var scrollLockButton: ToolBarButton {
+        ToolBarButton(id: .scrollLock,
+                      priority: 0,
+                      active: false,
+                      position: .left,
+                      image: UIImage(systemName: "arrow.right.arrow.left"),
+                      action: { [weak self] in
+                        self?.toggleScrollLock()
+        })
+    }
+    private var noteLockButton: ToolBarButton {
+        ToolBarButton(id: .noteLock,
+                      priority: 1,
+                      active: false,
+                      position: .left,
+                      image: UIImage(systemName: "lock"),
+                      activeImage: UIImage(systemName: "lock.open"),
+                      action: { [weak self] in
+                        self?.toggleNoteLock()
+        })
+    }
+    private var sequencerButton: ToolBarButton {
+        ToolBarButton(id: .sequenceLock,
+                      priority: 2,
+                      active: false,
+                      position: .left,
+                      image: UIImage(systemName: "square.stack.3d.down.dottedline"),
+                      action: { [weak self] in
+                        self?.toggleSequenceActive()
+        })
+    }
+    private var playButton: ToolBarButton {
+        ToolBarButton(id: .play,
+                      priority: 1,
+                      active: false,
+                      position: .right,
+                      image: UIImage(systemName: "play"),
+                      activeImage: UIImage(systemName: "stop"),
+                      action: { [weak self] in
+                        self?.togglePlayActive()
+        })
     }
 }
