@@ -135,6 +135,7 @@ class ContainerViewController: UIViewController {
                                            image: UIImage(systemName: "gear"),
                                            action: { [weak self] in self?.settingsOpened() })
         toolBarViewModel.addButton(settingsButton)
+        pianoViewModel.toolbarButtons.array.forEach({ toolBarViewModel.addButton($0) })
         toolBarView.viewModel = toolBarViewModel
     }
     
@@ -158,12 +159,21 @@ class ContainerViewController: UIViewController {
     // MARK: ToolBar Providing
     private func setupToolBarSubscriptions() {
         contentModeService.$contentMode
+            .combineLatest(pianoViewModel.toolbarButtons.$changedElements)
             .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] contentMode in
+            .sink(receiveValue: { [weak self] (contentMode, changedPianoButtons) in
                 guard let selfV = self else { return }
                 switch contentMode {
                 case .freePlay:
-                    selfV.pianoViewModel.toolbarButtons.forEach({ selfV.toolBarViewModel.addButton($0) })
+                    if let change = changedPianoButtons?.change,
+                        let values = changedPianoButtons?.values {
+                        if change == .removed {
+                            values.forEach({ selfV.toolBarViewModel.removeButton($0) })
+                        }
+                        if change == .added {
+                            values.forEach({ selfV.toolBarViewModel.addButton($0) })
+                        }
+                    }
                 case .earTraining(_):
                     break
                 case .theory:

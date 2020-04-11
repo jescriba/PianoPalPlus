@@ -12,11 +12,11 @@ import UIKit
 
 class ToolBar {
     @Published var titles = [String]()
-    @Published var buttons = [ToolBarButton]()
+    @Published var buttons = ObservableUniqueArray<ToolBarButton>()
     
     init(titles: [String] = ["Piano Pal"], buttons: [ToolBarButton] = [ToolBarButton]()) {
         self.titles = titles
-        self.buttons = buttons
+        buttons.forEach({ self.buttons.insert($0) })
     }
 }
 
@@ -24,7 +24,15 @@ enum ToolBarPosition {
     case left, right
 }
 
-class ToolBarButton {
+class ToolBarButton: Hashable {
+    static func == (lhs: ToolBarButton, rhs: ToolBarButton) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        return hasher.combine(id)
+    }
+    
     var id: ToolBarId
     var priority: Int // used for ordering position
     var active: Bool = false
@@ -49,7 +57,11 @@ class ToolBarButton {
         self.active = active
         self.position = position
         self.image = image
-        self.activeImage = activeImage
+        if let i = image, activeImage == nil {
+            self.activeImage = i
+        } else {
+            self.activeImage = activeImage
+        }
         self.color = color
         self.activeColor = activeColor
         self.action = action
@@ -58,9 +70,11 @@ class ToolBarButton {
     func asUIButton() -> UIButton {
         let btn = UIButton(frame: .zero)
         btn.translatesAutoresizingMaskIntoConstraints = false
-        let templateImage = image?.withRenderingMode(.alwaysTemplate)
-        btn.setImage(templateImage?.withTintColor(color), for: .normal)
-        btn.tintColor = color
+        let currentImage = active ? activeImage : image
+        let currentColor = active ? activeColor : color
+        let templateImage = currentImage?.withRenderingMode(.alwaysTemplate)
+        btn.setImage(templateImage?.withTintColor(currentColor), for: .normal)
+        btn.tintColor = currentColor
         btn.actionHandler(for: .touchUpInside, { [weak self] in
             guard let selfV = self else { return }
             selfV.active = !selfV.active

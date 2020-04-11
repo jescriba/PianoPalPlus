@@ -32,7 +32,11 @@ class ToolBarViewModel: NSObject {
     }
     
     func addButton(_ button: ToolBarButton) {
-        toolbar.buttons.append(button)
+        toolbar.buttons.insert(button)
+    }
+    
+    func removeButton(_ button: ToolBarButton) {
+        toolbar.buttons.remove(button)
     }
     
     private func setupToolbar() {
@@ -77,13 +81,14 @@ class ToolBarViewModel: NSObject {
     
     private var cancellables = Set<AnyCancellable>()
     private func setupSubscriptions() {
-        toolbar.$buttons
+        toolbar.buttons.$changedElements
+            .combineLatest(toolbar.$buttons)
             .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { buttons in
-                self.leftButtons = buttons.filter({ $0.position == .left })
+            .sink(receiveValue: { (_, buttons) in
+                self.leftButtons = buttons.array.filter({ $0.position == .left })
                     .sorted(by: { $0.priority < $1.priority })
                     .map({ $0.asUIButton() })
-                self.rightButtons = buttons.filter({ $0.position == .right })
+                self.rightButtons = buttons.array.filter({ $0.position == .right })
                     .sorted(by: { $0.priority < $1.priority })
                     .map({ $0.asUIButton() })
             }).store(in: &cancellables)

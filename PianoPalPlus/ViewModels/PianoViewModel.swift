@@ -11,7 +11,8 @@ import Combine
 import UIKit
 
 class PianoViewModel {
-    @Published var toolbarButtons = [ToolBarButton]()
+    @Published var toolbarButtons = ObservableUniqueArray<ToolBarButton>()
+    @Published var delaysContentTouches: Bool = false
     @Published var scrollLocked: Bool = false
     @Published var noteLocked: Bool = false
     @Published var playActive: Bool = false
@@ -60,12 +61,19 @@ class PianoViewModel {
                 guard let selfV = self else { return }
                 selfV.noteLocked = noteLocked
                 if !noteLocked {
-                    selfV.toolbarButtons.removeAll(where: { $0.id == .sequenceLock })
+                    selfV.toolbarButtons.remove(selfV.sequencerButton)
                     selfV.piano.selectedNotes.removeAll()
                     selfV.piano.highlightedNotes.removeAll()
                 } else {
-                    selfV.toolbarButtons.append(selfV.sequencerButton)
+                    selfV.toolbarButtons.insert(selfV.sequencerButton)
                 }
+            }).store(in: &cancellables)
+        piano.$scrollLocked
+            .combineLatest(piano.$noteLocked)
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] (scrollLock, noteLock) in
+                // prevent note locking unintentionally while scrolling
+                self?.delaysContentTouches = noteLock && !scrollLock
             }).store(in: &cancellables)
         piano.selectedNotes.$changedElements
             .receive(on: DispatchQueue.main)
@@ -182,11 +190,10 @@ class PianoViewModel {
     }
     
     private func setupToolBarButtons() {
-        toolbarButtons.append(scrollLockButton)
-        toolbarButtons.append(noteLockButton)
-        toolbarButtons.append(sequencerButton)
-        toolbarButtons.append(playButton)
-        
+        toolbarButtons.insert(scrollLockButton)
+        toolbarButtons.insert(noteLockButton)
+        toolbarButtons.insert(sequencerButton)
+        toolbarButtons.insert(playButton)
     }
     
     // MARK: ToolBar Buttons
