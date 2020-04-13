@@ -10,11 +10,12 @@ import Foundation
 import UIKit
 
 class TheoryItemViewModel: NSObject {
+    @Published var toolbarButtons = ObservableUniqueArray<ToolBarButton>()
+    @Published var pickerSelections: [IndexPath]?
     private var contentModeService: ContentModeService
     private var progression: Progression
     private var progressionItem: ProgressionItem?
     private var itemType: MusicTheoryItem?
-    @Published var pickerSelections: [IndexPath]?
     private var isEditing: Bool = false
     
     enum ComponentType: String {
@@ -32,8 +33,6 @@ class TheoryItemViewModel: NSObject {
                     return theoryItem.descriptors()
                 }
                 return ChordType.all
-            default:
-                return ["-"]
             }
         }
         
@@ -107,7 +106,7 @@ class TheoryItemViewModel: NSObject {
         }
         progression.items.removeAll(where: { $0.guid == guid })
     }
-    
+     
 }
 
 extension TheoryItemViewModel: UIPickerViewDataSource, UIPickerViewDelegate {

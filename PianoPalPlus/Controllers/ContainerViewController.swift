@@ -14,7 +14,6 @@ enum ContentVC {
 }
 
 class ContainerViewController: UIViewController {
-    private var frontVC: ContentVC = .piano
     // controllers
     private var pianoViewController: PianoViewController!
     private var gameViewController: GameViewController?
@@ -31,12 +30,11 @@ class ContainerViewController: UIViewController {
     private var cancellables = Set<AnyCancellable>()
     // services
     private let contentModeService: ContentModeService
-    private let toolbar = ToolBar()
     
     init(contentModeService: ContentModeService = ContentModeService.shared) {
         self.contentModeService = contentModeService
-        toolBarViewModel = ToolBarViewModel(toolbar: toolbar, contentModeService: contentModeService)
-        pianoViewModel = PianoViewModel()
+        toolBarViewModel = ToolBarViewModel(contentModeService: contentModeService)
+        pianoViewModel = PianoViewModel(toolbarViewModel: toolBarViewModel)
         pianoViewController = PianoViewController(pianoViewModel: pianoViewModel)
         super.init(nibName: nil, bundle: nil)
     }
@@ -86,12 +84,17 @@ class ContainerViewController: UIViewController {
         viewController.removeFromParent()
     }
     
+    private func removeViewController(_ viewController: UIViewController?) {
+        guard let vc = viewController else { return }
+        removeViewController(vc)
+    }
+    
     private func bringViewControllerToFront(_ frontVC: ContentVC) {
-        self.frontVC = frontVC
+        contentModeService.contentVC = frontVC
         switch frontVC {
         case .game:
             if gameViewController == nil {
-                gameViewController = GameViewController()
+                gameViewController = GameViewController(toolbarViewModel: toolBarViewModel)
                 addViewController(gameViewController!)
             }
             if progressionViewController != nil {
@@ -102,23 +105,12 @@ class ContainerViewController: UIViewController {
         case .progression:
             // TODO refactor
             if progressionViewController == nil {
-                progressionViewController = TheoryViewController(piano: pianoViewModel.piano)
-                progressionViewController?.$header
-                    .combineLatest(contentModeService.$contentMode)
-                    .receive(on: DispatchQueue.main)
-                    .sink(receiveValue: { [weak self] (title, contentMode) in
-                        switch contentMode {
-                        case .theory(_):
-                            break
-                        default:
-                            return
-                        }
-                    }).store(in: &cancellables)
+                if gameViewController != nil {
+                    removeViewController(gameViewController!)
+                    gameViewController = nil
+                }
+                progressionViewController = TheoryViewController(toolbarViewModel: toolBarViewModel, piano: pianoViewModel.piano)
                 addViewController(progressionViewController!)
-            }
-            if gameViewController != nil {
-                removeViewController(gameViewController!)
-                gameViewController = nil
             }
             self.view.bringSubviewToFront(self.progressionViewController!.view)
         case .piano:
@@ -135,7 +127,6 @@ class ContainerViewController: UIViewController {
                                            image: UIImage(systemName: "gear"),
                                            action: { [weak self] in self?.settingsOpened() })
         toolBarViewModel.addButton(settingsButton)
-        pianoViewModel.toolbarButtons.array.forEach({ toolBarViewModel.addButton($0) })
         toolBarView.viewModel = toolBarViewModel
     }
     
@@ -159,25 +150,43 @@ class ContainerViewController: UIViewController {
     // MARK: ToolBar Providing
     private func setupToolBarSubscriptions() {
         contentModeService.$contentMode
-            .combineLatest(pianoViewModel.toolbarButtons.$changedElements)
+            .combineLatest(contentModeService.$contentVC)
             .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] (contentMode, changedPianoButtons) in
+            .sink(receiveValue: { [weak self] (contentMode, contentVC) in
                 guard let selfV = self else { return }
-                switch contentMode {
-                case .freePlay:
-                    if let change = changedPianoButtons?.change,
-                        let values = changedPianoButtons?.values {
-                        if change == .removed {
-                            values.forEach({ selfV.toolBarViewModel.removeButton($0) })
-                        }
-                        if change == .added {
-                            values.forEach({ selfV.toolBarViewModel.addButton($0) })
-                        }
-                    }
-                case .earTraining(_):
-                    break
-                case .theory:
-                    break
+                switch (contentMode, contentVC) {
+                case (.freePlay, _):
+                    selfV.toolBarViewModel.remove(buttonId: .pianoToggle)
+                    selfV.removeViewController(selfV.progressionViewController)
+                    selfV.removeViewController(selfV.gameViewController)
+                    selfV.progressionViewController = nil
+                    selfV.gameViewController = nil
+                case (.earTraining,  _):
+                    selfV.toolBarViewModel.addButton(ToolBarButton(id: .pianoToggle,
+                                                 priority: 1,
+                                                 active: contentVC == .piano,
+                                                 position: .left,
+                                                 image: UIImage(named: "piano"),
+                                                 activeImage: UIImage(systemName: "square.grid.2x2.fill"), action: { [weak self] in
+                                                    if contentVC == .piano {
+                                                        self?.bringViewControllerToFront(.game)
+                                                    } else {
+                                                        self?.bringViewControllerToFront(.piano)
+                                                    }
+                    }), replace: true)
+                case (.theory, _):
+                    selfV.toolBarViewModel.addButton(ToolBarButton(id: .pianoToggle,
+                                                 priority: 1,
+                                                 active: contentVC == .piano,
+                                                 position: .left,
+                                                 image: UIImage(named: "piano"),
+                                                 activeImage: UIImage(systemName: "square.grid.2x2.fill"), action: { [weak self] in
+                                                    if contentVC == .piano {
+                                                        self?.bringViewControllerToFront(.progression)
+                                                    } else {
+                                                        self?.bringViewControllerToFront(.piano)
+                                                    }
+                    }), replace: true)
                 }
             }).store(in: &cancellables)
     }

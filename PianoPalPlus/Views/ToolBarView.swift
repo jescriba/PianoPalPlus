@@ -18,7 +18,9 @@ class ToolBarView: UIView {
     }
     private let titlesCollectionView = UICollectionView(frame: .zero,
                                                         collectionViewLayout: UICollectionViewFlowLayout())
-    private let titlesWidth: CGFloat = 300
+    private var titlesWidth: CGFloat {
+        return self.frame.width / 3.0
+    }
     private let leftHStack = UIStackView()
     private let rightHStack = UIStackView()
 
@@ -99,6 +101,13 @@ class ToolBarView: UIView {
             .receive(on: DispatchQueue.main)
             .sink(receiveValue: { _ in
                 self.titlesCollectionView.reloadData()
+            }).store(in: &cancellables)
+        viewModel?.$selectedTitleIndex
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { index in
+                self.titlesCollectionView.scrollToItem(at: IndexPath(row: index, section: 0),
+                                                       at: .left,
+                                                       animated: true)
             }).store(in: &cancellables)
     }
 }

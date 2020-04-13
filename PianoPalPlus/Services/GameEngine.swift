@@ -14,9 +14,8 @@ struct Selection {
 }
 
 class GameEngine {
-    static let shared = GameEngine()
     @Published private (set) var selectionItems = [Selection]()
-    private var isPlaying = false
+    @Published var isPlaying = false
     private let contentModeService: ContentModeService
     private let audioEngine: AudioEngine
     private var currentPlayableSequence = PlayableSequence()

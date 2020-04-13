@@ -38,5 +38,6 @@ enum ContentMode: Equatable {
 class ContentModeService {
     static let shared = ContentModeService()
     @Published var contentMode: ContentMode = .freePlay
+    @Published var contentVC: ContentVC = .piano
     
 }

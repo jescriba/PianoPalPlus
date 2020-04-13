@@ -19,10 +19,13 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
     private let cardView = CardView()
     private let cardBackgroundView = UIView()
     private let cardViewModel = CardViewModel()
+    private let toolbarViewModel: ToolBarViewModel
     
     init(contentModeService: ContentModeService = ContentModeService.shared,
-         gameEngine: GameEngine = GameEngine.shared) {
+         toolbarViewModel: ToolBarViewModel,
+         gameEngine: GameEngine = GameEngine()) {
         self.contentModeService = contentModeService
+        self.toolbarViewModel = toolbarViewModel
         self.gameEngine = gameEngine
         super.init(nibName: nil, bundle: nil)
     }
@@ -37,6 +40,15 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
         setupSubscriptions()
         setupSelectionCollectionView()
         setupCardView()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        toolbarViewModel.addButton(playButton, replace: true)
+    }
+    
+    deinit {
+        toolbarViewModel.remove(buttonId: .earTrainingPlay)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -56,6 +68,14 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
             .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] _ in
                 self?.selectionCollectionView.reloadData()
+            }).store(in: &cancellables)
+        gameEngine.$isPlaying
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] isPlaying in
+                guard let selfV = self else { return }
+                let updatedButton = selfV.playButton
+                updatedButton.active = isPlaying
+                selfV.toolbarViewModel.addButton(updatedButton, replace: true)
             }).store(in: &cancellables)
     }
     
@@ -175,5 +195,16 @@ class GameViewController: UIViewController, UICollectionViewDataSource, UICollec
     
     func togglePlayActive() {
         gameEngine.togglePlayState()
+    }
+    
+    var playButton: ToolBarButton {
+        ToolBarButton(id: .earTrainingPlay,
+                      priority: 1,
+                      position: .right,
+                      image: UIImage(systemName: "play"),
+                      activeImage: UIImage(systemName: "stop"),
+                      action: { [weak self] in
+                        self?.togglePlayActive()
+        })
     }
 }

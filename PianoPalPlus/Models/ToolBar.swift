@@ -18,6 +18,23 @@ class ToolBar {
         self.titles = titles
         buttons.forEach({ self.buttons.insert($0) })
     }
+    
+    func insert(_ button: ToolBarButton) {
+        buttons.insert(button)
+    }
+    
+    func insert(_ button: ToolBarButton, replace: Bool) {
+        buttons.insert(button, replace: replace)
+    }
+    
+    func remove(_ button: ToolBarButton) {
+        buttons.remove(button)
+    }
+    
+    func remove(_ id: ToolBarId) {
+        guard let button = buttons.array.first(where: { $0.id == id }) else { return }
+        buttons.remove(button)
+    }
 }
 
 enum ToolBarPosition {
@@ -75,6 +92,7 @@ class ToolBarButton: Hashable {
         let templateImage = currentImage?.withRenderingMode(.alwaysTemplate)
         btn.setImage(templateImage?.withTintColor(currentColor), for: .normal)
         btn.tintColor = currentColor
+        btn.tag = id.rawValue
         btn.actionHandler(for: .touchUpInside, { [weak self] in
             guard let selfV = self else { return }
             selfV.active = !selfV.active
@@ -94,5 +112,14 @@ class ToolBarButton: Hashable {
 }
 
 enum ToolBarId: Int {
-    case settings, noteLock, sequenceLock, scrollLock, play
+    case settings
+    case noteLock
+    case sequenceLock
+    case scrollLock
+    case noteLockPlay
+    case earTrainingPlay
+    case progressionPlay
+    case pianoToggle
+    case sessionsToggle
+    case shareProgression
 }
