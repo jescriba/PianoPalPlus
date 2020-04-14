@@ -11,7 +11,7 @@ import UIKit
 import Combine
 
 enum TheoryModeItem: Stringable, Equatable {
-    case progression, editor(ProgressionItem?)
+    case progression, editor(ProgressionItem?), library
     
     func asString() -> String {
         switch self {
@@ -22,6 +22,8 @@ enum TheoryModeItem: Stringable, Equatable {
                 return "editor"
             }
             return "editor \(String(describing: guid))"
+        case .library:
+            return "library"
         }
     }
     
@@ -107,6 +109,7 @@ class TheoryViewController: UIViewController {
                 guard let selfV = self else { return }
                 switch contentMode {
                 case .theory(.editor(let item)):
+                    // TODONOW @joshua add sessions
                     selfV.theoryItemViewModel.edit(item: item)
                     selfV.view.bringSubviewToFront(selfV.theoryItemView)
                 case .theory(.progression):
@@ -174,6 +177,19 @@ class TheoryViewController: UIViewController {
         audioEngine.isPlaying ? audioEngine.stop(progression.sequences) : audioEngine.play(progression.sequences)
     }
     
+    func shareSession() {
+        let session = Session(id: UUID().uuidString,
+                              title: String.todaysDate(),
+                              progression: progression)
+        guard let url = DeepLinkService.url(for: session) else { return }
+        let vc = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+        present(vc, animated: true, completion: nil)
+    }
+    
+    func openSessionsLibrary() {
+        // TODONOW @joshua
+    }
+    
     var playButton: ToolBarButton {
         ToolBarButton(id: .progressionPlay,
                       priority: 2,
@@ -191,6 +207,7 @@ class TheoryViewController: UIViewController {
                       position: .right,
                       image: UIImage(systemName: "tray.full"),
                       action: { [weak self] in
+                        self?.openSessionsLibrary()
         })
     }
     
@@ -200,6 +217,7 @@ class TheoryViewController: UIViewController {
                       position: .left,
                       image: UIImage(systemName: "square.and.arrow.up"),
                       action: { [weak self] in
+                        self?.shareSession()
         })
     }
     
