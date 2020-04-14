@@ -8,6 +8,8 @@
 
 import Foundation
 
+typealias Sessions = [Session]
+
 struct Session: Codable, DeepLinkable {
     var deeplinkId: DeepLinkId = .session
     var id: String

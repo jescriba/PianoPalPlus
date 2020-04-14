@@ -56,10 +56,7 @@ class ContentModeService {
                 guard let deepLink = deepLink else { return }
                 switch deepLink.deeplinkId {
                 case .session:
-                    break
-                    // TODONOW @joshua
-                    //self._contentMode =
-                    //self.$contentMode = .free
+                    self.contentMode = .theory(.library(deepLink as? Session))
                 }
             }).store(in: &cancellables)
     }

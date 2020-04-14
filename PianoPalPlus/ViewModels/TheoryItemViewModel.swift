@@ -89,7 +89,7 @@ class TheoryItemViewModel: NSObject {
     }
     
     @objc func didSave() {
-        contentModeService.contentMode = .theory(.progression)
+        contentModeService.contentMode = .theory(.progression(nil))
         guard let item = progressionItem else { return }
         if isEditing {
             guard let index = progression.items.firstIndex(where: { $0.guid == item.guid }) else { return }
@@ -100,7 +100,7 @@ class TheoryItemViewModel: NSObject {
     }
     
     @objc func didDelete() {
-        contentModeService.contentMode = .theory(.progression)
+        contentModeService.contentMode = .theory(.progression(nil))
         guard let guid = progressionItem?.guid else {
             return
         }

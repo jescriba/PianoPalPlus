@@ -9,7 +9,7 @@
 import Foundation
 
 enum StoreKey: String {
-    case progression
+    case progression, sessions
 }
 
 class Store {
@@ -33,5 +33,9 @@ class Store {
         
         let decoder = JSONDecoder()
         return try? decoder.decode(T.self, from: jsonData)
+    }
+    
+    func delete(key: StoreKey) {
+        UserDefaults.standard.removeObject(forKey: key.rawValue)
     }
 }

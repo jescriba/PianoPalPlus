@@ -11,7 +11,7 @@ import UIKit
 import Combine
 
 enum TheoryModeItem: Stringable, Equatable {
-    case progression, editor(ProgressionItem?), library
+    case progression(Session?), editor(ProgressionItem?), library(Session?)
     
     func asString() -> String {
         switch self {
@@ -37,8 +37,10 @@ class TheoryViewController: UIViewController {
     private let audioEngine: AudioEngine
     private let progressionViewModel: ProgressionViewModel
     private let theoryItemViewModel: TheoryItemViewModel
+    private let sessionsViewModel: SessionsViewModel
     private var progressionView: ProgressionView!
     private var theoryItemView: TheoryItemView!
+    private var sessionsView: SessionsView!
     private var progression: Progression
     private let piano: Piano
     private let toolbarViewModel: ToolBarViewModel
@@ -55,6 +57,7 @@ class TheoryViewController: UIViewController {
         self.piano = piano
         self.progressionViewModel = ProgressionViewModel(progression: progression)
         self.theoryItemViewModel = TheoryItemViewModel(progression: progression)
+        self.sessionsViewModel = SessionsViewModel(progression: progression)
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -66,7 +69,9 @@ class TheoryViewController: UIViewController {
         super.viewDidLoad()
         self.progressionView = ProgressionView(viewModel: progressionViewModel)
         self.theoryItemView = TheoryItemView(viewModel: theoryItemViewModel)
+        self.sessionsView = SessionsView(viewModel: sessionsViewModel)
         view.addFullBoundsSubview(theoryItemView)
+        view.addFullBoundsSubview(sessionsView)
         view.addFullBoundsSubview(progressionView)
         setupSubscriptions()
     }
@@ -92,12 +97,19 @@ class TheoryViewController: UIViewController {
     private var cancellables = Set<AnyCancellable>()
     private func setupSubscriptions() {
         contentModeService.$contentVC
+            .combineLatest(contentModeService.$contentMode)
             .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] contentVC in
+            .sink(receiveValue: { [weak self] (contentVC, contentMode) in
                 guard let selfV = self else { return }
                 if contentVC == .progression {
-                    selfV.toolbarViewModel.addButton(selfV.sessionsButton)
-                    selfV.toolbarViewModel.addButton(selfV.shareSessionButton)
+                    switch contentMode {
+                    case .theory(.library(_)):
+                        selfV.toolbarViewModel.remove(buttonId: .sessionsToggle)
+                        selfV.toolbarViewModel.remove(buttonId: .shareProgression)
+                    default:
+                        selfV.toolbarViewModel.addButton(selfV.sessionsButton)
+                        selfV.toolbarViewModel.addButton(selfV.shareSessionButton)
+                    }
                 } else {
                     selfV.toolbarViewModel.removeButton(selfV.sessionsButton)
                     selfV.toolbarViewModel.removeButton(selfV.shareSessionButton)
@@ -108,8 +120,12 @@ class TheoryViewController: UIViewController {
             .sink(receiveValue: { [weak self] contentMode in
                 guard let selfV = self else { return }
                 switch contentMode {
+                case .theory(.library(let newSessionO)):
+                    if let newSession = newSessionO {
+                        selfV.sessionsViewModel.add(newSession)
+                    }
+                    selfV.view.bringSubviewToFront(selfV.sessionsView)
                 case .theory(.editor(let item)):
-                    // TODONOW @joshua add sessions
                     selfV.theoryItemViewModel.edit(item: item)
                     selfV.view.bringSubviewToFront(selfV.theoryItemView)
                 case .theory(.progression):
@@ -129,7 +145,9 @@ class TheoryViewController: UIViewController {
                 guard let progression = self?.progression else { return }
                 
                 guard currentItem != nil else {
-                    self?.progression.currentItem = progression.items[index]
+                    if progression.items.count > index {
+                        self?.progression.currentItem = progression.items[index]
+                    }
                     return
                 }
                 
@@ -178,16 +196,14 @@ class TheoryViewController: UIViewController {
     }
     
     func shareSession() {
-        let session = Session(id: UUID().uuidString,
-                              title: String.todaysDate(),
-                              progression: progression)
+        let session = sessionsViewModel.currentSession
         guard let url = DeepLinkService.url(for: session) else { return }
         let vc = UIActivityViewController(activityItems: [url], applicationActivities: nil)
         present(vc, animated: true, completion: nil)
     }
     
     func openSessionsLibrary() {
-        // TODONOW @joshua
+        contentModeService.contentMode = .theory(.library(nil))
     }
     
     var playButton: ToolBarButton {
