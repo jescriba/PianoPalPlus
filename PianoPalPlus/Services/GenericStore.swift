@@ -9,7 +9,7 @@
 import Foundation
 
 enum StoreKey: String {
-    case progression, sessions
+    case sessions, session
 }
 
 class Store {

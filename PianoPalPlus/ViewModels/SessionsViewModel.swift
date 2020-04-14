@@ -13,30 +13,42 @@ import Combine
 class SessionsViewModel: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     private let contentModeService: ContentModeService
     private let store: Store
-    private var sessions = [Session]()
-    var currentSession: Session
+    private var sessions = [Session]() {
+        didSet {
+            reload = true
+        }
+    }
+    @Published var currentSession: Session
     @Published var reload: Bool = false
     @Published var highlightedIndexPath: IndexPath?
     
     private var cancellables = Set<AnyCancellable>()
     init(contentModeService: ContentModeService = .shared,
-         progression: Progression,
          store: Store = .shared) {
         self.contentModeService = contentModeService
         self.store = store
         self.reload = true
-        self.currentSession = Session(id: UUID().uuidString,
-                                      title: String.todaysDate(),
-                                      progression: progression)
+        
+        var saveCurrentSession: Bool = false
+        if let existingSession: Session = store.load(from: .session) {
+            self.currentSession = existingSession
+        } else {
+            let newSession = Session()
+            self.currentSession = newSession
+            store.save(newSession, key: .session)
+            saveCurrentSession = true
+        }
         super.init()
         
-        loadSessions()
+        loadSessions(saveCurrent: saveCurrentSession)
     }
     
-    func loadSessions() {
+    func loadSessions(saveCurrent: Bool = false) {
         self.sessions = store.load(from: .sessions) ?? [Session]()
-        sessions.append(currentSession)
-        store.save(sessions, key: .sessions)
+        if saveCurrent {
+            self.sessions.append(self.currentSession)
+            store.save(sessions, key: .sessions)
+        }
     }
     
     func register(collectionView: UICollectionView) {
@@ -83,22 +95,26 @@ class SessionsViewModel: NSObject, UICollectionViewDataSource, UICollectionViewD
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard indexPath.row > 0 else {
             // create a new progression from scratch
-            currentSession.progression.items.removeAll()
-            currentSession.progression.currentItem = nil
-            currentSession.id = UUID().uuidString
-            currentSession.title = String.todaysDate()
+            // save current session to list before creating a new one
+            // refactor - will likely be performance issue once this grows + locking the save
+            store.save(sessions, key: .sessions)
+            currentSession = Session()
+            store.save(currentSession, key: .session)
+            sessions.append(currentSession)
             store.save(sessions, key: .sessions)
             contentModeService.contentMode = .theory(.progression(nil))
             return
         }
         
-        let session = sessions[indexPath.row - 1]
-        contentModeService.contentMode = .theory(.progression(session))
+        currentSession = sessions[indexPath.row - 1]
+        contentModeService.contentMode = .theory(.progression(nil))
     }
     
     func add(_ session: Session) {
         sessions.append(session)
         store.save(sessions, key: .sessions)
+        currentSession = session
+        store.save(currentSession, key: .session)
     }
 
 }

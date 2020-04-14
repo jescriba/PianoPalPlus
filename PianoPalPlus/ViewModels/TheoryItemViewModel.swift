@@ -13,7 +13,10 @@ class TheoryItemViewModel: NSObject {
     @Published var toolbarButtons = ObservableUniqueArray<ToolBarButton>()
     @Published var pickerSelections: [IndexPath]?
     private var contentModeService: ContentModeService
-    private var progression: Progression
+    var session: Session
+    private var progression: Progression {
+        return session.progression
+    }
     private var progressionItem: ProgressionItem?
     private var itemType: MusicTheoryItem?
     private var isEditing: Bool = false
@@ -39,9 +42,9 @@ class TheoryItemViewModel: NSObject {
         static var all: [ComponentType] { return [.item, .root, .quality] }
     }
     
-    init(contentModeService: ContentModeService = .shared, progression: Progression) {
+    init(contentModeService: ContentModeService = .shared, session: Session) {
         self.contentModeService = contentModeService
-        self.progression = progression
+        self.session = session
     }
     
     func edit(item: ProgressionItem?) {

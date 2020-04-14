@@ -14,35 +14,51 @@ class ProgressionViewModel: NSObject, UICollectionViewDataSource, UICollectionVi
     private let contentModeService: ContentModeService
     private let audioEngine: AudioEngine
     private let store: Store
-    var progression: Progression
+    var session: Session
+    private var progression: Progression {
+        return session.progression
+    }
     @Published var reload: Bool = false
     @Published var highlightedIndexPath: IndexPath?
     
     private var cancellables = Set<AnyCancellable>()
     init(contentModeService: ContentModeService = .shared,
          audioEngine: AudioEngine = .shared,
-         progression: Progression,
+         session: Session,
          store: Store = .shared) {
         self.contentModeService = contentModeService
         self.audioEngine = audioEngine
-        self.progression = progression
+        self.session = session
         self.store = store
         self.reload = true
         super.init()
         
+        setupSubscriptions()
+    }
+    
+    func updateSubscriptions() {
+        cancellables.forEach({ $0.cancel() })
+        cancellables.removeAll()
+        setupSubscriptions()
+    }
+    
+    private func setupSubscriptions() {
         progression.$items
             .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] _ in
-                self?.reload = true
-                self?.store.save(progression, key: .progression)
+                guard let selfV = self else { return }
+                selfV.reload = true
+                selfV.session.modifiedDate = Date()
+                selfV.store.save(selfV.session, key: .session)
             }).store(in: &cancellables)
         audioEngine.$playData
             .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] playableData in
+                guard let selfV = self else { return }
                 let guid = playableData?.guid
-                self?.progression.currentItem = progression.items.first(where: { $0.guid == guid })
+                selfV.progression.currentItem = selfV.progression.items.first(where: { $0.guid == guid })
             }).store(in: &cancellables)
-        progression.$currentItem
+        session.progression.$currentItem
             .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] currentItem in
                 guard let row = self?.progression.items.firstIndex(where: { $0.guid == currentItem?.guid })
@@ -52,7 +68,7 @@ class ProgressionViewModel: NSObject, UICollectionViewDataSource, UICollectionVi
                 
                 // annoying +1 for addition cell
                 self?.highlightedIndexPath = IndexPath(row: row + 1, section: 0)
-            }).store(in: &cancellables)        
+            }).store(in: &cancellables)
     }
     
     func register(collectionView: UICollectionView) {

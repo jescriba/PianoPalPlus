@@ -15,21 +15,20 @@ struct Session: Codable, DeepLinkable {
     var id: String
     var title: String
     var progression: Progression
+    var modifiedDate: Date = Date()
     
     enum CodingKeys: String, CodingKey {
         case id, title, progression
     }
     
-    init(id: String,
-         title: String,
-         progression: Progression) {
+    init(id: String = UUID().uuidString,
+         title: String = String.todaysDate(),
+         progression: Progression = Progression(items: []),
+         modifiedDate: Date = Date()) {
         self.id = id
         self.title = title
         self.progression = progression
+        self.modifiedDate = modifiedDate
     }
-    
-//    init(url: URL) {
-//        
-//    }
     
 }

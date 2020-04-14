@@ -46,8 +46,6 @@ class DeepLinkService {
         switch id {
         case .session:
             return try? JSONDecoder().decode(Session.self, from: data)
-        default:
-            return nil
         }
     }
     

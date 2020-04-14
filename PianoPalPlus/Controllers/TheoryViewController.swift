@@ -41,7 +41,10 @@ class TheoryViewController: UIViewController {
     private var progressionView: ProgressionView!
     private var theoryItemView: TheoryItemView!
     private var sessionsView: SessionsView!
-    private var progression: Progression
+    private var currentSession: Session
+    var progression: Progression {
+        return currentSession.progression
+    }
     private let piano: Piano
     private let toolbarViewModel: ToolBarViewModel
     
@@ -52,12 +55,12 @@ class TheoryViewController: UIViewController {
          piano: Piano) {
         self.contentModeService = contentModeService
         self.audioEngine = audioEngine
-        self.progression = store.load(from: .progression) ?? Progression()
         self.toolbarViewModel = toolbarViewModel
         self.piano = piano
-        self.progressionViewModel = ProgressionViewModel(progression: progression)
-        self.theoryItemViewModel = TheoryItemViewModel(progression: progression)
-        self.sessionsViewModel = SessionsViewModel(progression: progression)
+        self.sessionsViewModel = SessionsViewModel()
+        self.currentSession = sessionsViewModel.currentSession
+        self.progressionViewModel = ProgressionViewModel(session: currentSession)
+        self.theoryItemViewModel = TheoryItemViewModel(session: currentSession)
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -96,6 +99,15 @@ class TheoryViewController: UIViewController {
     
     private var cancellables = Set<AnyCancellable>()
     private func setupSubscriptions() {
+        sessionsViewModel.$currentSession
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] session in
+                self?.currentSession = session
+                self?.theoryItemViewModel.session = session
+                self?.progressionViewModel.session = session
+                self?.progressionViewModel.updateSubscriptions()
+                self?.updateSessionSubscriptions()
+            }).store(in: &cancellables)
         contentModeService.$contentVC
             .combineLatest(contentModeService.$contentMode)
             .receive(on: DispatchQueue.main)
@@ -135,6 +147,42 @@ class TheoryViewController: UIViewController {
                     break
                 }
             }).store(in: &cancellables)
+        audioEngine.$isPlaying
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] isPlaying in
+                guard let selfV = self else { return }
+                let updatedButton = selfV.playButton
+                updatedButton.active = isPlaying
+                selfV.toolbarViewModel.addButton(updatedButton, replace: true)
+            }).store(in: &cancellables)
+        setupSessionSubscriptions()
+    }
+    
+    private var sessionCancellables = Set<AnyCancellable>()
+    private func setupSessionSubscriptions() {
+        // theoryVC does the binding to piano. Is passing a piano to progressionViewModel better?
+        // Refactor switch to using pianoViewModel instead of the piano model directly
+        progression.$currentItem
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] progressionItemO in
+                guard let progressionItem = progressionItemO else { return }
+                if let index = self?.progression.items.firstIndex(where: { $0 == progressionItem }) {
+                    self?.toolbarViewModel.selectTitle(at: index)
+                }
+                self?.piano.highlightedNotes.array
+                    .filter({ !progressionItem.items.contains($0) })
+                    .forEach({ self?.piano.highlightedNotes.remove($0) })
+                progressionItem.items.forEach({ self?.piano.highlightedNotes.insert($0) })
+            }).store(in: &sessionCancellables)
+        progression.$items
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] items in
+                if items.count > 0 {
+                    self?.toolbarViewModel.setTitles(items.map({ $0.title }))
+                } else {
+                    self?.toolbarViewModel.setTitles(["Progression"])
+                }
+            }).store(in: &sessionCancellables)
         toolbarViewModel.$selectedTitleIndex
             .combineLatest(progression.$currentItem, audioEngine.$isPlaying)
             .receive(on: DispatchQueue.main)
@@ -158,37 +206,13 @@ class TheoryViewController: UIViewController {
                 }
                 
                 self?.progression.currentItem = progression.items[index]
-            }).store(in: &cancellables)
-        // theoryVC does the binding to piano. Is passing a piano to progressionViewModel better?
-        progression.$currentItem
-            .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] progressionItemO in
-                guard let progressionItem = progressionItemO else { return }
-                if let index = self?.progression.items.firstIndex(where: { $0 == progressionItem }) {
-                    self?.toolbarViewModel.selectTitle(at: index)
-                }
-                self?.piano.highlightedNotes.array
-                    .filter({ !progressionItem.items.contains($0) })
-                    .forEach({ self?.piano.highlightedNotes.remove($0) })
-                progressionItem.items.forEach({ self?.piano.highlightedNotes.insert($0) })
-            }).store(in: &cancellables)
-        progression.$items
-            .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] items in
-                if items.count > 0 {
-                    self?.toolbarViewModel.setTitles(items.map({ $0.title }))
-                } else {
-                    self?.toolbarViewModel.setTitles(["Progression"])
-                }
-            }).store(in: &cancellables)
-        audioEngine.$isPlaying
-            .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] isPlaying in
-                guard let selfV = self else { return }
-                let updatedButton = selfV.playButton
-                updatedButton.active = isPlaying
-                selfV.toolbarViewModel.addButton(updatedButton, replace: true)
-            }).store(in: &cancellables)
+            }).store(in: &sessionCancellables)
+    }
+    
+    private func updateSessionSubscriptions() {
+        sessionCancellables.forEach({ $0.cancel() })
+        sessionCancellables.removeAll()
+        setupSessionSubscriptions()
     }
     
     func togglePlayActive() {

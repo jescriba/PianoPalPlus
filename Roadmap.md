@@ -8,6 +8,7 @@ v0.6
 v0.7
 - chords and scales highlighted across the piano
 - chord voicing
+- ability to delete old sessions
 v0.8
 - add some basic chord 'alterations'
 v0.9 circle of fifth selector
