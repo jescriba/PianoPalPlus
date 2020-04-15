@@ -31,31 +31,32 @@ class PianoPalPlusUITests: XCTestCase {
         let app = XCUIApplication()
         app.launch()
         app.buttons["lock"].tap()
-        
+
         let element = app.scrollViews.children(matching: .other).element.children(matching: .other).element(boundBy: 3)
         element.children(matching: .other).element(boundBy: 1).tap()
         element.children(matching: .other).element(boundBy: 5).tap()
         element.children(matching: .other).element(boundBy: 8).tap()
         app.buttons["square.stack.3d.down.dottedline"].tap()
         app.buttons["arrow.right.arrow.left"].tap()
-        
+
         // free play
         snapshot("freePlay")
-        
+
         app.buttons["gear"].tap()
         var tablesQuery = app.tables
         tablesQuery/*@START_MENU_TOKEN@*/.staticTexts["practice ear training"]/*[[".cells.staticTexts[\"practice ear training\"]",".staticTexts[\"practice ear training\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
         tablesQuery/*@START_MENU_TOKEN@*/.staticTexts["interval"]/*[[".cells.staticTexts[\"interval\"]",".staticTexts[\"interval\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
+        sleep(2)
         app.buttons["play"].tap()
         sleep(4) // hack to wait for dismissing animation
-        
+
         // interval training
         snapshot("intervalTraining")
-        
-        
+
+
         let gearButton = app.buttons["gear"]
         gearButton.tap()
-        
+
         tablesQuery = app.tables
         let practiceEarTrainingStaticText = tablesQuery/*@START_MENU_TOKEN@*/.staticTexts["practice ear training"]/*[[".cells.staticTexts[\"practice ear training\"]",".staticTexts[\"practice ear training\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/
         practiceEarTrainingStaticText.tap()
@@ -63,7 +64,7 @@ class PianoPalPlusUITests: XCTestCase {
         sleep(4)
         // chord training
         snapshot("chordTraining")
-        
+
 
         gearButton.tap()
         practiceEarTrainingStaticText.tap()
@@ -71,13 +72,12 @@ class PianoPalPlusUITests: XCTestCase {
         sleep(4)
         // key training
         snapshot("keyTraining")
-        // Use recording to get started writing UI tests.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-            
+
         app.buttons["gear"].tap()
         app.tables/*@START_MENU_TOKEN@*/.staticTexts["study chords/scales"]/*[[".cells.staticTexts[\"study chords\/scales\"]",".staticTexts[\"study chords\/scales\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/.tap()
         
-        let plusElement = app.collectionViews.cells.otherElements.containing(.image, identifier:"plus").element
+        sleep(1)
+        let plusElement = app.collectionViews.cells.otherElements.containing(.image, identifier:"plus").element(boundBy: 1)
         plusElement.tap()
         
         let itemPickerWheel = app/*@START_MENU_TOKEN@*/.pickerWheels["item"]/*[[".pickers.pickerWheels[\"item\"]",".pickerWheels[\"item\"]"],[[[-1,1],[-1,0]]],[0]]@END_MENU_TOKEN@*/
@@ -110,9 +110,7 @@ class PianoPalPlusUITests: XCTestCase {
         snapshot("theoryTraining1")
 
         let stopButton = app.buttons["stop"]
-        stopButton.tap()
         app.buttons["piano"].tap()
-        playButton.tap()
         sleep(1)
         snapshot("theoryTraining2")
         
