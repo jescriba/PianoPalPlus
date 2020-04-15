@@ -111,7 +111,7 @@ class PianoPalPlusUITests: XCTestCase {
 
         let stopButton = app.buttons["stop"]
         app.buttons["piano"].tap()
-        sleep(1)
+        sleep(2)
         snapshot("theoryTraining2")
         
         stopButton.tap()
