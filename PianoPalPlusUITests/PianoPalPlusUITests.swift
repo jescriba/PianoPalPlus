@@ -30,6 +30,10 @@ class PianoPalPlusUITests: XCTestCase {
         // UI tests must launch the application that they test.
         let app = XCUIApplication()
         app.launch()
+        let device = XCUIDevice.shared
+        device.orientation = .landscapeRight
+        
+        
         app.buttons["lock"].tap()
 
         let element = app.scrollViews.children(matching: .other).element.children(matching: .other).element(boundBy: 3)
@@ -99,7 +103,7 @@ class PianoPalPlusUITests: XCTestCase {
         
         itemPickerWheel.adjust(toPickerWheelValue: "chord")
         rootPickerWheel.adjust(toPickerWheelValue: "Eb")
-        qualityPickerWheel.adjust(toPickerWheelValue: "M7")
+        qualityPickerWheel.adjust(toPickerWheelValue: "major")
         saveButton.tap()
         sleep(1)
         snapshot("theoryTraining")
