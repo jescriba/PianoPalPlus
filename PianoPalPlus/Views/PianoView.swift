@@ -98,10 +98,18 @@ class PianoView: UIView, UIScrollViewDelegate {
     }
     
     private func bindViewModel() {
-        viewModel?.$scrollLocked
+        guard let viewModel = viewModel else { return }
+        viewModel.$scrollLocked
             .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] scrollLocked in
                 self?.isScrollLocked = scrollLocked
+            }).store(in: &cancellables)
+        viewModel.$scrollLocked
+            .combineLatest(viewModel.$delaysContentTouches)
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] (scrollLocked, delayTouches) in
+                self?.isScrollLocked = scrollLocked
+                self?.scrollView.delaysContentTouches = delayTouches
             }).store(in: &cancellables)
     }
     

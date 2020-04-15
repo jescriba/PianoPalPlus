@@ -11,24 +11,33 @@ import Combine
 import UIKit
 
 class PianoViewModel {
+    @Published var delaysContentTouches: Bool = false
     @Published var scrollLocked: Bool = false
     @Published var noteLocked: Bool = false
     @Published var playActive: Bool = false
     @Published var sequenceActive: Bool = false
     private (set) var noteViewModels = [NoteViewModel]()
     let piano: Piano
+    private let toolbarViewModel: ToolBarViewModel
     private let audioEngine: AudioEngine
     private let contentModeService: ContentModeService
     
     init(piano: Piano = Piano(),
+         toolbarViewModel: ToolBarViewModel,
          audioEngine: AudioEngine = .shared,
          contentModeService: ContentModeService = .shared) {
         self.piano = piano
+        self.toolbarViewModel = toolbarViewModel
         self.audioEngine = audioEngine
         self.contentModeService = contentModeService
         
         setupNoteViewModels()
         setupSubscriptions()
+        setupToolBarButtons()
+    }
+    
+    deinit {
+        removePianoToolbarButtons()
     }
     
     private func setupNoteViewModels() {
@@ -58,9 +67,19 @@ class PianoViewModel {
                 guard let selfV = self else { return }
                 selfV.noteLocked = noteLocked
                 if !noteLocked {
+                    selfV.toolbarViewModel.removeButton(selfV.sequencerButton)
                     selfV.piano.selectedNotes.removeAll()
                     selfV.piano.highlightedNotes.removeAll()
+                } else {
+                    selfV.toolbarViewModel.addButton(selfV.sequencerButton)
                 }
+            }).store(in: &cancellables)
+        piano.$scrollLocked
+            .combineLatest(piano.$noteLocked)
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] (scrollLock, noteLock) in
+                // prevent note locking unintentionally while scrolling
+                self?.delaysContentTouches = noteLock && !scrollLock
             }).store(in: &cancellables)
         piano.selectedNotes.$changedElements
             .receive(on: DispatchQueue.main)
@@ -144,6 +163,19 @@ class PianoViewModel {
                 self?.piano.highlightedNotes.removeAll()
                 self?.piano.noteLocked = false
             }).store(in: &cancellables)
+        contentModeService.$contentMode
+            .combineLatest(piano.$noteLocked)
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] (contentMode, noteLocked) in
+                guard let selfV = self else { return }
+                if contentMode == .freePlay {
+                    if noteLocked {
+                        selfV.toolbarViewModel.addButton(selfV.playButton)
+                    } else {
+                        selfV.toolbarViewModel.removeButton(selfV.playButton)
+                    }
+                }
+            }).store(in: &cancellables)
     }
     
     func hasTouch(_ hasTouch: Bool, noteOctave: NoteOctave) {
@@ -174,5 +206,74 @@ class PianoViewModel {
     
     func togglePlayActive() {
         piano.playing = !piano.playing
+    }
+    
+    private func setupToolBarButtons() {
+        contentModeService.$contentMode
+            .combineLatest(contentModeService.$contentVC)
+            .subscribe(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] (contentMode, contentVC) in
+                guard let selfV = self else { return }
+                switch (contentMode, contentVC) {
+                case (.freePlay, .piano):
+                    selfV.toolbarViewModel.addButton(selfV.scrollLockButton, replace: true)
+                    selfV.toolbarViewModel.addButton(selfV.noteLockButton, replace: true)
+                case (.earTraining, .piano), (.theory, .piano):
+                    selfV.toolbarViewModel.addButton(selfV.scrollLockButton, replace: true)
+                default:
+                    selfV.removePianoToolbarButtons()
+                }
+            }).store(in: &cancellables)
+    }
+    
+    private func removePianoToolbarButtons() {
+        toolbarViewModel.removeButton(scrollLockButton)
+        toolbarViewModel.removeButton(noteLockButton)
+        toolbarViewModel.removeButton(sequencerButton)
+        toolbarViewModel.removeButton(playButton)
+    }
+    
+    // MARK: ToolBar Buttons
+    private var scrollLockButton: ToolBarButton {
+        ToolBarButton(id: .scrollLock,
+                      priority: 0,
+                      active: false,
+                      position: .left,
+                      image: UIImage(systemName: "arrow.right.arrow.left"),
+                      action: { [weak self] in
+                        self?.toggleScrollLock()
+        })
+    }
+    private var noteLockButton: ToolBarButton {
+        ToolBarButton(id: .noteLock,
+                      priority: 1,
+                      active: false,
+                      position: .left,
+                      image: UIImage(systemName: "lock"),
+                      activeImage: UIImage(systemName: "lock.open"),
+                      action: { [weak self] in
+                        self?.toggleNoteLock()
+        })
+    }
+    private var sequencerButton: ToolBarButton {
+        ToolBarButton(id: .sequenceLock,
+                      priority: 2,
+                      active: false,
+                      position: .left,
+                      image: UIImage(systemName: "square.stack.3d.down.dottedline"),
+                      action: { [weak self] in
+                        self?.toggleSequenceActive()
+        })
+    }
+    private var playButton: ToolBarButton {
+        ToolBarButton(id: .noteLockPlay,
+                      priority: 1,
+                      active: false,
+                      position: .right,
+                      image: UIImage(systemName: "play"),
+                      activeImage: UIImage(systemName: "stop"),
+                      action: { [weak self] in
+                        self?.togglePlayActive()
+        })
     }
 }

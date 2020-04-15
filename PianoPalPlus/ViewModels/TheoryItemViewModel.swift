@@ -10,11 +10,15 @@ import Foundation
 import UIKit
 
 class TheoryItemViewModel: NSObject {
+    @Published var toolbarButtons = ObservableUniqueArray<ToolBarButton>()
+    @Published var pickerSelections: [IndexPath]?
     private var contentModeService: ContentModeService
-    private var progression: Progression
+    var session: Session
+    private var progression: Progression {
+        return session.progression
+    }
     private var progressionItem: ProgressionItem?
     private var itemType: MusicTheoryItem?
-    @Published var pickerSelections: [IndexPath]?
     private var isEditing: Bool = false
     
     enum ComponentType: String {
@@ -32,17 +36,15 @@ class TheoryItemViewModel: NSObject {
                     return theoryItem.descriptors()
                 }
                 return ChordType.all
-            default:
-                return ["-"]
             }
         }
         
         static var all: [ComponentType] { return [.item, .root, .quality] }
     }
     
-    init(contentModeService: ContentModeService = .shared, progression: Progression) {
+    init(contentModeService: ContentModeService = .shared, session: Session) {
         self.contentModeService = contentModeService
-        self.progression = progression
+        self.session = session
     }
     
     func edit(item: ProgressionItem?) {
@@ -90,7 +92,7 @@ class TheoryItemViewModel: NSObject {
     }
     
     @objc func didSave() {
-        contentModeService.contentMode = .theory(.progression)
+        contentModeService.contentMode = .theory(.progression(nil))
         guard let item = progressionItem else { return }
         if isEditing {
             guard let index = progression.items.firstIndex(where: { $0.guid == item.guid }) else { return }
@@ -101,13 +103,13 @@ class TheoryItemViewModel: NSObject {
     }
     
     @objc func didDelete() {
-        contentModeService.contentMode = .theory(.progression)
+        contentModeService.contentMode = .theory(.progression(nil))
         guard let guid = progressionItem?.guid else {
             return
         }
         progression.items.removeAll(where: { $0.guid == guid })
     }
-    
+     
 }
 
 extension TheoryItemViewModel: UIPickerViewDataSource, UIPickerViewDelegate {

@@ -73,9 +73,9 @@ enum ScaleType: String, Stringable, TheoryItemDescriptor {
     func chordTypes() -> [ChordType] {
         switch self {
         case .major:
-            return [.major, .minor, .minor, .major, .dominantSeventh, .minor, .diminished]
+            return [.major, .minor, .minor, .major, .dominantSeventh, .minor, .diminished, .major]
         case .minor:
-            return [.minor, .diminished, .major, .minor, .minor, .major, .major]
+            return [.minor, .diminished, .major, .minor, .minor, .major, .major, .minor]
         default:
             // TODO - useful for the key generator
             return []

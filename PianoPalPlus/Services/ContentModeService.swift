@@ -38,5 +38,27 @@ enum ContentMode: Equatable {
 class ContentModeService {
     static let shared = ContentModeService()
     @Published var contentMode: ContentMode = .freePlay
+    @Published var contentVC: ContentVC = .piano
+    private let deepLinkService: DeepLinkService
+    
+    init(deepLinkService: DeepLinkService = .shared) {
+        self.deepLinkService = deepLinkService
+        
+        setupSubscriptions()
+    }
+    
+    private var cancellables = Set<AnyCancellable>()
+    private func setupSubscriptions() {
+        deepLinkService.$deepLink
+            .filter({ $0 != nil })
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { deepLink in
+                guard let deepLink = deepLink else { return }
+                switch deepLink.deeplinkId {
+                case .session:
+                    self.contentMode = .theory(.library(deepLink as? Session))
+                }
+            }).store(in: &cancellables)
+    }
     
 }

@@ -10,133 +10,157 @@ import Foundation
 import UIKit
 import Combine
 
-class ToolBarViewModel {
-    @Published var title: String = ""
-    @Published var noteLockButtonImage: UIImage?
-    @Published var noteLockButtonHidden: Bool = false
-    @Published var pianoToggleButtonImage: UIImage?
-    @Published var pianoToggleButtonHidden: Bool = false
-    @Published var playButtonImage: UIImage?
-    @Published var playButtonHidden: Bool = false
-    @Published var sequenceButtonColor: UIColor = UIColor.imageTint
-    @Published var sequenceButtonHidden: Bool = false
-    @Published var scrollLockButtonColor: UIColor = UIColor.imageTint
-    @Published var scrollLockButtonHidden: Bool = false
-    private let pianoImage = UIImage(named: "piano")?.withRenderingMode(.alwaysTemplate)
-    private let gridImage = UIImage(systemName: "square.grid.2x2.fill")?.withRenderingMode(.alwaysTemplate)
-    private let noteLockedImage = UIImage(systemName: "lock")?.withRenderingMode(.alwaysTemplate)
-    private let noteUnlockedImage = UIImage(systemName: "lock.open")?.withRenderingMode(.alwaysTemplate)
-    private let playImage = UIImage(systemName: "play")?.withRenderingMode(.alwaysTemplate)
-    private let stopImage = UIImage(systemName: "stop")?.withRenderingMode(.alwaysTemplate)
-    private let toolbar: ToolBar
-    private let audioEngine: AudioEngine
+class ToolBarViewModel: NSObject {
+    @Published var leftButtons = [UIButton]()
+    @Published var rightButtons = [UIButton]()
+    @Published var reloadCollectionView: Bool = false
+    @Published var selectedTitleIndex: Int = 0
+    let toolbar: ToolBar
     private let contentModeService: ContentModeService
     
-    init(toolBar: ToolBar = ToolBar(),
-         audioEngine: AudioEngine = AudioEngine.shared,
+    init(toolbar: ToolBar = ToolBar(),
          contentModeService: ContentModeService = ContentModeService.shared) {
-        self.toolbar = toolBar
-        self.audioEngine = audioEngine
+        self.toolbar = toolbar
         self.contentModeService = contentModeService
-        
+        super.init()
+        setupToolbar()
         setupSubscriptions()
     }
     
-    private var cancellables = Set<AnyCancellable>()
-    private func setupSubscriptions() {
-        toolbar.$noteLocked
-            .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] noteLocked in
-                guard let selfV = self else { return }
-                selfV.noteLockButtonImage = noteLocked ? selfV.noteUnlockedImage : selfV.noteLockedImage
-                selfV.sequenceButtonHidden = !noteLocked
-                if selfV.contentModeService.contentMode == .freePlay {
-                    selfV.playButtonHidden = !noteLocked
-                }
-            }).store(in: &cancellables)
-        toolbar.$pianoToggled
-            .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] pianoToggled in
-                guard let selfV = self else { return }
-                selfV.pianoToggleButtonImage = pianoToggled ? selfV.gridImage : selfV.pianoImage
-            }).store(in: &cancellables)
-        toolbar.$scrollLocked
-            .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] scrollLocked in
-                guard let selfV = self else { return }
-                selfV.scrollLockButtonColor = scrollLocked ? UIColor.imageTint : UIColor.imageSelectedTint
-            }).store(in: &cancellables)
-        toolbar.$sequenceActive
-            .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] sequenceActive in
-                guard let selfV = self else { return }
-                selfV.sequenceButtonColor = sequenceActive ? UIColor.imageSelectedTint : UIColor.imageTint
-            }).store(in: &cancellables)
-        toolbar.$playActive
-            .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] playActive in
-                guard let selfV = self else { return }
-                selfV.playButtonImage = playActive ? selfV.stopImage : selfV.playImage
-            }).store(in: &cancellables)
+    func selectTitle(at index: Int) {
+        guard toolbar.titles.count > index && index >= 0 else {
+            return
+        }
+        
+        selectedTitleIndex = index
+    }
+    
+    func setTitles(_ titles: [String]) {
+        toolbar.titles = titles
+    }
+    
+    func addButton(_ button: ToolBarButton) {
+        toolbar.buttons.insert(button)
+    }
+    
+    func addButton(_ button: ToolBarButton, replace: Bool) {
+        toolbar.buttons.insert(button, replace: replace)
+    }
+    
+    func removeButton(_ button: ToolBarButton) {
+        toolbar.buttons.remove(button)
+    }
+    
+    func remove(buttonId: ToolBarId) {
+        toolbar.remove(buttonId)
+    }
+    
+    private func setupToolbar() {
         contentModeService.$contentMode
             .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] contentMode in
                 guard let selfV = self else { return }
-                selfV.title = contentMode.title()
-                switch contentMode {
-                case .freePlay:
-                    selfV.noteLockButtonHidden = false
-                    selfV.sequenceButtonHidden = true
-                    selfV.scrollLockButtonHidden = false
-                    selfV.pianoToggleButtonHidden = true
-                    selfV.toolbar.pianoToggled = true
-                    selfV.playButtonHidden = true
-                case .earTraining(_):
-                    selfV.scrollLockButtonHidden = true
-                    selfV.noteLockButtonHidden = true
-                    selfV.sequenceButtonHidden = true
-                    selfV.pianoToggleButtonHidden = false
-                    selfV.toolbar.pianoToggled = false
-                    selfV.playButtonHidden = false
-                case .theory:
-                    selfV.scrollLockButtonHidden = true
-                    selfV.noteLockButtonHidden = true
-                    selfV.sequenceButtonHidden = true
-                    selfV.pianoToggleButtonHidden = false
-                    selfV.toolbar.pianoToggled = false
-                    selfV.playButtonHidden = false
-                }
+                selfV.toolbar.titles = [contentMode.title()]
             }).store(in: &cancellables)
-        audioEngine.$isPlaying
+    }
+    
+    private var cancellables = Set<AnyCancellable>()
+    private func setupSubscriptions() {
+        toolbar.buttons.$observableArray
             .receive(on: DispatchQueue.main)
-            .sink(receiveValue: { [weak self] isPlaying in
-                self?.toolbar.playActive = isPlaying
+            .debounce(for: 0.1, scheduler: DispatchQueue.main)
+            .sink(receiveValue: { buttons in
+                self.leftButtons = buttons.filter({ $0.position == .left })
+                    .sorted(by: { $0.priority < $1.priority })
+                    .map({ $0.asUIButton() })
+                self.rightButtons = buttons.filter({ $0.position == .right })
+                    .sorted(by: { $0.priority < $1.priority })
+                    .map({ $0.asUIButton() })
+            }).store(in: &cancellables)
+        toolbar.$titles
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] titles in
+                self?.reloadCollectionView = true
             }).store(in: &cancellables)
     }
     
-    func toggleNoteLock() {
-        toolbar.noteLocked = !toolbar.noteLocked
+    func register(collectionView: UICollectionView) {
+        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "TitleCell")
+        collectionView.dataSource = self
+        collectionView.delegate = self
+    }
+}
+
+extension ToolBarViewModel: UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return toolbar.titles.count
     }
     
-    func toggleScrollLock() {
-        toolbar.scrollLocked = !toolbar.scrollLocked
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "TitleCell", for: indexPath)
+        cell.contentView.subviews.forEach { $0.removeFromSuperview() }
+        let label = UILabel(frame: .zero)
+        label.text = toolbar.titles[indexPath.row]
+        label.textAlignment = .left
+        cell.contentView.addFullBoundsSubview(label)
+        let alpha = 1 - (cell.frame.minX - collectionView.contentOffset.x) / collectionView.frame.width
+        label.alpha = alpha
+        return cell
     }
     
-    func togglePlayButton() {
-        toolbar.playActive = !toolbar.playActive
-    }
-    
-    func toggleSequenceButton() {
-        toolbar.sequenceActive = !toolbar.sequenceActive
-    }
-    
-    func togglePiano() {
-        toolbar.pianoToggled = !toolbar.pianoToggled
-        switch contentModeService.contentMode {
-        case .freePlay:
-            break
-        default:
-            scrollLockButtonHidden = !toolbar.pianoToggled
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        if indexPath.row == toolbar.titles.count - 1 {
+            return CGSize(width: collectionView.bounds.width,
+                          height: collectionView.bounds.height)
         }
+        return CGSize(width: collectionView.bounds.width / 2.5,
+                      height: collectionView.bounds.height)
     }
+    
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        guard let collectionView = scrollView as? UICollectionView else {
+            return
+        }
+        
+        let indexPath = closestIndexPath(for: collectionView)
+        selectedTitleIndex = indexPath.row
+    }
+    
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        guard let collectionView = scrollView as? UICollectionView, decelerate == false else {
+            return
+        }
+        
+        let indexPath = closestIndexPath(for: collectionView)
+        selectedTitleIndex = indexPath.row
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        guard let collectionView = scrollView as? UICollectionView else {
+            return
+        }
+        
+        collectionView.indexPathsForVisibleItems.forEach({ indexPath in
+            guard let cell = collectionView.cellForItem(at: indexPath) else { return }
+            let alpha = 1 - (cell.frame.minX - collectionView.contentOffset.x) / collectionView.frame.width
+            cell.contentView.subviews.forEach({ label in
+                label.alpha = alpha
+            })
+        })
+    }
+    
+    func closestIndexPath(for collectionView: UICollectionView) -> IndexPath  {
+        var newSelectionIndex: Int = 0
+        var previousAlpha: CGFloat = 0
+        collectionView.indexPathsForVisibleItems.forEach({ indexPath in
+            guard let cell = collectionView.cellForItem(at: indexPath) else { return }
+            let alpha = 1 - (cell.frame.minX - collectionView.contentOffset.x) / collectionView.frame.width
+            if alpha > previousAlpha {
+                newSelectionIndex = indexPath.row
+                previousAlpha = alpha
+            }
+        })
+        return IndexPath(row: newSelectionIndex, section: 0)
+    }
+    
 }

@@ -42,7 +42,14 @@ extension MusicTheoryItem: Stringable {
     func asString() -> String { return rawValue }
 }
 
-class ProgressionItem: Codable {
+class ProgressionItem: Codable, Equatable {
+    static func ==(lhs: ProgressionItem, rhs: ProgressionItem) -> Bool {
+        return lhs.guid == rhs.guid &&
+            lhs.root == rhs.root &&
+            lhs.type == rhs.type &&
+            lhs.items == rhs.items
+    }
+    
     var guid: String = ""
     var sequence: PlayableDataSequence? {
         get {
@@ -110,6 +117,11 @@ class Progression: Codable {
     @Published var items: [ProgressionItem]
     @Published var currentItem: ProgressionItem?
     var sequences: [PlayableDataSequence] {
+        if currentItem != nil,
+            let index = items.firstIndex(where: { $0 == currentItem }) {
+            // only play items _after_ the current item if a progression is started mid way
+            return items.dropFirst(index).compactMap({ $0.sequence })
+        }
         return items.compactMap({ $0.sequence })
     }
     

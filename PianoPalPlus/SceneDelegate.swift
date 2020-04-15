@@ -22,6 +22,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             
             self.window = window
             window.makeKeyAndVisible()
+            
+            if let urlContext = connectionOptions.urlContexts.first {
+                DeepLinkService.shared.handle(url: urlContext.url)
+            }
+        }
+    }
+    
+    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
+        if let urlContext = URLContexts.first {
+            DeepLinkService.shared.handle(url: urlContext.url)
         }
     }
 }

@@ -11,7 +11,13 @@
 		4207082323EEDA32002FBB87 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4207082223EEDA32002FBB87 /* CardView.swift */; };
 		4207082523EEDAC4002FBB87 /* CardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4207082423EEDAC4002FBB87 /* CardViewModel.swift */; };
 		4207082923EFAE49002FBB87 /* Interval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4207082823EFAE49002FBB87 /* Interval.swift */; };
-		422C33B42422E63F0097BFB5 /* ProgressionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 422C33B32422E63F0097BFB5 /* ProgressionStore.swift */; };
+		4228F998244535650064519D /* DeepLinkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4228F997244535650064519D /* DeepLinkService.swift */; };
+		4228F99A244536920064519D /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4228F999244536920064519D /* Session.swift */; };
+		4228F9A024453FDA0064519D /* String+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4228F99F24453FDA0064519D /* String+Extension.swift */; };
+		4228F9A4244562670064519D /* SessionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4228F9A3244562670064519D /* SessionsView.swift */; };
+		4228F9A6244562BC0064519D /* SessionsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4228F9A5244562BC0064519D /* SessionsViewModel.swift */; };
+		425721632431134C00E8DCE8 /* GenericStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425721622431134C00E8DCE8 /* GenericStore.swift */; };
+		4257216524413FFE00E8DCE8 /* UIButton+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4257216424413FFE00E8DCE8 /* UIButton+Extension.swift */; };
 		425E0F3D23E679A7007536FA /* ContentModeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425E0F3C23E679A7007536FA /* ContentModeService.swift */; };
 		425E0F3F23E75AF3007536FA /* NoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425E0F3E23E75AF3007536FA /* NoteViewModel.swift */; };
 		425F4CF623F0C89100970DA7 /* IntervalGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 425F4CF523F0C89100970DA7 /* IntervalGenerator.swift */; };
@@ -162,7 +168,13 @@
 		4207082223EEDA32002FBB87 /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
 		4207082423EEDAC4002FBB87 /* CardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardViewModel.swift; sourceTree = "<group>"; };
 		4207082823EFAE49002FBB87 /* Interval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Interval.swift; sourceTree = "<group>"; };
-		422C33B32422E63F0097BFB5 /* ProgressionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressionStore.swift; sourceTree = "<group>"; };
+		4228F997244535650064519D /* DeepLinkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkService.swift; sourceTree = "<group>"; };
+		4228F999244536920064519D /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
+		4228F99F24453FDA0064519D /* String+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extension.swift"; sourceTree = "<group>"; };
+		4228F9A3244562670064519D /* SessionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionsView.swift; sourceTree = "<group>"; };
+		4228F9A5244562BC0064519D /* SessionsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionsViewModel.swift; sourceTree = "<group>"; };
+		425721622431134C00E8DCE8 /* GenericStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericStore.swift; sourceTree = "<group>"; };
+		4257216424413FFE00E8DCE8 /* UIButton+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton+Extension.swift"; sourceTree = "<group>"; };
 		425E0F3C23E679A7007536FA /* ContentModeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentModeService.swift; sourceTree = "<group>"; };
 		425E0F3E23E75AF3007536FA /* NoteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteViewModel.swift; sourceTree = "<group>"; };
 		425F4CF523F0C89100970DA7 /* IntervalGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntervalGenerator.swift; sourceTree = "<group>"; };
@@ -392,6 +404,7 @@
 				4207082223EEDA32002FBB87 /* CardView.swift */,
 				42A09BD12415C6D200F304B1 /* ProgressionView.swift */,
 				42A09BD5241D806700F304B1 /* TheoryItemView.swift */,
+				4228F9A3244562670064519D /* SessionsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -406,6 +419,7 @@
 				42C2829C23E635BA005BCD62 /* Piano.swift */,
 				4207082823EFAE49002FBB87 /* Interval.swift */,
 				42A09BC723FE7A8C00F304B1 /* Progression.swift */,
+				4228F999244536920064519D /* Session.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -441,6 +455,7 @@
 				4207082423EEDAC4002FBB87 /* CardViewModel.swift */,
 				42A09BC923FE7F8900F304B1 /* ProgressionViewModel.swift */,
 				42A09BD7241D828C00F304B1 /* TheoryItemViewModel.swift */,
+				4228F9A5244562BC0064519D /* SessionsViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -546,7 +561,8 @@
 				425F4CF723F0C89B00970DA7 /* ChordGenerator.swift */,
 				425F4CF923F0C8A300970DA7 /* ScaleGenerator.swift */,
 				425F4CFB23F0D50500970DA7 /* KeyGenerator.swift */,
-				422C33B32422E63F0097BFB5 /* ProgressionStore.swift */,
+				425721622431134C00E8DCE8 /* GenericStore.swift */,
+				4228F997244535650064519D /* DeepLinkService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -557,6 +573,8 @@
 				42E0AC9C23F3FE3100C822EF /* UIColor+Extension.swift */,
 				42E0ACA223F58EA200C822EF /* ObservableUniqueArray.swift */,
 				42A09BCB241369B100F304B1 /* UIView+Extension.swift */,
+				4257216424413FFE00E8DCE8 /* UIButton+Extension.swift */,
+				4228F99F24453FDA0064519D /* String+Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -786,10 +804,12 @@
 				4260129223BD55C0007BEC7F /* NoteOctave.swift in Sources */,
 				4260125C23BD54AC007BEC7F /* ContainerViewController.swift in Sources */,
 				42A09BD22415C6D200F304B1 /* ProgressionView.swift in Sources */,
-				422C33B42422E63F0097BFB5 /* ProgressionStore.swift in Sources */,
+				425721632431134C00E8DCE8 /* GenericStore.swift in Sources */,
+				4228F9A4244562670064519D /* SessionsView.swift in Sources */,
 				4260128B23BD557E007BEC7F /* NoteView.swift in Sources */,
 				4260125823BD54AC007BEC7F /* AppDelegate.swift in Sources */,
 				42C974D323D6BF4D00841216 /* ToolBarView.swift in Sources */,
+				4228F9A6244562BC0064519D /* SessionsViewModel.swift in Sources */,
 				42A09BCC241369B100F304B1 /* UIView+Extension.swift in Sources */,
 				425F4CF623F0C89100970DA7 /* IntervalGenerator.swift in Sources */,
 				42AA3B6E23E40D4A0003F89F /* PianoViewModel.swift in Sources */,
@@ -804,6 +824,7 @@
 				426012A323BD9277007BEC7F /* SceneDelegate.swift in Sources */,
 				4207082523EEDAC4002FBB87 /* CardViewModel.swift in Sources */,
 				426012A123BD8ECD007BEC7F /* KeyProperties.swift in Sources */,
+				4228F9A024453FDA0064519D /* String+Extension.swift in Sources */,
 				42E0AC9D23F3FE3100C822EF /* UIColor+Extension.swift in Sources */,
 				429CD1E023DE52BC00E86DFE /* EarTrainingSelectorViewController.swift in Sources */,
 				42A09BC823FE7A8C00F304B1 /* Progression.swift in Sources */,
@@ -811,12 +832,15 @@
 				42E0ACA323F58EA200C822EF /* ObservableUniqueArray.swift in Sources */,
 				4207082923EFAE49002FBB87 /* Interval.swift in Sources */,
 				42A09BCA23FE7F8900F304B1 /* ProgressionViewModel.swift in Sources */,
+				4228F998244535650064519D /* DeepLinkService.swift in Sources */,
 				42AA3B6C23E40A0C0003F89F /* ToolBar.swift in Sources */,
 				42AA3B6623E4069A0003F89F /* ToolBarViewModel.swift in Sources */,
 				42C2829D23E635BA005BCD62 /* Piano.swift in Sources */,
 				42A09BD6241D806700F304B1 /* TheoryItemView.swift in Sources */,
+				4228F99A244536920064519D /* Session.swift in Sources */,
 				425F4CFA23F0C8A300970DA7 /* ScaleGenerator.swift in Sources */,
 				4260129423BD8E76007BEC7F /* KeyColorPair.swift in Sources */,
+				4257216524413FFE00E8DCE8 /* UIButton+Extension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -991,7 +1015,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = GFSP92A3FB;
 				INFOPLIST_FILE = PianoPalPlus/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
@@ -999,7 +1023,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.5;
+				MARKETING_VERSION = 0.6;
 				PRODUCT_BUNDLE_IDENTIFIER = joshuae.PianoPalPlus;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -1012,7 +1036,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = GFSP92A3FB;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				INFOPLIST_FILE = PianoPalPlus/Info.plist;
@@ -1021,7 +1045,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.5;
+				MARKETING_VERSION = 0.6;
 				PRODUCT_BUNDLE_IDENTIFIER = joshuae.PianoPalPlus;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";

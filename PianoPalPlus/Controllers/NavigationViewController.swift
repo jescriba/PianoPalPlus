@@ -86,7 +86,7 @@ class NavigationCollectionViewController: UIViewController, UITableViewDataSourc
         case .earTraining:
             navigationController?.pushViewController(EarTrainingSelectorViewController(contentModeService: contentModeService), animated: true)
         case .theory:
-            contentModeService.contentMode = .theory(.progression)
+            contentModeService.contentMode = .theory(.progression(nil))
             dismiss(animated: false, completion: nil)
         case .freeplay:
             contentModeService.contentMode = .freePlay
