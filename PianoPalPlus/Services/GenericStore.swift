@@ -12,20 +12,26 @@ enum StoreKey: String {
     case sessions, session
 }
 
-class Store {
-    static let shared = Store()
+struct StoreChange<T: Codable> {
+    var change: ChangeType
+    var value: T?
+}
+
+class Store<T: Codable> {
+    @Published var change: StoreChange<T>?
     
-    func save<T: Codable>(_ item: T, key: StoreKey) {
+    func save(_ item: T, key: StoreKey) {
         let encoder = JSONEncoder()
         guard let data = try? encoder.encode(item),
             let jsonString = String(data: data, encoding: .utf8)  else {
                 return
         }
-        
+                
         UserDefaults.standard.set(jsonString, forKey: key.rawValue)
+        change = StoreChange(change: .changed, value: item)
     }
     
-    func load<T: Codable>(from key: StoreKey) -> T? {
+    func load(from key: StoreKey) -> T? {
         guard let jsonString = UserDefaults.standard.string(forKey: key.rawValue),
             let jsonData = jsonString.data(using: .utf8) else {
             return nil
@@ -37,5 +43,7 @@ class Store {
     
     func delete(key: StoreKey) {
         UserDefaults.standard.removeObject(forKey: key.rawValue)
+        change = StoreChange(change: .removed, value: nil)
     }
+
 }

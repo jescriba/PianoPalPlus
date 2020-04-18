@@ -11,7 +11,7 @@ import UIKit
 import Combine
 
 enum TheoryModeItem: Stringable, Equatable {
-    case progression(Session?), editor(ProgressionItem?), library(Session?)
+    case progression(Session?), editor(ProgressionItem?), library(Session?), sessionDetail
     
     func asString() -> String {
         switch self {
@@ -24,6 +24,8 @@ enum TheoryModeItem: Stringable, Equatable {
             return "editor \(String(describing: guid))"
         case .library:
             return "library"
+        case .sessionDetail:
+            return "session"
         }
     }
     
@@ -38,28 +40,34 @@ class TheoryViewController: UIViewController {
     private let progressionViewModel: ProgressionViewModel
     private let theoryItemViewModel: TheoryItemViewModel
     private let sessionsViewModel: SessionsViewModel
+    private var sessionDetailViewModel: SessionDetailViewModel
     private var progressionView: ProgressionView!
     private var theoryItemView: TheoryItemView!
     private var sessionsView: SessionsView!
+    private var sessionDetailView: SessionDetailView!
     private var currentSession: Session
     var progression: Progression {
         return currentSession.progression
     }
-    private let piano: Piano
+    private let pianoViewModel: PianoViewModel
     private let toolbarViewModel: ToolBarViewModel
     
     init(contentModeService: ContentModeService = .shared,
          audioEngine: AudioEngine = .shared,
-         store: Store = .shared,
          toolbarViewModel: ToolBarViewModel,
-         piano: Piano) {
+         pianoViewModel: PianoViewModel) {
         self.contentModeService = contentModeService
         self.audioEngine = audioEngine
         self.toolbarViewModel = toolbarViewModel
-        self.piano = piano
-        self.sessionsViewModel = SessionsViewModel()
+        self.pianoViewModel = pianoViewModel
+        self.pianoViewModel.lockScroll(false)
+        let sessionsStore = Store<Sessions>()
+        let sessionStore = Store<Session>()
+        self.sessionsViewModel = SessionsViewModel(sessionsStore: sessionsStore, sessionStore: sessionStore)
         self.currentSession = sessionsViewModel.currentSession
-        self.progressionViewModel = ProgressionViewModel(session: currentSession)
+        self.sessionDetailViewModel = SessionDetailViewModel(sessionsStore: sessionsStore,
+                                                             sessionStore: sessionStore)
+        self.progressionViewModel = ProgressionViewModel(session: currentSession, store: sessionStore)
         self.theoryItemViewModel = TheoryItemViewModel(session: currentSession)
         super.init(nibName: nil, bundle: nil)
     }
@@ -73,8 +81,10 @@ class TheoryViewController: UIViewController {
         self.progressionView = ProgressionView(viewModel: progressionViewModel)
         self.theoryItemView = TheoryItemView(viewModel: theoryItemViewModel)
         self.sessionsView = SessionsView(viewModel: sessionsViewModel)
+        self.sessionDetailView = SessionDetailView(viewModel: sessionDetailViewModel)
         view.addFullBoundsSubview(theoryItemView)
         view.addFullBoundsSubview(sessionsView)
+        view.addFullBoundsSubview(sessionDetailView)
         view.addFullBoundsSubview(progressionView)
         setupSubscriptions()
     }
@@ -118,9 +128,11 @@ class TheoryViewController: UIViewController {
                     case .theory(.library(_)):
                         selfV.toolbarViewModel.remove(buttonId: .sessionsToggle)
                         selfV.toolbarViewModel.remove(buttonId: .shareProgression)
+                        selfV.toolbarViewModel.remove(buttonId: .progressionPlay)
                     default:
                         selfV.toolbarViewModel.addButton(selfV.sessionsButton)
                         selfV.toolbarViewModel.addButton(selfV.shareSessionButton)
+                        selfV.toolbarViewModel.addButton(selfV.playButton)
                     }
                 } else {
                     selfV.toolbarViewModel.removeButton(selfV.sessionsButton)
@@ -142,7 +154,13 @@ class TheoryViewController: UIViewController {
                     selfV.view.bringSubviewToFront(selfV.theoryItemView)
                 case .theory(.progression):
                     selfV.progressionView.resetSelections()
+                    if selfV.currentSession.progression.items.count > 0 {
+                        let items = selfV.currentSession.progression.items
+                        selfV.toolbarViewModel.setTitles(items.map({ $0.title }))
+                    }
                     selfV.view.bringSubviewToFront(selfV.progressionView)
+                case .theory(.sessionDetail):
+                    selfV.view.bringSubviewToFront(selfV.sessionDetailView)
                 default:
                     break
                 }
@@ -153,7 +171,7 @@ class TheoryViewController: UIViewController {
                 guard let selfV = self else { return }
                 let updatedButton = selfV.playButton
                 updatedButton.active = isPlaying
-                selfV.toolbarViewModel.addButton(updatedButton, replace: true)
+                selfV.toolbarViewModel.replaceButton(updatedButton)
             }).store(in: &cancellables)
         setupSessionSubscriptions()
     }
@@ -161,7 +179,6 @@ class TheoryViewController: UIViewController {
     private var sessionCancellables = Set<AnyCancellable>()
     private func setupSessionSubscriptions() {
         // theoryVC does the binding to piano. Is passing a piano to progressionViewModel better?
-        // Refactor switch to using pianoViewModel instead of the piano model directly
         progression.$currentItem
             .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] progressionItemO in
@@ -169,10 +186,8 @@ class TheoryViewController: UIViewController {
                 if let index = self?.progression.items.firstIndex(where: { $0 == progressionItem }) {
                     self?.toolbarViewModel.selectTitle(at: index)
                 }
-                self?.piano.highlightedNotes.array
-                    .filter({ !progressionItem.items.contains($0) })
-                    .forEach({ self?.piano.highlightedNotes.remove($0) })
-                progressionItem.items.forEach({ self?.piano.highlightedNotes.insert($0) })
+                self?.pianoViewModel.exclusiveHighlight(notes: progressionItem.items)
+                self?.pianoViewModel.conditionalScrollTo(notes: progressionItem.items)
             }).store(in: &sessionCancellables)
         progression.$items
             .receive(on: DispatchQueue.main)

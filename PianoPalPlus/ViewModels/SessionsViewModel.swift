@@ -12,7 +12,8 @@ import Combine
 
 class SessionsViewModel: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     private let contentModeService: ContentModeService
-    private let store: Store
+    private let sessionsStore: Store<Sessions>
+    private let sessionStore: Store<Session>
     private var sessions = [Session]() {
         didSet {
             reload = true
@@ -24,31 +25,53 @@ class SessionsViewModel: NSObject, UICollectionViewDataSource, UICollectionViewD
     
     private var cancellables = Set<AnyCancellable>()
     init(contentModeService: ContentModeService = .shared,
-         store: Store = .shared) {
+         sessionsStore: Store<Sessions>,
+         sessionStore: Store<Session>) {
         self.contentModeService = contentModeService
-        self.store = store
+        self.sessionsStore = sessionsStore
+        self.sessionStore = sessionStore
         self.reload = true
         
-        var saveCurrentSession: Bool = false
-        if let existingSession: Session = store.load(from: .session) {
+        if let existingSession: Session = sessionStore.load(from: .session) {
             self.currentSession = existingSession
         } else {
             let newSession = Session()
             self.currentSession = newSession
-            store.save(newSession, key: .session)
-            saveCurrentSession = true
+            sessionStore.save(newSession, key: .session)
         }
         super.init()
         
-        loadSessions(saveCurrent: saveCurrentSession)
+        loadSessions()
+        setupSubscriptions()
     }
     
-    func loadSessions(saveCurrent: Bool = false) {
-        self.sessions = store.load(from: .sessions) ?? [Session]()
-        if saveCurrent {
-            self.sessions.append(self.currentSession)
-            store.save(sessions, key: .sessions)
-        }
+    private func setupSubscriptions() {
+        sessionsStore.$change
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] _ in
+                self?.loadSessions()
+            }).store(in: &cancellables)
+        sessionStore.$change
+            .filter({ $0 != nil })
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] change in
+                guard let selfV = self else { return }
+                let currentSession = selfV.currentSession
+                
+                if change?.change == .some(.removed) {
+                    selfV.sessions.removeAll(where: { $0.id == currentSession.id })
+                } else if let existingIndex = selfV.sessions.firstIndex(where: { $0.id == currentSession.id }),
+                    let newValue = change?.value {
+                    selfV.sessions[existingIndex] = newValue
+                } else {
+                    selfV.sessions.append(currentSession)
+                }
+                selfV.sessionsStore.save(selfV.sessions, key: .sessions)
+            }).store(in: &cancellables)
+    }
+    
+    func loadSessions() {
+        self.sessions = sessionsStore.load(from: .sessions) ?? [Session]()
     }
     
     func register(collectionView: UICollectionView) {
@@ -97,24 +120,21 @@ class SessionsViewModel: NSObject, UICollectionViewDataSource, UICollectionViewD
             // create a new progression from scratch
             // save current session to list before creating a new one
             // refactor - will likely be performance issue once this grows + locking the save
-            store.save(sessions, key: .sessions)
+            sessionsStore.save(sessions, key: .sessions)
             currentSession = Session()
-            store.save(currentSession, key: .session)
-            sessions.append(currentSession)
-            store.save(sessions, key: .sessions)
-            contentModeService.contentMode = .theory(.progression(nil))
+            sessionStore.save(currentSession, key: .session)
+            contentModeService.contentMode = .theory(.editor(nil))
             return
         }
         
         currentSession = sessions[indexPath.row - 1]
-        contentModeService.contentMode = .theory(.progression(nil))
+        sessionStore.save(currentSession, key: .session)
+        contentModeService.contentMode = .theory(.sessionDetail)
     }
     
     func add(_ session: Session) {
-        sessions.append(session)
-        store.save(sessions, key: .sessions)
         currentSession = session
-        store.save(currentSession, key: .session)
+        sessionStore.save(currentSession, key: .session)
     }
 
 }

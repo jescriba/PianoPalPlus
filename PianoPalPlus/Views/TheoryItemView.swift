@@ -16,7 +16,7 @@ class TheoryItemView: UIView {
             bindViewModel()
         }
     }
-    var horiztonalStackView = UIStackView(frame: .zero)
+    var stackView = UIStackView(frame: .zero)
     var pickerView = UIPickerView(frame: .zero)
     var saveButton = UIButton(frame: .zero)
     var deleteButton = UIButton(frame: .zero)
@@ -48,28 +48,28 @@ class TheoryItemView: UIView {
         addSubview(deleteButton)
         
         pickerView.translatesAutoresizingMaskIntoConstraints = false
-        horiztonalStackView.translatesAutoresizingMaskIntoConstraints = false
-        horiztonalStackView.addArrangedSubview(pickerView)
-        addSubview(horiztonalStackView)
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.addArrangedSubview(pickerView)
+        addSubview(stackView)
         NSLayoutConstraint.activate([
             saveButton.widthAnchor.constraint(equalToConstant: 200),
             saveButton.heightAnchor.constraint(equalToConstant: 50),
             saveButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -30),
-            saveButton.leftAnchor.constraint(equalTo: horiztonalStackView.centerXAnchor, constant: 10),
+            saveButton.leftAnchor.constraint(equalTo: stackView.centerXAnchor, constant: 10),
             deleteButton.widthAnchor.constraint(equalToConstant: 200),
             deleteButton.heightAnchor.constraint(equalToConstant: 50),
             deleteButton.centerYAnchor.constraint(equalTo: saveButton.centerYAnchor),
-            deleteButton.rightAnchor.constraint(equalTo: horiztonalStackView.centerXAnchor, constant: -10)
+            deleteButton.rightAnchor.constraint(equalTo: stackView.centerXAnchor, constant: -10)
         ])
         
         // Add picker view that drives item selection
         pickerView.backgroundColor = .cellBackground
         pickerView.layer.cornerRadius = 20
         NSLayoutConstraint.activate([
-            self.horiztonalStackView.leftAnchor.constraint(equalTo: leftAnchor, constant: 20),
-            self.horiztonalStackView.rightAnchor.constraint(equalTo: rightAnchor, constant: -20),
-            self.horiztonalStackView.topAnchor.constraint(equalTo: topAnchor, constant: 10),
-            self.horiztonalStackView.bottomAnchor.constraint(equalTo: saveButton.topAnchor, constant: -30)
+            self.stackView.leftAnchor.constraint(equalTo: leftAnchor, constant: 20),
+            self.stackView.rightAnchor.constraint(equalTo: rightAnchor, constant: -20),
+            self.stackView.topAnchor.constraint(equalTo: topAnchor, constant: 10),
+            self.stackView.bottomAnchor.constraint(equalTo: saveButton.topAnchor, constant: -30)
         ])
     }
     

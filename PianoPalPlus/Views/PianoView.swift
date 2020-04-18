@@ -111,6 +111,17 @@ class PianoView: UIView, UIScrollViewDelegate {
                 self?.isScrollLocked = scrollLocked
                 self?.scrollView.delaysContentTouches = delayTouches
             }).store(in: &cancellables)
+        viewModel.$scrollNote
+            .filter({ $0 != nil })
+            .receive(on: DispatchQueue.main)
+            .sink(receiveValue: { [weak self] scrollNote in
+                guard let scrollView = self?.scrollView,
+                    let lowestView = self?.noteViews.first(where: { $0.viewModel?.noteOctave == scrollNote }) else {
+                    return
+                }
+                let x = scrollView.convert(lowestView.frame.origin, from: lowestView.superview).x
+                scrollView.setContentOffset(CGPoint(x: x, y: 0), animated: true)
+            }).store(in: &cancellables)
     }
     
     private func bindNoteViewModels() {

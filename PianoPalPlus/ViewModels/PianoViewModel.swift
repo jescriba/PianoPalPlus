@@ -16,6 +16,7 @@ class PianoViewModel {
     @Published var noteLocked: Bool = false
     @Published var playActive: Bool = false
     @Published var sequenceActive: Bool = false
+    @Published var scrollNote: NoteOctave?
     private (set) var noteViewModels = [NoteViewModel]()
     let piano: Piano
     private let toolbarViewModel: ToolBarViewModel
@@ -192,6 +193,11 @@ class PianoViewModel {
         }
     }
     
+    func lockScroll(_ val: Bool) {
+        guard val != piano.scrollLocked else { return }
+        scrollLockButton.action()
+    }
+    
     func toggleScrollLock() {
         piano.scrollLocked = !piano.scrollLocked
     }
@@ -206,6 +212,18 @@ class PianoViewModel {
     
     func togglePlayActive() {
         piano.playing = !piano.playing
+    }
+    
+    func exclusiveHighlight(notes: [NoteOctave]) {
+        piano.highlightedNotes.array
+            .filter({ !notes.contains($0) })
+            .forEach({ piano.highlightedNotes.remove($0) })
+        notes.forEach({ piano.highlightedNotes.insert($0) })
+    }
+    
+    func conditionalScrollTo(notes: [NoteOctave]) {
+        guard !piano.scrollLocked else { return }
+        scrollNote = notes.sorted(by: { $0.midiNote < $1.midiNote }).first
     }
     
     private func setupToolBarButtons() {
@@ -237,7 +255,7 @@ class PianoViewModel {
     private var scrollLockButton: ToolBarButton {
         ToolBarButton(id: .scrollLock,
                       priority: 0,
-                      active: false,
+                      active: !piano.scrollLocked,
                       position: .left,
                       image: UIImage(systemName: "arrow.right.arrow.left"),
                       action: { [weak self] in
@@ -247,7 +265,7 @@ class PianoViewModel {
     private var noteLockButton: ToolBarButton {
         ToolBarButton(id: .noteLock,
                       priority: 1,
-                      active: false,
+                      active: piano.noteLocked,
                       position: .left,
                       image: UIImage(systemName: "lock"),
                       activeImage: UIImage(systemName: "lock.open"),
@@ -258,7 +276,7 @@ class PianoViewModel {
     private var sequencerButton: ToolBarButton {
         ToolBarButton(id: .sequenceLock,
                       priority: 2,
-                      active: false,
+                      active: piano.sequencing,
                       position: .left,
                       image: UIImage(systemName: "square.stack.3d.down.dottedline"),
                       action: { [weak self] in
