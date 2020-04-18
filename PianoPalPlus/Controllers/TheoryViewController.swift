@@ -60,6 +60,7 @@ class TheoryViewController: UIViewController {
         self.audioEngine = audioEngine
         self.toolbarViewModel = toolbarViewModel
         self.pianoViewModel = pianoViewModel
+        self.pianoViewModel.lockScroll(false)
         let sessionsStore = Store<Sessions>()
         let sessionStore = Store<Session>()
         self.sessionsViewModel = SessionsViewModel(sessionsStore: sessionsStore, sessionStore: sessionStore)
@@ -153,6 +154,10 @@ class TheoryViewController: UIViewController {
                     selfV.view.bringSubviewToFront(selfV.theoryItemView)
                 case .theory(.progression):
                     selfV.progressionView.resetSelections()
+                    if selfV.currentSession.progression.items.count > 0 {
+                        let items = selfV.currentSession.progression.items
+                        selfV.toolbarViewModel.setTitles(items.map({ $0.title }))
+                    }
                     selfV.view.bringSubviewToFront(selfV.progressionView)
                 case .theory(.sessionDetail):
                     selfV.view.bringSubviewToFront(selfV.sessionDetailView)

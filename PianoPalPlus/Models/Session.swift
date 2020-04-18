@@ -10,7 +10,15 @@ import Foundation
 
 typealias Sessions = [Session]
 
-struct Session: Codable, DeepLinkable {
+struct Session: Codable, Hashable, DeepLinkable {
+    static func == (lhs: Session, rhs: Session) -> Bool {
+        return lhs.id == rhs.id && lhs.modifiedDate == rhs.modifiedDate
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
     var deeplinkId: DeepLinkId = .session
     var id: String
     var title: String

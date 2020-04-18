@@ -52,6 +52,7 @@ class SessionsViewModel: NSObject, UICollectionViewDataSource, UICollectionViewD
                 self?.loadSessions()
             }).store(in: &cancellables)
         sessionStore.$change
+            .filter({ $0 != nil })
             .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] change in
                 guard let selfV = self else { return }
@@ -122,7 +123,7 @@ class SessionsViewModel: NSObject, UICollectionViewDataSource, UICollectionViewD
             sessionsStore.save(sessions, key: .sessions)
             currentSession = Session()
             sessionStore.save(currentSession, key: .session)
-            contentModeService.contentMode = .theory(.progression(nil))
+            contentModeService.contentMode = .theory(.editor(nil))
             return
         }
         

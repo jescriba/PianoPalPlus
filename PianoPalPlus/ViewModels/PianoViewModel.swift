@@ -193,6 +193,11 @@ class PianoViewModel {
         }
     }
     
+    func lockScroll(_ val: Bool) {
+        guard val != piano.scrollLocked else { return }
+        scrollLockButton.action()
+    }
+    
     func toggleScrollLock() {
         piano.scrollLocked = !piano.scrollLocked
     }
@@ -250,7 +255,7 @@ class PianoViewModel {
     private var scrollLockButton: ToolBarButton {
         ToolBarButton(id: .scrollLock,
                       priority: 0,
-                      active: false,
+                      active: !piano.scrollLocked,
                       position: .left,
                       image: UIImage(systemName: "arrow.right.arrow.left"),
                       action: { [weak self] in
@@ -260,7 +265,7 @@ class PianoViewModel {
     private var noteLockButton: ToolBarButton {
         ToolBarButton(id: .noteLock,
                       priority: 1,
-                      active: false,
+                      active: piano.noteLocked,
                       position: .left,
                       image: UIImage(systemName: "lock"),
                       activeImage: UIImage(systemName: "lock.open"),
@@ -271,7 +276,7 @@ class PianoViewModel {
     private var sequencerButton: ToolBarButton {
         ToolBarButton(id: .sequenceLock,
                       priority: 2,
-                      active: false,
+                      active: piano.sequencing,
                       position: .left,
                       image: UIImage(systemName: "square.stack.3d.down.dottedline"),
                       action: { [weak self] in
