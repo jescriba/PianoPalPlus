@@ -1,8 +1,8 @@
 v0.7
-- chord voicing
 - ability to rename/delete old sessions
 - auto scroll piano to lowest note in progression item based on scroll lock button
 v0.8
+- chord voicing
 - chords and scales highlighted across the piano
 - add some basic chord 'alterations'
 - bug fix progression replaying
