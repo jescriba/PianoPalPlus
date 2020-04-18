@@ -14,8 +14,8 @@ struct Session: Codable, DeepLinkable {
     var deeplinkId: DeepLinkId = .session
     var id: String
     var title: String
-    var progression: Progression
     var modifiedDate: Date = Date()
+    var progression: Progression
     
     enum CodingKeys: String, CodingKey {
         case id, title, progression

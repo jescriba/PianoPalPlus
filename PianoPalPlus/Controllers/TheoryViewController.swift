@@ -11,7 +11,7 @@ import UIKit
 import Combine
 
 enum TheoryModeItem: Stringable, Equatable {
-    case progression(Session?), editor(ProgressionItem?), library(Session?)
+    case progression(Session?), editor(ProgressionItem?), library(Session?), sessionDetail
     
     func asString() -> String {
         switch self {
@@ -24,6 +24,8 @@ enum TheoryModeItem: Stringable, Equatable {
             return "editor \(String(describing: guid))"
         case .library:
             return "library"
+        case .sessionDetail:
+            return "session"
         }
     }
     
@@ -38,9 +40,11 @@ class TheoryViewController: UIViewController {
     private let progressionViewModel: ProgressionViewModel
     private let theoryItemViewModel: TheoryItemViewModel
     private let sessionsViewModel: SessionsViewModel
+    private var sessionDetailViewModel: SessionDetailViewModel
     private var progressionView: ProgressionView!
     private var theoryItemView: TheoryItemView!
     private var sessionsView: SessionsView!
+    private var sessionDetailView: SessionDetailView!
     private var currentSession: Session
     var progression: Progression {
         return currentSession.progression
@@ -50,16 +54,19 @@ class TheoryViewController: UIViewController {
     
     init(contentModeService: ContentModeService = .shared,
          audioEngine: AudioEngine = .shared,
-         store: Store = .shared,
          toolbarViewModel: ToolBarViewModel,
          piano: Piano) {
         self.contentModeService = contentModeService
         self.audioEngine = audioEngine
         self.toolbarViewModel = toolbarViewModel
         self.piano = piano
-        self.sessionsViewModel = SessionsViewModel()
+        let sessionsStore = Store<Sessions>()
+        let sessionStore = Store<Session>()
+        self.sessionsViewModel = SessionsViewModel(sessionsStore: sessionsStore, sessionStore: sessionStore)
         self.currentSession = sessionsViewModel.currentSession
-        self.progressionViewModel = ProgressionViewModel(session: currentSession)
+        self.sessionDetailViewModel = SessionDetailViewModel(sessionsStore: sessionsStore,
+                                                             sessionStore: sessionStore)
+        self.progressionViewModel = ProgressionViewModel(session: currentSession, store: sessionStore)
         self.theoryItemViewModel = TheoryItemViewModel(session: currentSession)
         super.init(nibName: nil, bundle: nil)
     }
@@ -73,8 +80,10 @@ class TheoryViewController: UIViewController {
         self.progressionView = ProgressionView(viewModel: progressionViewModel)
         self.theoryItemView = TheoryItemView(viewModel: theoryItemViewModel)
         self.sessionsView = SessionsView(viewModel: sessionsViewModel)
+        self.sessionDetailView = SessionDetailView(viewModel: sessionDetailViewModel)
         view.addFullBoundsSubview(theoryItemView)
         view.addFullBoundsSubview(sessionsView)
+        view.addFullBoundsSubview(sessionDetailView)
         view.addFullBoundsSubview(progressionView)
         setupSubscriptions()
     }
@@ -118,9 +127,11 @@ class TheoryViewController: UIViewController {
                     case .theory(.library(_)):
                         selfV.toolbarViewModel.remove(buttonId: .sessionsToggle)
                         selfV.toolbarViewModel.remove(buttonId: .shareProgression)
+                        selfV.toolbarViewModel.remove(buttonId: .progressionPlay)
                     default:
                         selfV.toolbarViewModel.addButton(selfV.sessionsButton)
                         selfV.toolbarViewModel.addButton(selfV.shareSessionButton)
+                        selfV.toolbarViewModel.addButton(selfV.playButton)
                     }
                 } else {
                     selfV.toolbarViewModel.removeButton(selfV.sessionsButton)
@@ -143,6 +154,8 @@ class TheoryViewController: UIViewController {
                 case .theory(.progression):
                     selfV.progressionView.resetSelections()
                     selfV.view.bringSubviewToFront(selfV.progressionView)
+                case .theory(.sessionDetail):
+                    selfV.view.bringSubviewToFront(selfV.sessionDetailView)
                 default:
                     break
                 }
@@ -153,7 +166,7 @@ class TheoryViewController: UIViewController {
                 guard let selfV = self else { return }
                 let updatedButton = selfV.playButton
                 updatedButton.active = isPlaying
-                selfV.toolbarViewModel.addButton(updatedButton, replace: true)
+                selfV.toolbarViewModel.replaceButton(updatedButton)
             }).store(in: &cancellables)
         setupSessionSubscriptions()
     }
@@ -166,6 +179,7 @@ class TheoryViewController: UIViewController {
             .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] progressionItemO in
                 guard let progressionItem = progressionItemO else { return }
+                // TODONOW @joshua scroll piano
                 if let index = self?.progression.items.firstIndex(where: { $0 == progressionItem }) {
                     self?.toolbarViewModel.selectTitle(at: index)
                 }

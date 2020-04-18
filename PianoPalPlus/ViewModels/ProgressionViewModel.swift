@@ -13,7 +13,7 @@ import Combine
 class ProgressionViewModel: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     private let contentModeService: ContentModeService
     private let audioEngine: AudioEngine
-    private let store: Store
+    private let store: Store<Session>
     var session: Session
     private var progression: Progression {
         return session.progression
@@ -25,7 +25,7 @@ class ProgressionViewModel: NSObject, UICollectionViewDataSource, UICollectionVi
     init(contentModeService: ContentModeService = .shared,
          audioEngine: AudioEngine = .shared,
          session: Session,
-         store: Store = .shared) {
+         store: Store<Session>) {
         self.contentModeService = contentModeService
         self.audioEngine = audioEngine
         self.session = session

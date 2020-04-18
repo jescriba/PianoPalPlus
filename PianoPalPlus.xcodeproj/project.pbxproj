@@ -48,6 +48,8 @@
 		42A09BD22415C6D200F304B1 /* ProgressionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A09BD12415C6D200F304B1 /* ProgressionView.swift */; };
 		42A09BD6241D806700F304B1 /* TheoryItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A09BD5241D806700F304B1 /* TheoryItemView.swift */; };
 		42A09BD8241D828C00F304B1 /* TheoryItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A09BD7241D828C00F304B1 /* TheoryItemViewModel.swift */; };
+		42A2B7A82448D385003F9A62 /* SessionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A2B7A72448D385003F9A62 /* SessionDetailView.swift */; };
+		42A2B7AA2448D393003F9A62 /* SessionDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42A2B7A92448D393003F9A62 /* SessionDetailViewModel.swift */; };
 		42AA3B6623E4069A0003F89F /* ToolBarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AA3B6523E4069A0003F89F /* ToolBarViewModel.swift */; };
 		42AA3B6823E407320003F89F /* PianoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AA3B6723E407320003F89F /* PianoViewController.swift */; };
 		42AA3B6A23E407950003F89F /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42AA3B6923E407950003F89F /* GameViewController.swift */; };
@@ -211,6 +213,8 @@
 		42A09BD12415C6D200F304B1 /* ProgressionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressionView.swift; sourceTree = "<group>"; };
 		42A09BD5241D806700F304B1 /* TheoryItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TheoryItemView.swift; sourceTree = "<group>"; };
 		42A09BD7241D828C00F304B1 /* TheoryItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TheoryItemViewModel.swift; sourceTree = "<group>"; };
+		42A2B7A72448D385003F9A62 /* SessionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDetailView.swift; sourceTree = "<group>"; };
+		42A2B7A92448D393003F9A62 /* SessionDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDetailViewModel.swift; sourceTree = "<group>"; };
 		42AA3B6523E4069A0003F89F /* ToolBarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolBarViewModel.swift; sourceTree = "<group>"; };
 		42AA3B6723E407320003F89F /* PianoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PianoViewController.swift; sourceTree = "<group>"; };
 		42AA3B6923E407950003F89F /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
@@ -405,6 +409,7 @@
 				42A09BD12415C6D200F304B1 /* ProgressionView.swift */,
 				42A09BD5241D806700F304B1 /* TheoryItemView.swift */,
 				4228F9A3244562670064519D /* SessionsView.swift */,
+				42A2B7A72448D385003F9A62 /* SessionDetailView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -456,6 +461,7 @@
 				42A09BC923FE7F8900F304B1 /* ProgressionViewModel.swift */,
 				42A09BD7241D828C00F304B1 /* TheoryItemViewModel.swift */,
 				4228F9A5244562BC0064519D /* SessionsViewModel.swift */,
+				42A2B7A92448D393003F9A62 /* SessionDetailViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -798,6 +804,7 @@
 				4207082323EEDA32002FBB87 /* CardView.swift in Sources */,
 				4207082123EA9718002FBB87 /* GameEngine.swift in Sources */,
 				42DF135A23D622A400CC9D68 /* AudioEngine.swift in Sources */,
+				42A2B7A82448D385003F9A62 /* SessionDetailView.swift in Sources */,
 				42AA3B6823E407320003F89F /* PianoViewController.swift in Sources */,
 				4285310223F7660C0051A6F0 /* TheoryViewController.swift in Sources */,
 				425F4CF823F0C89B00970DA7 /* ChordGenerator.swift in Sources */,
@@ -811,6 +818,7 @@
 				42C974D323D6BF4D00841216 /* ToolBarView.swift in Sources */,
 				4228F9A6244562BC0064519D /* SessionsViewModel.swift in Sources */,
 				42A09BCC241369B100F304B1 /* UIView+Extension.swift in Sources */,
+				42A2B7AA2448D393003F9A62 /* SessionDetailViewModel.swift in Sources */,
 				425F4CF623F0C89100970DA7 /* IntervalGenerator.swift in Sources */,
 				42AA3B6E23E40D4A0003F89F /* PianoViewModel.swift in Sources */,
 				429CD1DE23DE52AA00E86DFE /* SettingsViewController.swift in Sources */,

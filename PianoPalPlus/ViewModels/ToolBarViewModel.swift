@@ -47,6 +47,11 @@ class ToolBarViewModel: NSObject {
         toolbar.buttons.insert(button, replace: replace)
     }
     
+    func replaceButton(_ button: ToolBarButton) {
+        guard toolbar.buttons.array.contains(where: { $0.id == button.id }) else { return }
+        addButton(button, replace: true)
+    }
+    
     func removeButton(_ button: ToolBarButton) {
         toolbar.buttons.remove(button)
     }

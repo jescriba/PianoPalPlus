@@ -11,7 +11,6 @@ import UIKit
 import Combine
 
 class SessionsView: UIView {
-    
     private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     weak var viewModel: SessionsViewModel? {
         didSet {
