@@ -1,11 +1,11 @@
 v0.7
-- chords and scales highlighted across the piano
 - chord voicing
 - ability to rename/delete old sessions
 - auto scroll piano to lowest note in progression item based on scroll lock button
-- bug fix progression replaying
 v0.8
+- chords and scales highlighted across the piano
 - add some basic chord 'alterations'
+- bug fix progression replaying
 v1 accurate sequence timing not using dispatch queue
 v1.1 metronome
 v1.2 circle of fifth selector
