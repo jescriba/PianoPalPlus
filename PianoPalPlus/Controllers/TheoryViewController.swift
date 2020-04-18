@@ -49,17 +49,17 @@ class TheoryViewController: UIViewController {
     var progression: Progression {
         return currentSession.progression
     }
-    private let piano: Piano
+    private let pianoViewModel: PianoViewModel
     private let toolbarViewModel: ToolBarViewModel
     
     init(contentModeService: ContentModeService = .shared,
          audioEngine: AudioEngine = .shared,
          toolbarViewModel: ToolBarViewModel,
-         piano: Piano) {
+         pianoViewModel: PianoViewModel) {
         self.contentModeService = contentModeService
         self.audioEngine = audioEngine
         self.toolbarViewModel = toolbarViewModel
-        self.piano = piano
+        self.pianoViewModel = pianoViewModel
         let sessionsStore = Store<Sessions>()
         let sessionStore = Store<Session>()
         self.sessionsViewModel = SessionsViewModel(sessionsStore: sessionsStore, sessionStore: sessionStore)
@@ -174,19 +174,15 @@ class TheoryViewController: UIViewController {
     private var sessionCancellables = Set<AnyCancellable>()
     private func setupSessionSubscriptions() {
         // theoryVC does the binding to piano. Is passing a piano to progressionViewModel better?
-        // Refactor switch to using pianoViewModel instead of the piano model directly
         progression.$currentItem
             .receive(on: DispatchQueue.main)
             .sink(receiveValue: { [weak self] progressionItemO in
                 guard let progressionItem = progressionItemO else { return }
-                // TODONOW @joshua scroll piano
                 if let index = self?.progression.items.firstIndex(where: { $0 == progressionItem }) {
                     self?.toolbarViewModel.selectTitle(at: index)
                 }
-                self?.piano.highlightedNotes.array
-                    .filter({ !progressionItem.items.contains($0) })
-                    .forEach({ self?.piano.highlightedNotes.remove($0) })
-                progressionItem.items.forEach({ self?.piano.highlightedNotes.insert($0) })
+                self?.pianoViewModel.exclusiveHighlight(notes: progressionItem.items)
+                self?.pianoViewModel.conditionalScrollTo(notes: progressionItem.items)
             }).store(in: &sessionCancellables)
         progression.$items
             .receive(on: DispatchQueue.main)

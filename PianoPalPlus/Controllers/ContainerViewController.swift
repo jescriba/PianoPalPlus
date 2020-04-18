@@ -109,7 +109,7 @@ class ContainerViewController: UIViewController {
                     removeViewController(gameViewController!)
                     gameViewController = nil
                 }
-                progressionViewController = TheoryViewController(toolbarViewModel: toolBarViewModel, piano: pianoViewModel.piano)
+                progressionViewController = TheoryViewController(toolbarViewModel: toolBarViewModel, pianoViewModel: pianoViewModel)
                 addViewController(progressionViewController!)
             }
             self.view.bringSubviewToFront(self.progressionViewController!.view)

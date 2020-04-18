@@ -16,6 +16,7 @@ class PianoViewModel {
     @Published var noteLocked: Bool = false
     @Published var playActive: Bool = false
     @Published var sequenceActive: Bool = false
+    @Published var scrollNote: NoteOctave?
     private (set) var noteViewModels = [NoteViewModel]()
     let piano: Piano
     private let toolbarViewModel: ToolBarViewModel
@@ -206,6 +207,18 @@ class PianoViewModel {
     
     func togglePlayActive() {
         piano.playing = !piano.playing
+    }
+    
+    func exclusiveHighlight(notes: [NoteOctave]) {
+        piano.highlightedNotes.array
+            .filter({ !notes.contains($0) })
+            .forEach({ piano.highlightedNotes.remove($0) })
+        notes.forEach({ piano.highlightedNotes.insert($0) })
+    }
+    
+    func conditionalScrollTo(notes: [NoteOctave]) {
+        guard !piano.scrollLocked else { return }
+        scrollNote = notes.sorted(by: { $0.midiNote < $1.midiNote }).first
     }
     
     private func setupToolBarButtons() {
